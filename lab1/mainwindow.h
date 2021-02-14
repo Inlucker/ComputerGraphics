@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "mygraphicsview.h"
 #include <QMainWindow>
 #include <QTableWidget>
 #include <QMessageBox>
@@ -22,20 +23,14 @@ public:
     ~MainWindow();
 
 private slots:
-    // Таймер для изменения размеров сцены при изменении размеров Окна приложения
-    //void slotTimer();
+    void on_enterDotsNumberBtn_clicked();
 
     void on_outputBtn_clicked();
-
-    void on_enterDotsNumberBtn_clicked();
 
 private:
     Ui::MainWindow *ui;
 
-    QGraphicsScene      *scene;     // Объявляем сцену для отрисовки
-    QGraphicsItemGroup  *group_1;   // Объявляем первую группу элементов
-
-    //QTimer *timer;
+    MyGraphicsView *myPicture;
 
     void deleteItemsFromGroup(QGraphicsItemGroup *group_1);
 };
