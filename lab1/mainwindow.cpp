@@ -43,7 +43,7 @@ void MainWindow::on_enterDotsNumberBtn_clicked()
         for (int i = 0; i < ui->tableWidget->rowCount(); i++)
             for (int j = 0; j < ui->tableWidget->columnCount(); j++)
             {
-                QTableWidgetItem *itm = new QTableWidgetItem(tr("%1").arg((i + 1)*6));
+                QTableWidgetItem *itm = new QTableWidgetItem(tr("%1").arg((i + 1)*4));
 
                 ui->tableWidget->setItem(i, j, itm);
             }

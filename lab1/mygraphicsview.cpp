@@ -28,7 +28,7 @@ void MyGraphicsView::paintEvent(QPaintEvent *)
     for (int i = 0; i < MAX_POINT_NUMBER; i++)
     {
         if (x[i] && y[i] >= 0)
-            painter.drawEllipse(x[i] - 3, y[i] - 3, 6, 6);
+            painter.drawEllipse(x[i] - 2, height() - y[i] - 2, 4, 4);
     }
     //painter.fillRect(0, 0, width(), height(), Qt::CrossPattern); //отрисовка
     painter.end();//освобождение контекста
