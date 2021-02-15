@@ -17,6 +17,11 @@ void MyGraphicsView::clearPoints()
         x[i] = -1;
         y[i] = -1;
     }
+    for (int i = 0; i < TRIANGLE_POINTS_NUMBER; i++)
+    {
+        x_rez[i] = -1;
+        y_rez[i] = -1;
+    }
 }
 
 void MyGraphicsView::paintEvent(QPaintEvent *)

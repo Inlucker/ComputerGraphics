@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "calculations.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -82,4 +83,6 @@ void MainWindow::on_outputBtn_clicked()
     }
 
     myPicture->update();
+
+    //HERE
 }
