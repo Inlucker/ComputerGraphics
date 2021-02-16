@@ -22,6 +22,17 @@ public:
     int y[MAX_POINT_NUMBER];
     int x_rez[TRIANGLE_POINTS_NUMBER];
     int y_rez[TRIANGLE_POINTS_NUMBER];
+
+    int rez_x1;
+    int rez_y1;
+    int rez_x2;
+    int rez_y2;
+    int rez_x3;
+    int rez_y3;
+
+    int id1;
+    int id2;
+    int id3;
 };
 
 #endif // MYGRAPHICSVIEW_H

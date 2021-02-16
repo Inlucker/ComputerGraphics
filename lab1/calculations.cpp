@@ -87,9 +87,11 @@ int get_max_dif(pair<int, int> *mn, int mn_size, int cur_ids[THREE])
     }
 
     rez = max - min;
-
+    cout << counter[0] << "; " << counter[1] << "; " << counter[2] << "; " << counter[3] << "; " << counter[4] << "; " << counter[5] << "; " << endl;
     return rez;
 }
+
+
 
 int cosoe_proizv(int x1, int x2, int y1, int y2)
 {

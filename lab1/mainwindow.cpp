@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
     for (int i = 0; i < ui->tableWidget->rowCount(); i++)
         for (int j = 0; j < ui->tableWidget->columnCount(); j++)
         {
-            QTableWidgetItem *itm = new QTableWidgetItem(tr("%1").arg((i + 1)*6));
+            QTableWidgetItem *itm = new QTableWidgetItem(tr("%1").arg((rand() % 100 + 1)*5));
 
             ui->tableWidget->setItem(i, j, itm);
         }
@@ -42,12 +42,13 @@ void MainWindow::on_enterDotsNumberBtn_clicked()
     {
         ui->tableWidget->setRowCount(tmp);
         for (int i = 0; i < ui->tableWidget->rowCount(); i++)
-            for (int j = 0; j < ui->tableWidget->columnCount(); j++)
-            {
-                QTableWidgetItem *itm = new QTableWidgetItem(tr("%1").arg((i + 1)*4));
+        {
+            QTableWidgetItem *itm_x = new QTableWidgetItem(tr("%1").arg((rand() % 100 + 1)*5));
+            ui->tableWidget->setItem(i, 0, itm_x);
 
-                ui->tableWidget->setItem(i, j, itm);
-            }
+            QTableWidgetItem *itm_y = new QTableWidgetItem(tr("%1").arg((rand() % 100 + 1)*5));
+            ui->tableWidget->setItem(i, 1, itm_y);
+        }
         //ui->tableWidget->setColumnCount(2);
     }
     else
@@ -58,6 +59,7 @@ void MainWindow::on_enterDotsNumberBtn_clicked()
 
 void MainWindow::on_outputBtn_clicked()
 {
+    pair<int, int> dots[ui->tableWidget->rowCount()];
     myPicture->clearPoints();
     for (int i = 0; i < ui->tableWidget->rowCount(); i++)
     {
@@ -74,6 +76,8 @@ void MainWindow::on_outputBtn_clicked()
             QPen penBlack(Qt::black); // Задаём чёрную кисть
             myPicture->x[i] = x;
             myPicture->y[i] = y;
+            dots[i].first = x;
+            dots[i].second = y;
         }
         else
         {
@@ -82,7 +86,45 @@ void MainWindow::on_outputBtn_clicked()
         }
     }
 
-    myPicture->update();
+    //here
 
-    //HERE
+    int max_dif = -1;
+    /*int rez_x1;
+    int rez_y1;
+    int rez_x2;
+    int rez_y2;
+    int rez_x3;
+    int rez_y3;*/
+
+    int c = 0;
+    for (int i = 0; i < ui->tableWidget->rowCount() - 2; i++)
+    {
+        for (int j = i + 1; j < ui->tableWidget->rowCount() - 1; j++)
+        {
+            for (int k = j + 1; k < ui->tableWidget->rowCount(); k++)
+            {
+                int cur_ids[THREE] = {i, j , k};
+                int tmp = get_max_dif(dots, ui->tableWidget->rowCount(), cur_ids);
+                c++;
+                cout << "i = " << i << "; j = "<< j << "; k = " << k << "; c = " << c << "; tmp = " << tmp << endl;
+                if (tmp > max_dif)
+                {
+                    max_dif = tmp;
+
+                    myPicture->rez_x1 = dots[i].first;
+                    myPicture->rez_y1 = dots[i].second;
+                    myPicture->rez_x2 = dots[j].first;
+                    myPicture->rez_y2 = dots[j].second;
+                    myPicture->rez_x3 = dots[k].first;
+                    myPicture->rez_y3 = dots[k].second;
+
+                    myPicture->id1 = i + 1;
+                    myPicture->id2 = j + 1;
+                    myPicture->id3 = k + 1;
+                }
+            }
+        }
+    }
+    cout << max_dif << endl;
+    myPicture->update();
 }

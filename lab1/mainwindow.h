@@ -9,6 +9,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsItemGroup>
 #include <QTimer>
+#include <random>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
