@@ -3,9 +3,13 @@
 
 #include <QGraphicsView>
 #include <QWidget>
+#include <map>
+
+using namespace std;
 
 #define MAX_POINT_NUMBER 100
 #define TRIANGLE_POINTS_NUMBER 3
+#define HEIGHT 0//(height())
 
 class MyGraphicsView : public QWidget
 {
@@ -18,21 +22,25 @@ protected:
     void paintEvent(QPaintEvent *);
 
 public:
-    int x[MAX_POINT_NUMBER];
-    int y[MAX_POINT_NUMBER];
-    int x_rez[TRIANGLE_POINTS_NUMBER];
-    int y_rez[TRIANGLE_POINTS_NUMBER];
+    pair<int, int> *points_mn = NULL;
+    int points_number = -1;
+    //int x[MAX_POINT_NUMBER];
+    //int y[MAX_POINT_NUMBER];
+    /*int x_rez[TRIANGLE_POINTS_NUMBER];
+    int y_rez[TRIANGLE_POINTS_NUMBER];*/
 
-    int rez_x1;
-    int rez_y1;
-    int rez_x2;
-    int rez_y2;
-    int rez_x3;
-    int rez_y3;
+    bool rez = false;
 
-    int id1;
-    int id2;
-    int id3;
+    int rez_x1 = 0;
+    int rez_y1 = 0;
+    int rez_x2 = 0;
+    int rez_y2 = 0;
+    int rez_x3 = 0;
+    int rez_y3 = 0;
+
+    int id1 = -1;
+    int id2 = -2;
+    int id3 = -3;
 
 private:
     QPainter painter;

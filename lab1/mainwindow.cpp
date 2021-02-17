@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
     for (int i = 0; i < ui->tableWidget->rowCount(); i++)
         for (int j = 0; j < ui->tableWidget->columnCount(); j++)
         {
-            QTableWidgetItem *itm = new QTableWidgetItem(tr("%1").arg((rand() % 100 + 1)*5));
+            QTableWidgetItem *itm = new QTableWidgetItem(tr("%1").arg((rand() % 100 - 50)*5));
 
             ui->tableWidget->setItem(i, j, itm);
         }
@@ -49,10 +49,10 @@ void MainWindow::on_enterDotsNumberBtn_clicked()
         {
             if (i > cur_dots_number - 1)
             {
-                QTableWidgetItem *itm_x = new QTableWidgetItem(tr("%1").arg((rand() % 100 + 1)*5));
+                QTableWidgetItem *itm_x = new QTableWidgetItem(tr("%1").arg((rand() % 100 - 50)*5));
                 ui->tableWidget->setItem(i, 0, itm_x);
 
-                QTableWidgetItem *itm_y = new QTableWidgetItem(tr("%1").arg((rand() % 100 + 1)*5));
+                QTableWidgetItem *itm_y = new QTableWidgetItem(tr("%1").arg((rand() % 100 - 50)*5));
                 ui->tableWidget->setItem(i, 1, itm_y);
             }
         }
@@ -89,8 +89,6 @@ void MainWindow::on_outputBtn_clicked()
         if (xIsInt && yIsInt)
         {
             QPen penBlack(Qt::black); // Задаём чёрную кисть
-            myPicture->x[i] = x;
-            myPicture->y[i] = y;
             dots[i].first = x;
             dots[i].second = y;
         }
@@ -101,6 +99,14 @@ void MainWindow::on_outputBtn_clicked()
             return;
         }
     }
+
+    myPicture->points_mn = new pair<int, int> [cur_dots_number];
+    for (int i = 0; i < cur_dots_number; i++)
+    {
+        myPicture->points_mn[i] = dots[i];
+    }
+    myPicture->points_number = cur_dots_number;
+
 
     //here
 
@@ -170,6 +176,7 @@ void MainWindow::on_outputBtn_clicked()
     }
     else
     {
+        myPicture->rez = true;
         ui->result_label->setText(tr("Максимальная разница кол-ва точек в треугольниках образованных медианами: %1\n"
         "Точки образующие результирующий треугольник: #%2 (%3; %4)    #%5 (%6; %7)    #%8 (%9; %10)").
                                   arg(max_dif).
