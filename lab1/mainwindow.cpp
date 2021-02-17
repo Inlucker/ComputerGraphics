@@ -96,6 +96,7 @@ void MainWindow::on_outputBtn_clicked()
         }
         else
         {
+            ui->result_label->setText("Некорректные исходные данные");
             QMessageBox::information(this, "Error", "Все координаты должны быть целыми числами");
             return;
         }
@@ -175,5 +176,41 @@ void MainWindow::on_outputBtn_clicked()
                                   arg(myPicture->id1).arg(myPicture->rez_x1).arg(myPicture->rez_y1).
                                   arg(myPicture->id2).arg(myPicture->rez_x2).arg(myPicture->rez_y2).
                                   arg(myPicture->id3).arg(myPicture->rez_x3).arg(myPicture->rez_y3));
+    }
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Delete)
+    {
+        QModelIndexList selectedRows = ui->tableWidget->selectionModel()->selectedRows();
+        while (!selectedRows.empty())
+        {
+            ui->tableWidget->removeRow(selectedRows[0].row());
+            selectedRows = ui->tableWidget->selectionModel()->selectedRows();
+        }
+        cur_dots_number = ui->tableWidget->rowCount();
+    }
+    else if (event->key() == 16777220) //Qt::Key_Enter) //61 +
+    {
+        if (cur_dots_number < MAX_POINT_NUMBER)
+        {
+            ui->tableWidget->setRowCount(cur_dots_number + 1);
+            QTableWidgetItem *itm_x = new QTableWidgetItem(tr("%1").arg((rand() % 100 + 1)*5));
+            ui->tableWidget->setItem(cur_dots_number, 0, itm_x);
+
+            QTableWidgetItem *itm_y = new QTableWidgetItem(tr("%1").arg((rand() % 100 + 1)*5));
+            ui->tableWidget->setItem(cur_dots_number, 1, itm_y);
+            cur_dots_number++;
+            ui->tableWidget->scrollToBottom();
+        }
+        else
+        {
+            QMessageBox::information(this, "Error", tr("Максимальное кол-во точек %1.\nНельзя ввести больше").arg(MAX_POINT_NUMBER));
+        }
+    }
+    else
+    {
+        cout << event->key() << endl;
     }
 }

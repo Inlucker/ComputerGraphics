@@ -9,6 +9,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsItemGroup>
 #include <QTimer>
+#include <QKeyEvent>
 #include <random>
 
 QT_BEGIN_NAMESPACE
@@ -36,5 +37,8 @@ private:
     int cur_dots_number;
 
     void deleteItemsFromGroup(QGraphicsItemGroup *group_1);
+
+protected:
+   virtual void keyPressEvent(QKeyEvent *event);
 };
 #endif // MAINWINDOW_H
