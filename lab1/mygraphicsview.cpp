@@ -135,7 +135,14 @@ void MyGraphicsView::paintEvent(QPaintEvent *)
     for (int i = 0; i < points_number; i++)
     {
         painter.drawEllipse(QPointF(points_mn[i].first * k, HEIGHT - points_mn[i].second * k), 2, 2);
-        //cout << points_mn[i].first * k << " " << HEIGHT - points_mn[i].second * k << endl;
+        //NAME ALL DOTS
+        /*painter.setFont(QFont("Calibri", 10, QFont::Bold));
+        if (i + 1 != id1 && i + 1 != id2 && i + 1 != id3)
+        {
+            painter.drawText(QRect(points_mn[i].first * k - 50, (HEIGHT - points_mn[i].second) * k - 10 - 12 , 100, 20), Qt::AlignCenter,
+                             tr("#%1 (%2; %3)").arg(i + 1).arg(points_mn[i].first).arg(points_mn[i].second));
+            //cout << points_mn[i].first * k << " " << HEIGHT - points_mn[i].second * k << endl;
+        }*/
     }
 
     if (rez)
