@@ -203,10 +203,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         if (cur_dots_number < MAX_POINT_NUMBER)
         {
             ui->tableWidget->setRowCount(cur_dots_number + 1);
-            QTableWidgetItem *itm_x = new QTableWidgetItem(tr("%1").arg((rand() % 100 + 1)*5));
+            QTableWidgetItem *itm_x = new QTableWidgetItem(tr("%1").arg((rand() % 100 - 50)*5));
             ui->tableWidget->setItem(cur_dots_number, 0, itm_x);
 
-            QTableWidgetItem *itm_y = new QTableWidgetItem(tr("%1").arg((rand() % 100 + 1)*5));
+            QTableWidgetItem *itm_y = new QTableWidgetItem(tr("%1").arg((rand() % 100 - 50)*5));
             ui->tableWidget->setItem(cur_dots_number, 1, itm_y);
             cur_dots_number++;
             ui->tableWidget->scrollToBottom();
