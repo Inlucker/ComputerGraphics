@@ -33,6 +33,9 @@ public:
     int id1;
     int id2;
     int id3;
+
+private:
+    QPainter painter;
 };
 
 #endif // MYGRAPHICSVIEW_H

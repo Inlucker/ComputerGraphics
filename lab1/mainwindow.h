@@ -33,6 +33,8 @@ private:
 
     MyGraphicsView *myPicture;
 
+    int cur_dots_number;
+
     void deleteItemsFromGroup(QGraphicsItemGroup *group_1);
 };
 #endif // MAINWINDOW_H

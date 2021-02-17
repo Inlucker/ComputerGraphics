@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1033</width>
-    <height>606</height>
+    <width>922</width>
+    <height>641</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -78,11 +78,24 @@
      <rect>
       <x>310</x>
       <y>10</y>
-      <width>711</width>
+      <width>601</width>
       <height>551</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout"/>
+   </widget>
+   <widget class="QLabel" name="result_label">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>570</y>
+      <width>901</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -90,7 +103,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1033</width>
+     <width>922</width>
      <height>20</height>
     </rect>
    </property>

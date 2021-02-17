@@ -8,11 +8,16 @@ int get_max_dif(pair<int, int> *mn, int mn_size, int cur_ids[THREE])
     cur[0].first = mn[cur_ids[0]].first;
     cur[0].second = mn[cur_ids[0]].second;
     cur[1].first = mn[cur_ids[1]].first;
-    cur[0].second = mn[cur_ids[1]].second;
+    cur[1].second = mn[cur_ids[1]].second;
     cur[2].first = mn[cur_ids[2]].first;
-    cur[0].second = mn[cur_ids[2]].second;
+    cur[2].second = mn[cur_ids[2]].second;
+    //cout << "Cur Dots: " << cur[0].first << " " << cur[0].second << " " << cur[1].first << " " << cur[1].second << " " << cur[2].first << " " << cur[2].second << endl;
+
+    if (cosoe_proizv(cur[1].first - cur[0].first, cur[2].first - cur[0].first, cur[1].second - cur[0].second, cur[2].second - cur[0].second) == 0)
+        return rez;
 
     pair<int, int> center = make_pair((cur[0].first + cur[1].first + cur[2].first) / 3, (cur[0].second + cur[1].second + cur[2].second) / 3);
+    //cout << "Center: " << center.first << " " << center.second << endl;
 
     pair<int, int> medians[THREE] =
     {
@@ -20,6 +25,7 @@ int get_max_dif(pair<int, int> *mn, int mn_size, int cur_ids[THREE])
         make_pair((cur[1].first + cur[2].first) / 2, (cur[1].second + cur[2].second) / 2),
         make_pair((cur[2].first + cur[0].first) / 2, (cur[2].second + cur[0].second) / 2)
     };
+    //cout << "Medians: " << medians[0].first << " " << medians[0].second << " " << medians[1].first << " " << medians[1].second << " " << medians[2].first << " " << medians[2].second << endl;
 
     int counter[6] = {0, 0, 0, 0, 0, 0};
 
@@ -87,7 +93,7 @@ int get_max_dif(pair<int, int> *mn, int mn_size, int cur_ids[THREE])
     }
 
     rez = max - min;
-    cout << counter[0] << "; " << counter[1] << "; " << counter[2] << "; " << counter[3] << "; " << counter[4] << "; " << counter[5] << "; " << endl;
+    //cout << counter[0] << "; " << counter[1] << "; " << counter[2] << "; " << counter[3] << "; " << counter[4] << "; " << counter[5] << "; " << endl;
     return rez;
 }
 

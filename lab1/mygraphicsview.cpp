@@ -33,7 +33,7 @@ void MyGraphicsView::clearPoints()
 
 void MyGraphicsView::paintEvent(QPaintEvent *)
 {
-    QPainter painter; //создание рисовальщика
+    //создание рисовальщика
     painter.begin(this); //захват контекста
 
 
@@ -48,14 +48,14 @@ void MyGraphicsView::paintEvent(QPaintEvent *)
     for (int i = 0; i < MAX_POINT_NUMBER; i++)
     {
         QRect rect(x[i] - 2, height() - y[i] - 2, 4, 4);
-        if (x[i] && y[i] >= 0)
+        if (x[i] >= 0 && y[i] >= 0)
         {
             painter.drawEllipse(rect);
             //painter.drawEllipse(x[i] - 2, height() - y[i] - 2, 4, 4);
         }
     }
 
-    if (rez_x1 > 0 && rez_y1 > 0 && rez_x2 > 0 && rez_y2 > 0 && rez_x3 > 0 && rez_y3 > 0)
+    if (rez_x1 >= 0 && rez_y1 >= 0 && rez_x2 >= 0 && rez_y2 >= 0 && rez_x3 >= 0 && rez_y3 >= 0)
     {
         //Triangle
         painter.drawLine(rez_x1, height() - rez_y1, rez_x2, height() - rez_y2);
