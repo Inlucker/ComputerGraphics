@@ -95,7 +95,7 @@ void MainWindow::on_outputBtn_clicked()
         else
         {
             ui->result_label->setText("Некорректные исходные данные");
-            QMessageBox::information(this, "Error", "Все координаты должны быть целыми числами");
+            QMessageBox::information(this, "Error", "Все координаты должны быть целыми числами в пределах значений int");
             return;
         }
     }

@@ -48,6 +48,25 @@ void MyGraphicsView::paintEvent(QPaintEvent *)
 {
     //создание рисовальщика
     painter.begin(this); //захват контекста
+
+    //Paint Ox
+    painter.drawLine(45, height() / 2, width() - 45, height() / 2);
+    painter.drawLine(width() - 45, height() / 2, width() - 45 - 10, height() / 2 - 5);
+    painter.drawLine(width() - 45, height() / 2, width() - 45 - 10, height() / 2 + 5);
+    painter.drawLine(width() - 45 - 10, height() / 2 - 5, width() - 45 - 10, height() / 2 + 5);
+
+    painter.setFont(QFont("Calibri", 20, QFont::Bold));
+    painter.drawText(QRect(width() - 45, height() / 2, 20, 20), Qt::AlignCenter, "X");
+
+    //Paint Oy
+    painter.drawLine(width() / 2, 20, width() / 2, height() - 20);
+    painter.drawLine(width() / 2, 20, width() / 2 - 5, 20 + 10);
+    painter.drawLine(width() / 2, 20, width() / 2 + 5, 20 + 10);
+    painter.drawLine(width() / 2 - 5, 20 + 10, width() / 2 + 5, 20 + 10);
+
+    painter.drawText(QRect(width() / 2, 20 - 15, 20, 20), Qt::AlignCenter, "Y");
+
+
     double x_center = width() / 2;
     double y_center = height() / 2;
     //cout << x_center << " " << y_center << endl;
@@ -138,11 +157,12 @@ void MyGraphicsView::paintEvent(QPaintEvent *)
         painter.drawEllipse(QPointF(rez_x2 * k, HEIGHT - rez_y2 * k), 4, 4);
         painter.drawEllipse(QPointF(rez_x3 * k, HEIGHT - rez_y3 * k), 4, 4);
 
-        QRect rect(rez_x1 * k - 40, (HEIGHT - rez_y1) * k - 10 - 12 , 80, 20);
+        painter.setFont(QFont("Calibri", 10, QFont::Bold));
+        QRect rect(rez_x1 * k - 50, (HEIGHT - rez_y1) * k - 10 - 12 , 100, 20);
         painter.drawText(rect, Qt::AlignCenter, tr("#%1 (%2; %3)").arg(id1).arg(rez_x1).arg(rez_y1));
-        rect = QRect(rez_x2 * k - 40, (HEIGHT - rez_y2) * k - 10 - 12, 80, 20);
+        rect = QRect(rez_x2 * k - 50, (HEIGHT - rez_y2) * k - 10 - 12, 100, 20);
         painter.drawText(rect, Qt::AlignCenter, tr("#%1 (%2; %3)").arg(id2).arg(rez_x2).arg(rez_y2));
-        rect = QRect(rez_x3 * k - 40, (HEIGHT - rez_y3) * k - 10 - 12, 80, 20);
+        rect = QRect(rez_x3 * k - 50, (HEIGHT - rez_y3) * k - 10 - 12, 100, 20);
         painter.drawText(rect, Qt::AlignCenter, tr("#%1 (%2; %3)").arg(id3).arg(rez_x3).arg(rez_y3));
     }
 
