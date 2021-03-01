@@ -3,6 +3,7 @@
 
 #include "canvas.h"
 #include <QMainWindow>
+#include <QMessageBox>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -15,6 +16,11 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+private slots:
+    void on_create_btn_clicked();
+
+    void on_move_btn_clicked();
 
 private:
     Ui::MainWindow *ui;

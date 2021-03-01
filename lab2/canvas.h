@@ -21,9 +21,11 @@ protected:
     void paintEvent(QPaintEvent *);
 
 public:
-    double x = 0;
-    double y = 0;
-    int size = 5;
+    float float_x = 0;
+    float float_y = 0;
+    int x = 0;
+    int y = 0;
+    float size = 1 * 1.5;
 
 private:
     QPainter painter;

@@ -16,15 +16,15 @@ void Canvas::paintEvent(QPaintEvent *event)
     //Создание рисовальщика
     painter.begin(this); //Захват контекста
 
-    double x_center = width() / 2;
-    double y_center = height() / 2;
+    float x_center = width() / 2;
+    float y_center = height() / 2;
     //cout << x_center << " " << y_center << endl;
     //cout << this->width() << " " << this->height() << endl;
 
     painter.translate(x_center, y_center);
 
     //Set radius by size
-    int rad = size * 5;
+    int rad = size * 25;
 
     //Set head params
     int head_center_x = x;
@@ -35,9 +35,9 @@ void Canvas::paintEvent(QPaintEvent *event)
     painter.drawEllipse(head_center, head_size, head_size);
 
     //Set ears params
-    int ear_offset = size;
-    int ear_height = size * 3;
-    int ear_width = size;
+    int ear_offset = size * 5;
+    int ear_height = size * 15;
+    int ear_width = size * 7;
     int delta_y1 = int(rad - sqrt(pow(rad, 2) - pow(ear_offset, 2)));
     int delta_y2 = int(rad - sqrt(pow(rad, 2) - pow(ear_width * 2 + ear_offset, 2)));
     QPoint ear11 = QPoint(head_center_x - ear_offset, head_center_y - rad + delta_y1);
@@ -54,15 +54,18 @@ void Canvas::paintEvent(QPaintEvent *event)
     painter.drawLine(ear22, ear23);
 
     //Set eyes params
-    QPoint eye_center1 = QPoint(x - size * 2, y - rad * 2 - size);
-    QPoint eye_center2 = QPoint(x + size * 2, y - rad * 2 - size);
+    int eye_width = size * 10;
+    int eye_height = size * 5;
+    int eye_size = size * 5;
+    QPoint eye_center1 = QPoint(head_center_x - eye_width, head_center_y - eye_height);
+    QPoint eye_center2 = QPoint(head_center_x + eye_width, head_center_y - eye_height);
     //Draw eyes
-    painter.drawEllipse(eye_center1, size, size);
-    painter.drawEllipse(eye_center2, size, size);
+    painter.drawEllipse(eye_center1, eye_size, eye_size);
+    painter.drawEllipse(eye_center2, eye_size, eye_size);
 
     //Set whiskers params
-    int len = size * 7;
-    int wisk_height = size * 2;
+    int len = size * 35;
+    int wisk_height = size * 10;
     int wisk_center_x = x;
     int wisk_center_y = y - rad * 2 + wisk_height;
     QPoint wisk_center = QPoint(wisk_center_x, wisk_center_y);
