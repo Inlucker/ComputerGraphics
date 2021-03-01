@@ -14,8 +14,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     canvas = new Canvas();
     ui->gridLayout->addWidget(canvas);
-    //canvas->setStyleSheet("background-color:white;");
     //canvas->show();
+    //canvas->update();
 }
 
 MainWindow::~MainWindow()
