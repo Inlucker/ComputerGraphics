@@ -8,6 +8,8 @@
 #include <math.h>
 #include <map>
 
+#define GAP 100
+
 using namespace std;
 
 class Canvas : public QWidget
@@ -28,18 +30,21 @@ protected:
     void paintEvent(QPaintEvent *);
 
 public:
-    float float_x = 0;
-    float float_y = 0;
-    int x = 0;
-    int y = 0;
-    //float size = 1 * 1.5;
-    float size_x = 1;
-    float size_y = 1;
+    float float_x[GAP];
+    float float_y[GAP];
+    int x[GAP];
+    int y[GAP];
+    float size_x[GAP];
+    float size_y[GAP];
 
-    float angle = 0;
+    float angle[GAP];
     float radians = 0;
-    float rotate_center_x = 0;
-    float rotate_center_y = 0;
+    float rotate_center_x[GAP];
+    float rotate_center_y[GAP];
+    int cur_id = 0;
+    int first_id = 0;
+
+    bool is_visible = false;
 
 private:
     QPainter painter;

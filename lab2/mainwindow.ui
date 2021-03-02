@@ -193,7 +193,7 @@
       <x>620</x>
       <y>400</y>
       <width>161</width>
-      <height>51</height>
+      <height>71</height>
      </rect>
     </property>
     <property name="text">
@@ -454,6 +454,19 @@
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>620</x>
+      <y>480</y>
+      <width>161</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Отменить действие</string>
     </property>
    </widget>
   </widget>

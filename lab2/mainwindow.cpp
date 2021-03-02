@@ -33,7 +33,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->rotate_angle->setText("90");
 
     //ui->coords_label->setText(tr("X: %1 Y: %2\nKx: %3 Ky: %4").arg(canvas->float_x).arg(canvas->float_y * (-1)).arg(canvas->size_x).arg(canvas->size_y));
-    ui->coords_label->setText(tr("X: %1 Y: %2\nKx: %3 Ky: %4\nAngle: %5").arg(canvas->float_x).arg(canvas->float_y).arg(canvas->size_x).arg(canvas->size_y).arg(canvas->angle));
+    ui->coords_label->setText(tr("Текущее состояние:\nX: %1 Y: %2\nKx: %3 Ky: %4\nУгол: %5")
+                              .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
+                              .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));
 }
 
 MainWindow::~MainWindow()
@@ -50,14 +52,17 @@ void MainWindow::on_create_btn_clicked()
     float y = ui->y_start->text().toFloat(&isYFloat);
     if (isXFloat && isYFloat)
     {
-        canvas->float_x = x;
-        //canvas->float_y = y * (-1);
-        canvas->float_y = y;
-        canvas->x = canvas->float_x;
-        canvas->y = canvas->float_y;
-        canvas->size_x = 1;
-        canvas->size_y = 1;
-        canvas->angle = 0;
+        canvas->cur_id = 0;
+        canvas->first_id = 0;
+        canvas->float_x[canvas->cur_id] = x;
+        canvas->float_y[canvas->cur_id] = y;
+        canvas->x[canvas->cur_id] = canvas->float_x[canvas->cur_id];
+        canvas->y[canvas->cur_id] = canvas->float_y[canvas->cur_id];
+        canvas->size_x[canvas->cur_id] = 1;
+        canvas->size_y[canvas->cur_id] = 1;
+        canvas->angle[canvas->cur_id] = 0;
+        canvas->rotate_center_x[canvas->cur_id] = 0;
+        canvas->rotate_center_y[canvas->cur_id] = 0;
         canvas->update();
     }
     else if (!isXFloat && !isYFloat)
@@ -73,7 +78,9 @@ void MainWindow::on_create_btn_clicked()
         QMessageBox::information(this, "Error", "Y должен быть вещественным числом");
     }
     //ui->coords_label->setText(tr("X: %1 Y: %2\nKx: %3 Ky: %4").arg(canvas->float_x).arg(canvas->float_y * (-1)).arg(canvas->size_x).arg(canvas->size_y));
-    ui->coords_label->setText(tr("X: %1 Y: %2\nKx: %3 Ky: %4\nAngle: %5").arg(canvas->float_x).arg(canvas->float_y).arg(canvas->size_x).arg(canvas->size_y).arg(canvas->angle));
+    ui->coords_label->setText(tr("Текущее состояние:\nX: %1 Y: %2\nKx: %3 Ky: %4\nУгол: %5")
+                              .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
+                              .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));
 }
 
 void MainWindow::on_move_btn_clicked()
@@ -84,11 +91,25 @@ void MainWindow::on_move_btn_clicked()
     float y = ui->y_move->text().toFloat(&isYFloat);
     if (isXFloat && isYFloat)
     {
-        canvas->float_x += x;
-        //canvas->float_y += y * (-1);
-        canvas->float_y += y;
-        canvas->x = canvas->float_x;
-        canvas->y = canvas->float_y;
+        int prev_id = canvas->cur_id;
+        canvas->cur_id += 1;
+        if (canvas->cur_id >= GAP)
+        {
+            canvas->cur_id = 0;
+        }
+        if (canvas->cur_id == canvas->first_id)
+            canvas->first_id++;
+
+        canvas->float_x[canvas->cur_id] = canvas->float_x[prev_id] + x;
+        canvas->float_y[canvas->cur_id] = canvas->float_y[prev_id] + y;
+        canvas->x[canvas->cur_id] = canvas->float_x[canvas->cur_id];
+        canvas->y[canvas->cur_id] = canvas->float_y[canvas->cur_id];
+        //Без изменений
+        canvas->size_x[canvas->cur_id] = canvas->size_x[prev_id];
+        canvas->size_y[canvas->cur_id] = canvas->size_y[prev_id];
+        canvas->angle[canvas->cur_id] = canvas->angle[prev_id];
+        canvas->rotate_center_x[canvas->cur_id] = canvas->rotate_center_x[prev_id];
+        canvas->rotate_center_y[canvas->cur_id] = canvas->rotate_center_y[prev_id];
         canvas->update();
     }
     else if (!isXFloat && !isYFloat)
@@ -104,7 +125,9 @@ void MainWindow::on_move_btn_clicked()
         QMessageBox::information(this, "Error", "Y должен быть вещественным числом");
     }
     //ui->coords_label->setText(tr("X: %1 Y: %2\nKx: %3 Ky: %4").arg(canvas->float_x).arg(canvas->float_y * (-1)).arg(canvas->size_x).arg(canvas->size_y));
-    ui->coords_label->setText(tr("X: %1 Y: %2\nKx: %3 Ky: %4").arg(canvas->float_x).arg(canvas->float_y).arg(canvas->size_x).arg(canvas->size_y));
+    ui->coords_label->setText(tr("Текущее состояние:\nX: %1 Y: %2\nKx: %3 Ky: %4\nУгол: %5")
+                              .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
+                              .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));
 }
 
 void MainWindow::on_change_size_btn_clicked()
@@ -120,13 +143,25 @@ void MainWindow::on_change_size_btn_clicked()
     float ky = ui->y_size->text().toFloat(&isKyFloat);
     if (isXcFloat && isYcFloat &&isKxFloat && isKyFloat)
     {
-        canvas->float_x = kx * canvas->float_x + xc * (1 - kx);
-        //canvas->float_y = (ky * canvas->float_y * (-1) + yc * (1 - ky)) * (-1);
-        canvas->float_y = ky * canvas->float_y + yc * (1 - ky);
-        canvas->x = canvas->float_x;
-        canvas->y = canvas->float_y;
-        canvas->size_x *= kx;
-        canvas->size_y *= ky;
+        int prev_id = canvas->cur_id;
+        canvas->cur_id += 1;
+        if (canvas->cur_id >= GAP)
+        {
+            canvas->cur_id = 0;
+        }
+        if (canvas->cur_id == canvas->first_id)
+            canvas->first_id++;
+
+        canvas->float_x[canvas->cur_id] = kx * canvas->float_x[prev_id] + xc * (1 - kx);
+        canvas->float_y[canvas->cur_id] = ky * canvas->float_y[prev_id] + yc * (1 - ky);
+        canvas->x[canvas->cur_id] = canvas->float_x[canvas->cur_id];
+        canvas->y[canvas->cur_id] = canvas->float_y[canvas->cur_id];
+        canvas->size_x[canvas->cur_id] = canvas->size_x[prev_id] * kx;
+        canvas->size_y[canvas->cur_id] = canvas->size_y[prev_id] * ky;
+        //Без изменений
+        canvas->angle[canvas->cur_id] = canvas->angle[prev_id];
+        canvas->rotate_center_x[canvas->cur_id] = canvas->rotate_center_x[prev_id];
+        canvas->rotate_center_y[canvas->cur_id] = canvas->rotate_center_y[prev_id];
         canvas->update();
     }
     else if (!isKxFloat || !isKyFloat|| isXcFloat || isYcFloat)
@@ -142,7 +177,9 @@ void MainWindow::on_change_size_btn_clicked()
         QMessageBox::information(this, "Error", "Ky должен быть вещественным числом");
     }*/
     //ui->coords_label->setText(tr("X: %1 Y: %2\nKx: %3 Ky: %4").arg(canvas->float_x).arg(canvas->float_y * (-1)).arg(canvas->size_x).arg(canvas->size_y));
-    ui->coords_label->setText(tr("X: %1 Y: %2\nKx: %3 Ky: %4\nAngle: %5").arg(canvas->float_x).arg(canvas->float_y).arg(canvas->size_x).arg(canvas->size_y).arg(canvas->angle));
+    ui->coords_label->setText(tr("Текущее состояние:\nX: %1 Y: %2\nKx: %3 Ky: %4\nУгол: %5")
+                              .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
+                              .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));
 }
 
 void MainWindow::on_rotate_btn_clicked()
@@ -156,17 +193,33 @@ void MainWindow::on_rotate_btn_clicked()
     float angle = ui->rotate_angle->text().toFloat(&isAngleFloat);
     if (isXcFloat && isYcFloat && isAngleFloat)
     {
-        canvas->angle += angle;
-        if (abs(canvas->angle - 360) <= EPS || canvas->angle > 360)
+        int prev_id = canvas->cur_id;
+        canvas->cur_id += 1;
+        if (canvas->cur_id >= GAP)
+        {
+            canvas->cur_id = 0;
+        }
+        if (canvas->cur_id == canvas->first_id)
+            canvas->first_id++;
+
+        canvas->angle[canvas->cur_id] = canvas->angle[prev_id] + angle;
+        if (abs(canvas->angle[canvas->cur_id] - 360) <= EPS || canvas->angle[canvas->cur_id] > 360)
         {
             //cout << int(canvas->angle / 360) * 360 << endl;
-            canvas->angle -= int(canvas->angle / 360) * 360;
+            canvas->angle[canvas->cur_id] -= int(canvas->angle[canvas->cur_id] / 360) * 360;
         }
         //cout << abs(canvas->angle - int(canvas->angle / 360) * 360) << " " << EPS << endl;
-        if (abs(canvas->angle - int(canvas->angle / 360) * 360) <= EPS)
-            canvas->angle = 0;
-        canvas->rotate_center_x = xc;
-        canvas->rotate_center_y = yc;
+        if (abs(canvas->angle[canvas->cur_id] - int(canvas->angle[canvas->cur_id] / 360) * 360) <= EPS)
+            canvas->angle[canvas->cur_id] = 0;
+        canvas->rotate_center_x[canvas->cur_id] = xc;
+        canvas->rotate_center_y[canvas->cur_id] = yc;
+        //Без изменений
+        canvas->float_x[canvas->cur_id] = canvas->float_x[prev_id];
+        canvas->float_y[canvas->cur_id] = canvas->float_y[prev_id];
+        canvas->x[canvas->cur_id] = canvas->float_x[canvas->cur_id];
+        canvas->y[canvas->cur_id] = canvas->float_y[canvas->cur_id];
+        canvas->size_x[canvas->cur_id] = canvas->size_x[prev_id];
+        canvas->size_y[canvas->cur_id] = canvas->size_y[prev_id];
         canvas->update();
     }
     if (!isXcFloat || !isYcFloat)
@@ -177,5 +230,22 @@ void MainWindow::on_rotate_btn_clicked()
     {
         QMessageBox::information(this, "Error", "Угол φ должен быть вещественным числом");
     }
-    ui->coords_label->setText(tr("X: %1 Y: %2\nKx: %3 Ky: %4\nAngle: %5").arg(canvas->float_x).arg(canvas->float_y).arg(canvas->size_x).arg(canvas->size_y).arg(canvas->angle));
+    ui->coords_label->setText(tr("Текущее состояние:\nX: %1 Y: %2\nKx: %3 Ky: %4\nУгол: %5")
+                              .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
+                              .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    if (canvas->cur_id == canvas->first_id)
+    {
+        QMessageBox::information(this, "Error", "Действий не найдено");
+    }
+    else
+    {
+        canvas->cur_id -= 1;
+        if (canvas->cur_id < 0)
+            canvas->cur_id = GAP;
+        canvas->update();
+    }
 }

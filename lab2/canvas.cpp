@@ -6,6 +6,19 @@ Canvas::Canvas()
 {
     //setGeometry(QRect(0, 0, 600, 600));
     setStyleSheet("background-color:white;");
+
+    float_x[0] = 0;
+    float_y[0] = 0;
+    x[0] = 0;
+    y[0] = 0;
+    size_x[0] = 1;
+    size_y[0] = 1;
+
+    angle[0] = 0;
+    rotate_center_x[0] = 0;
+    rotate_center_y[0] = 0;
+    cur_id = 0;
+    first_id = cur_id;
 }
 
 Canvas::~Canvas()
@@ -17,7 +30,7 @@ float Canvas::rotate_x(float x0, float y0)
 {
     //cout << x0 << " " << y0 << " " << x_center << " " << y_center << " " << radians << endl;
     //return x_center + (x - x_center) * cos(radians) + (y - y_center) * sin(radians);
-    float rez = rotate_center_x + (x0 - rotate_center_x) * cos(radians) + (y0 - rotate_center_y) * sin(radians);
+    float rez = rotate_center_x[cur_id] + (x0 - rotate_center_x[cur_id]) * cos(radians) + (y0 - rotate_center_y[cur_id]) * sin(radians);
     //cout << "x1 = " << x_center << " + (" << x0 << " - " << x_center << ") * " << cos(radians) << " + (" << y0 << " - " << y_center << ") * " << sin(radians) << " = " << rez << endl;
     //cout << "x1 = " << x_center << " + (" << y0 << " - " << y_center << ") = " << rez << endl;
     return rez;
@@ -27,7 +40,7 @@ float Canvas::rotate_y(float x0, float y0)
 {
     //cout << x0 << " " << y0 << " " << x_center << " " << y_center << " " << radians << endl;
     //return y_center - (x - x_center) * sin(radians) + (y - y_center) * cos(radians);
-    float rez = rotate_center_y - (x0 - rotate_center_x) * sin(radians) + (y0 - rotate_center_y) * cos(radians);
+    float rez = rotate_center_y[cur_id] - (x0 - rotate_center_x[cur_id]) * sin(radians) + (y0 - rotate_center_y[cur_id]) * cos(radians);
     //cout << "y1 = " << y_center << " - (" << x0 << " - " << x_center << ") * " << sin(radians) << " + (" << y0 << " - " << y_center << ") * " << cos(radians) << " = " << rez << endl;
     //cout << "y1 = " << y_center << " - (" << x0 << " - " << x_center << ") = " << rez << endl;
     return rez;
@@ -94,24 +107,24 @@ void Canvas::paintEvent(QPaintEvent *event)
     //cout << this->width() << " " << this->height() << endl;
 
     painter.translate(x_center, y_center);
-    painter.drawPoint(0, 0);
+    //painter.drawPoint(0, 0); //Проверка центра координат
     //painter.rotate(angle);
 
-    //-----------------------SET PARAMS START-----------------------
+    //-----------------------SET PARAMS START-----------------------//
     //Set radians by angle
-    radians = angle * PI / 180;
+    radians = angle[cur_id] * PI / 180;
     //Set radius by size
-    float rad_x = size_x * 25;
-    float rad_y = size_y * 25;
+    float rad_x = size_x[cur_id] * 25;
+    float rad_y = size_y[cur_id] * 25;
     //Set head params
-    float head_center_x = x;
-    float head_center_y = y - rad_y * 2;
+    float head_center_x = x[cur_id];
+    float head_center_y = y[cur_id] - rad_y * 2;
     int head_size_x = rad_x;
     int head_size_y = rad_y;
     //Set ears params
-    float ear_offset = size_x * 5;
-    float ear_height = size_y * 15;
-    float ear_width = size_x * 7;
+    float ear_offset = size_x[cur_id] * 5;
+    float ear_height = size_y[cur_id] * 15;
+    float ear_width = size_x[cur_id] * 7;
 
     float delta_y1 = sqrt((1 - pow((ear_offset) / rad_x, 2)) * pow(rad_y, 2));
     float delta_y2 = sqrt((1 - pow((ear_width * 2 + ear_offset) / rad_x, 2)) * pow(rad_y, 2));
@@ -148,19 +161,19 @@ void Canvas::paintEvent(QPaintEvent *event)
     ear2_dots[2].setX(x23);
     ear2_dots[2].setY(y23);
     //Set eyes params
-    float eye_width = size_x * 10;
-    float eye_height = size_y * 5;
-    int eye_size_x = size_x * 5;
-    int eye_size_y = size_y * 5;
+    float eye_width = size_x[cur_id] * 10;
+    float eye_height = size_y[cur_id] * 5;
+    int eye_size_x = size_x[cur_id] * 5;
+    int eye_size_y = size_y[cur_id] * 5;
     float eye1_x = head_center_x - eye_width;
     float eye1_y = head_center_y - eye_height;
     float eye2_x = head_center_x + eye_width;
     float eye2_y = head_center_y - eye_height;
     //Set whiskers params
-    float len = size_x * 35;
-    float wisk_height = size_y * 10;
-    float wisk_center_x = x;
-    float wisk_center_y = y - rad_y * 2 + wisk_height;
+    float len = size_x[cur_id] * 35;
+    float wisk_height = size_y[cur_id] * 10;
+    float wisk_center_x = x[cur_id];
+    float wisk_center_y = y[cur_id] - rad_y * 2 + wisk_height;
 
     float wisk_x1 = wisk_center_x - len;
     float wisk_x2 = wisk_center_x + len;
@@ -177,14 +190,14 @@ void Canvas::paintEvent(QPaintEvent *event)
     wiskers_dots[5].setX(wisk_x2); wiskers_dots[5].setY(wisk_y2);
     wiskers_dots[6].setX(wisk_x2); wiskers_dots[6].setY(wisk_y3);
     //Set body params
-    float body_center_x = x;
-    float body_center_y = y + rad_y;
+    float body_center_x = x[cur_id];
+    float body_center_y = y[cur_id] + rad_y;
     int body_width = rad_x;
     int body_height = rad_y * 2;
     QPointF body_center = QPointF(body_center_x, body_center_y);
-    //------------------------SET PARAMS END------------------------
+    //------------------------SET PARAMS END------------------------//
 
-    //-------------------------ROTATE START-------------------------
+    //-------------------------ROTATE START-------------------------//
     //Rotate head
     //rotate(&head_center_x, &head_center_y);
     QPointF head_center = QPointF(head_center_x, head_center_y);
@@ -217,9 +230,9 @@ void Canvas::paintEvent(QPaintEvent *event)
         wiskers_dots[i].setX(tmp_x);
         wiskers_dots[i].setY(tmp_y);
     }
-    //--------------------------ROTATE END--------------------------
+    //--------------------------ROTATE END--------------------------//
 
-    //--------------------------DRAW START--------------------------
+    //--------------------------DRAW START--------------------------//
     //Draw head
     //draw_ellipse(&painter, 0, 0, 100, 150);
     //draw_ellipse(&painter, 100, 50, 100, 150);
@@ -262,28 +275,7 @@ void Canvas::paintEvent(QPaintEvent *event)
     painter.drawEllipse(body_center, body_width, body_height);
 
     painter.restore();*/
-    //---------------------------DRAW END---------------------------
-
-
-    /*pair<float, float> square[4];
-    float a = -100;
-    float b = 100;
-    //float c = (b + a) / 2;
-    square[0] = make_pair(float(a), float(a));
-    square[1] = make_pair(float(b), float(a));
-    square[2] = make_pair(float(b), float(b));
-    square[3] = make_pair(float(a), float(b));
-
-    for (int i = 0; i < 4; i++)
-    {
-        rotate(&square[i].first, &square[i].second);
-    }
-
-    for (int i = 0; i < 3; i++)
-    {
-        painter.drawLine(square[i].first, square[i].second, square[i + 1].first, square[i + 1].second);
-    }
-    painter.drawLine(square[3].first, square[3].second, square[0].first, square[0].second);*/
+    //---------------------------DRAW END---------------------------//
 
     painter.end(); //Освобождение контекста
 }
