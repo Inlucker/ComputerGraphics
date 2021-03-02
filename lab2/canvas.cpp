@@ -53,7 +53,7 @@ void Canvas::paintEvent(QPaintEvent *event)
     //cout << this->width() << " " << this->height() << endl;
 
     painter.translate(x_center, y_center);
-    //painter.drawPoint(0, 0);
+    painter.drawPoint(0, 0);
     //painter.rotate(angle);
 
     //-----------------------SET PARAMS START-----------------------
@@ -145,26 +145,26 @@ void Canvas::paintEvent(QPaintEvent *event)
 
     //-------------------------ROTATE START-------------------------
     //Rotate head
-    rotate(&head_center_x, &head_center_y);
+    ///rotate(&head_center_x, &head_center_y);
     QPointF head_center = QPointF(head_center_x, head_center_y);
     //Rotate ears
     for (int i = 0; i < 3; i++)
     {
         float tmp_x = ear1_dots[i].x();
         float tmp_y = ear1_dots[i].y();
-        rotate(&tmp_x, &tmp_y);
+        ///rotate(&tmp_x, &tmp_y);
         ear1_dots[i].setX(tmp_x);
         ear1_dots[i].setY(tmp_y);
 
         tmp_x = ear2_dots[i].x();
         tmp_y = ear2_dots[i].y();
-        rotate(&tmp_x, &tmp_y);
+        ///rotate(&tmp_x, &tmp_y);
         ear2_dots[i].setX(tmp_x);
         ear2_dots[i].setY(tmp_y);
     }
     //Rotate eyes
-    rotate(&eye1_x, &eye1_y);
-    rotate(&eye2_x, &eye2_y);
+    ///rotate(&eye1_x, &eye1_y);
+    ///rotate(&eye2_x, &eye2_y);
     QPointF eye_center1 = QPointF(eye1_x, eye1_y);
     QPointF eye_center2 = QPointF(eye2_x, eye2_y);
     //Rotate whiskers
@@ -172,7 +172,7 @@ void Canvas::paintEvent(QPaintEvent *event)
     {
         float tmp_x = wiskers_dots[i].x();
         float tmp_y = wiskers_dots[i].y();
-        rotate(&tmp_x, &tmp_y);
+        ///rotate(&tmp_x, &tmp_y);
         wiskers_dots[i].setX(tmp_x);
         wiskers_dots[i].setY(tmp_y);
     }
@@ -180,6 +180,10 @@ void Canvas::paintEvent(QPaintEvent *event)
 
     //--------------------------DRAW START--------------------------
     //Draw head
+    painter.save();
+    painter.translate(rotate_center_x, rotate_center_y);
+    painter.rotate(-angle);
+    painter.translate(-rotate_center_x, -rotate_center_y);
     painter.drawEllipse(head_center, head_size_x, head_size_y);
     //Draw ears
     for (int i = 0; i < 2; i++)
@@ -196,7 +200,13 @@ void Canvas::paintEvent(QPaintEvent *event)
         painter.drawLine(wiskers_dots[0], wiskers_dots[i]);
     }
     //Draw body
+    ///painter.save();
+    ///painter.translate(rotate_center_x, rotate_center_y);
+    ///painter.rotate(-angle);
+    ///painter.translate(-rotate_center_x, -rotate_center_y);
     painter.drawEllipse(body_center, body_width, body_height);
+    painter.restore();
+    //painter.drawEllipse(body_center, body_width, body_height);
     //painter.drawEllipse(QPointF(x, y), rad, rad);
     //painter.drawEllipse(QPointF(x, y + rad * 2), rad, rad);
     //---------------------------DRAW END---------------------------
