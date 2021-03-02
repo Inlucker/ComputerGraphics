@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     myPicture = new MyGraphicsView();
     ui->gridLayout->addWidget(myPicture);
-    //myPicture->setStyleSheet("background-color:white;");
+    myPicture->setStyleSheet("background-color:white;");
 }
 
 MainWindow::~MainWindow()

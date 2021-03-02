@@ -22,6 +22,10 @@ private slots:
 
     void on_move_btn_clicked();
 
+    void on_change_size_btn_clicked();
+
+    void on_rotate_btn_clicked();
+
 private:
     Ui::MainWindow *ui;
 
