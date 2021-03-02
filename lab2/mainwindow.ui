@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>795</width>
-    <height>640</height>
+    <height>670</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -479,8 +479,27 @@
      <height>20</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>Система координат</string>
+    </property>
+    <addaction name="get_coords_info"/>
+    <addaction name="separator"/>
+   </widget>
+   <addaction name="menu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="get_coords_info">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Вывести информацию</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::AboutRole</enum>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

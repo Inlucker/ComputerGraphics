@@ -31,6 +31,8 @@ MainWindow::MainWindow(QWidget *parent)
     /*ui->coords_label->setText(tr("Текущее состояние:\nКоординаты центра X: %1 Y: %2\nКоэф. масшт. Kx: %3 Ky: %4\nУгол: %5")
                                                .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
                                                .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));*/
+
+    connect(ui->get_coords_info, SIGNAL(triggered()), this, SLOT(on_get_coords_info_clicked())); // Обработчик удаления записи
 }
 
 MainWindow::~MainWindow()
@@ -289,3 +291,10 @@ void MainWindow::on_pushButton_clicked()
                               .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
                               .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]).arg(canvas->cur_id).arg(canvas->first_id));*/
 }
+
+void MainWindow::on_get_coords_info_clicked()
+{
+    QMessageBox::information(this, "Информация о системе координат", "Центр данной системы координат находится в центре.\n"
+                                   "Ось Ox направлена вправо, а ось Oy вниз.");
+}
+

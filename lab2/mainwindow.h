@@ -28,6 +28,8 @@ private slots:
 
     void on_pushButton_clicked();
 
+    void on_get_coords_info_clicked();
+
 private:
     Ui::MainWindow *ui;
 
