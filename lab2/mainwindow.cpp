@@ -9,15 +9,11 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    //setStyleSheet("background-color:grey;");
-
     this->setFixedHeight(this->height());
     this->setFixedWidth(this->width());
 
     canvas = new Canvas();
     ui->gridLayout->addWidget(canvas);
-    //canvas->show();
-    //canvas->update();
 
     ui->x_start->setText("0");
     ui->y_start->setText("0");
@@ -25,17 +21,16 @@ MainWindow::MainWindow(QWidget *parent)
     ui->y_move->setText("0");
     ui->x_size_center->setText("0");
     ui->y_size_center->setText("0");
-    ui->x_size->setText("1.2");
+    ui->x_size->setText("1.0");
     ui->y_size->setText("1.0");
 
     ui->x_rotate_center->setText("0");
     ui->y_rotate_center->setText("0");
-    ui->rotate_angle->setText("90");
-
-    //ui->coords_label->setText(tr("X: %1 Y: %2\nKx: %3 Ky: %4").arg(canvas->float_x).arg(canvas->float_y * (-1)).arg(canvas->size_x).arg(canvas->size_y));
-    ui->coords_label->setText(tr("Текущее состояние:\nX: %1 Y: %2\nKx: %3 Ky: %4\nУгол: %5")
-                              .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
-                              .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));
+    ui->rotate_angle->setText("0");
+    ui->coords_label->setText("Текущее состояние:\nИзображение\nне отображается");
+    /*ui->coords_label->setText(tr("Текущее состояние:\nX: %1 Y: %2\nKx: %3 Ky: %4\nУгол: %5")
+                                               .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
+                                               .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));*/
 }
 
 MainWindow::~MainWindow()
@@ -52,17 +47,30 @@ void MainWindow::on_create_btn_clicked()
     float y = ui->y_start->text().toFloat(&isYFloat);
     if (isXFloat && isYFloat)
     {
-        canvas->cur_id = 0;
-        canvas->first_id = 0;
+        int prev_id = canvas->cur_id;
+        canvas->cur_id += 1;
+        if (canvas->cur_id >= GAP)
+        {
+            canvas->cur_id = 0;
+        }
+        if (canvas->cur_id == canvas->first_id)
+        {
+            canvas->first_id++;
+            if (canvas->first_id >= GAP)
+                canvas->first_id = 0;
+        }
+
+
         canvas->float_x[canvas->cur_id] = x;
         canvas->float_y[canvas->cur_id] = y;
         canvas->x[canvas->cur_id] = canvas->float_x[canvas->cur_id];
         canvas->y[canvas->cur_id] = canvas->float_y[canvas->cur_id];
-        canvas->size_x[canvas->cur_id] = 1;
-        canvas->size_y[canvas->cur_id] = 1;
-        canvas->angle[canvas->cur_id] = 0;
-        canvas->rotate_center_x[canvas->cur_id] = 0;
-        canvas->rotate_center_y[canvas->cur_id] = 0;
+        canvas->size_x[canvas->cur_id] = canvas->size_x[prev_id];
+        canvas->size_y[canvas->cur_id] = canvas->size_y[prev_id];
+        canvas->angle[canvas->cur_id] = canvas->angle[prev_id];
+        canvas->rotate_center_x[canvas->cur_id] = canvas->rotate_center_x[prev_id];
+        canvas->rotate_center_y[canvas->cur_id] = canvas->rotate_center_x[prev_id];
+        canvas->is_visible[canvas->cur_id] = true;
         canvas->update();
     }
     else if (!isXFloat && !isYFloat)
@@ -77,10 +85,12 @@ void MainWindow::on_create_btn_clicked()
     {
         QMessageBox::information(this, "Error", "Y должен быть вещественным числом");
     }
-    //ui->coords_label->setText(tr("X: %1 Y: %2\nKx: %3 Ky: %4").arg(canvas->float_x).arg(canvas->float_y * (-1)).arg(canvas->size_x).arg(canvas->size_y));
-    ui->coords_label->setText(tr("Текущее состояние:\nX: %1 Y: %2\nKx: %3 Ky: %4\nУгол: %5")
-                              .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
-                              .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));
+    if (!canvas->is_visible[canvas->cur_id])
+        ui->coords_label->setText("Текущее состояние:\nИзображение\nне отображается");
+    else
+        ui->coords_label->setText(tr("Текущее состояние:\nX: %1 Y: %2\nKx: %3 Ky: %4\nУгол: %5")
+                                               .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
+                                               .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));
 }
 
 void MainWindow::on_move_btn_clicked()
@@ -98,7 +108,11 @@ void MainWindow::on_move_btn_clicked()
             canvas->cur_id = 0;
         }
         if (canvas->cur_id == canvas->first_id)
+        {
             canvas->first_id++;
+            if (canvas->first_id >= GAP)
+                canvas->first_id = 0;
+        }
 
         canvas->float_x[canvas->cur_id] = canvas->float_x[prev_id] + x;
         canvas->float_y[canvas->cur_id] = canvas->float_y[prev_id] + y;
@@ -110,6 +124,7 @@ void MainWindow::on_move_btn_clicked()
         canvas->angle[canvas->cur_id] = canvas->angle[prev_id];
         canvas->rotate_center_x[canvas->cur_id] = canvas->rotate_center_x[prev_id];
         canvas->rotate_center_y[canvas->cur_id] = canvas->rotate_center_y[prev_id];
+        canvas->is_visible[canvas->cur_id] = canvas->is_visible[prev_id];
         canvas->update();
     }
     else if (!isXFloat && !isYFloat)
@@ -124,10 +139,12 @@ void MainWindow::on_move_btn_clicked()
     {
         QMessageBox::information(this, "Error", "Y должен быть вещественным числом");
     }
-    //ui->coords_label->setText(tr("X: %1 Y: %2\nKx: %3 Ky: %4").arg(canvas->float_x).arg(canvas->float_y * (-1)).arg(canvas->size_x).arg(canvas->size_y));
-    ui->coords_label->setText(tr("Текущее состояние:\nX: %1 Y: %2\nKx: %3 Ky: %4\nУгол: %5")
-                              .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
-                              .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));
+    if (!canvas->is_visible[canvas->cur_id])
+        ui->coords_label->setText("Текущее состояние:\nИзображение\nне отображается");
+    else
+        ui->coords_label->setText(tr("Текущее состояние:\nX: %1 Y: %2\nKx: %3 Ky: %4\nУгол: %5")
+                                               .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
+                                               .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));
 }
 
 void MainWindow::on_change_size_btn_clicked()
@@ -150,7 +167,11 @@ void MainWindow::on_change_size_btn_clicked()
             canvas->cur_id = 0;
         }
         if (canvas->cur_id == canvas->first_id)
+        {
             canvas->first_id++;
+            if (canvas->first_id >= GAP)
+                canvas->first_id = 0;
+        }
 
         canvas->float_x[canvas->cur_id] = kx * canvas->float_x[prev_id] + xc * (1 - kx);
         canvas->float_y[canvas->cur_id] = ky * canvas->float_y[prev_id] + yc * (1 - ky);
@@ -162,6 +183,7 @@ void MainWindow::on_change_size_btn_clicked()
         canvas->angle[canvas->cur_id] = canvas->angle[prev_id];
         canvas->rotate_center_x[canvas->cur_id] = canvas->rotate_center_x[prev_id];
         canvas->rotate_center_y[canvas->cur_id] = canvas->rotate_center_y[prev_id];
+        canvas->is_visible[canvas->cur_id] = canvas->is_visible[prev_id];
         canvas->update();
     }
     else if (!isKxFloat || !isKyFloat|| isXcFloat || isYcFloat)
@@ -176,10 +198,12 @@ void MainWindow::on_change_size_btn_clicked()
     {
         QMessageBox::information(this, "Error", "Ky должен быть вещественным числом");
     }*/
-    //ui->coords_label->setText(tr("X: %1 Y: %2\nKx: %3 Ky: %4").arg(canvas->float_x).arg(canvas->float_y * (-1)).arg(canvas->size_x).arg(canvas->size_y));
-    ui->coords_label->setText(tr("Текущее состояние:\nX: %1 Y: %2\nKx: %3 Ky: %4\nУгол: %5")
-                              .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
-                              .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));
+    if (!canvas->is_visible[canvas->cur_id])
+        ui->coords_label->setText("Текущее состояние:\nИзображение\nне отображается");
+    else
+        ui->coords_label->setText(tr("Текущее состояние:\nX: %1 Y: %2\nKx: %3 Ky: %4\nУгол: %5")
+                                               .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
+                                               .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));
 }
 
 void MainWindow::on_rotate_btn_clicked()
@@ -200,15 +224,17 @@ void MainWindow::on_rotate_btn_clicked()
             canvas->cur_id = 0;
         }
         if (canvas->cur_id == canvas->first_id)
+        {
             canvas->first_id++;
+            if (canvas->first_id >= GAP)
+                canvas->first_id = 0;
+        }
 
         canvas->angle[canvas->cur_id] = canvas->angle[prev_id] + angle;
         if (abs(canvas->angle[canvas->cur_id] - 360) <= EPS || canvas->angle[canvas->cur_id] > 360)
         {
-            //cout << int(canvas->angle / 360) * 360 << endl;
             canvas->angle[canvas->cur_id] -= int(canvas->angle[canvas->cur_id] / 360) * 360;
         }
-        //cout << abs(canvas->angle - int(canvas->angle / 360) * 360) << " " << EPS << endl;
         if (abs(canvas->angle[canvas->cur_id] - int(canvas->angle[canvas->cur_id] / 360) * 360) <= EPS)
             canvas->angle[canvas->cur_id] = 0;
         canvas->rotate_center_x[canvas->cur_id] = xc;
@@ -220,6 +246,7 @@ void MainWindow::on_rotate_btn_clicked()
         canvas->y[canvas->cur_id] = canvas->float_y[canvas->cur_id];
         canvas->size_x[canvas->cur_id] = canvas->size_x[prev_id];
         canvas->size_y[canvas->cur_id] = canvas->size_y[prev_id];
+        canvas->is_visible[canvas->cur_id] = canvas->is_visible[prev_id];
         canvas->update();
     }
     if (!isXcFloat || !isYcFloat)
@@ -230,9 +257,12 @@ void MainWindow::on_rotate_btn_clicked()
     {
         QMessageBox::information(this, "Error", "Угол φ должен быть вещественным числом");
     }
-    ui->coords_label->setText(tr("Текущее состояние:\nX: %1 Y: %2\nKx: %3 Ky: %4\nУгол: %5")
-                              .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
-                              .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));
+    if (!canvas->is_visible[canvas->cur_id])
+        ui->coords_label->setText("Текущее состояние:\nИзображение\nне отображается");
+    else
+        ui->coords_label->setText(tr("Текущее состояние:\nX: %1 Y: %2\nKx: %3 Ky: %4\nУгол: %5")
+                                               .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
+                                               .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));
 }
 
 void MainWindow::on_pushButton_clicked()
@@ -240,12 +270,22 @@ void MainWindow::on_pushButton_clicked()
     if (canvas->cur_id == canvas->first_id)
     {
         QMessageBox::information(this, "Error", "Действий не найдено");
+        canvas->is_visible[canvas->cur_id] = false;
     }
     else
     {
         canvas->cur_id -= 1;
         if (canvas->cur_id < 0)
-            canvas->cur_id = GAP;
-        canvas->update();
+            canvas->cur_id = GAP - 1;
     }
+    canvas->update();
+    if (!canvas->is_visible[canvas->cur_id])
+        ui->coords_label->setText("Текущее состояние:\nИзображение\nне отображается");
+    else
+        ui->coords_label->setText(tr("Текущее состояние:\nX: %1 Y: %2\nKx: %3 Ky: %4\nУгол: %5")
+                                               .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
+                                               .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));
+    /*ui->coords_label->setText(tr("Текущее состояние:\nX: %1 Y: %2\nKx: %3 Ky: %4\nУгол: %5\n%6 first_id: %7")
+                              .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
+                              .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]).arg(canvas->cur_id).arg(canvas->first_id));*/
 }

@@ -44,7 +44,7 @@ public:
     int cur_id = 0;
     int first_id = 0;
 
-    bool is_visible = false;
+    bool is_visible[GAP];
 
 private:
     QPainter painter;
