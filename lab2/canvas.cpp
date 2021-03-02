@@ -41,6 +41,47 @@ void Canvas::rotate(float *x0, float *y0)
     *y0 = new_y;
 }
 
+void Canvas::draw_ellipse(QPainter *painter, const float xc, const float yc, float a, float b)
+{
+    float i = - a;
+    while (i <= a)
+    {
+        float x0 = xc + i;
+        float y0 = yc + sqrt((1 - (pow(i/a, 2))) * pow(b, 2));
+        cout << i << ": " << x0 << " " << y0 << endl;
+            rotate(&x0, &y0);
+        QPointF cur_dot = QPointF(x0, y0);
+        painter->drawPoint(cur_dot);
+
+        x0 = xc + i;
+        y0 = yc - sqrt((1 - (pow(i/a, 2))) * pow(b, 2));
+        rotate(&x0, &y0);
+        cur_dot.setX(x0);
+        cur_dot.setY(y0);
+        painter->drawPoint(cur_dot);
+        i++;
+    }
+    i = - b;
+    while (i <= b)
+    {
+        float y0 = yc + i;
+        float x0 = xc + sqrt((1 - (pow(i/b, 2))) * pow(a, 2));
+        //cout << i << ": " << x0 << " " << y0 << endl;
+        rotate(&x0, &y0);
+        QPointF cur_dot = QPointF(x0, y0);
+        //cout << i << ": " << int(cur_dot.x()) << " " << int(cur_dot.y()) << endl;
+        painter->drawPoint(cur_dot);
+
+        y0 = yc + i;
+        x0 = xc - sqrt((1 - (pow(i/b, 2))) * pow(a, 2));
+        rotate(&x0, &y0);
+        cur_dot.setX(x0);
+        cur_dot.setY(y0);
+        painter->drawPoint(cur_dot);
+        i++;
+    }
+}
+
 void Canvas::paintEvent(QPaintEvent *event)
 {
 
@@ -145,26 +186,26 @@ void Canvas::paintEvent(QPaintEvent *event)
 
     //-------------------------ROTATE START-------------------------
     //Rotate head
-    ///rotate(&head_center_x, &head_center_y);
+    //rotate(&head_center_x, &head_center_y);
     QPointF head_center = QPointF(head_center_x, head_center_y);
     //Rotate ears
     for (int i = 0; i < 3; i++)
     {
         float tmp_x = ear1_dots[i].x();
         float tmp_y = ear1_dots[i].y();
-        ///rotate(&tmp_x, &tmp_y);
+        rotate(&tmp_x, &tmp_y);
         ear1_dots[i].setX(tmp_x);
         ear1_dots[i].setY(tmp_y);
 
         tmp_x = ear2_dots[i].x();
         tmp_y = ear2_dots[i].y();
-        ///rotate(&tmp_x, &tmp_y);
+        rotate(&tmp_x, &tmp_y);
         ear2_dots[i].setX(tmp_x);
         ear2_dots[i].setY(tmp_y);
     }
     //Rotate eyes
-    ///rotate(&eye1_x, &eye1_y);
-    ///rotate(&eye2_x, &eye2_y);
+    //rotate(&eye1_x, &eye1_y);
+    //rotate(&eye2_x, &eye2_y);
     QPointF eye_center1 = QPointF(eye1_x, eye1_y);
     QPointF eye_center2 = QPointF(eye2_x, eye2_y);
     //Rotate whiskers
@@ -172,7 +213,7 @@ void Canvas::paintEvent(QPaintEvent *event)
     {
         float tmp_x = wiskers_dots[i].x();
         float tmp_y = wiskers_dots[i].y();
-        ///rotate(&tmp_x, &tmp_y);
+        rotate(&tmp_x, &tmp_y);
         wiskers_dots[i].setX(tmp_x);
         wiskers_dots[i].setY(tmp_y);
     }
@@ -180,11 +221,20 @@ void Canvas::paintEvent(QPaintEvent *event)
 
     //--------------------------DRAW START--------------------------
     //Draw head
-    painter.save();
+    //draw_ellipse(&painter, 0, 0, 100, 150);
+    //draw_ellipse(&painter, 100, 50, 100, 150);
+    //painter.drawEllipse(QPoint(100, 50), 100, 150);
+    draw_ellipse(&painter, head_center.x(), head_center.y(), head_size_x, head_size_y);
+
+    /*painter.save();
     painter.translate(rotate_center_x, rotate_center_y);
     painter.rotate(-angle);
     painter.translate(-rotate_center_x, -rotate_center_y);
+
     painter.drawEllipse(head_center, head_size_x, head_size_y);
+
+    painter.restore();*/
+
     //Draw ears
     for (int i = 0; i < 2; i++)
     {
@@ -192,23 +242,26 @@ void Canvas::paintEvent(QPaintEvent *event)
         painter.drawLine(ear2_dots[i], ear2_dots[i + 1]);
     }
     //Draw eyes
-    painter.drawEllipse(eye_center1, eye_size_x, eye_size_y);
-    painter.drawEllipse(eye_center2, eye_size_x, eye_size_y);
+    draw_ellipse(&painter, eye_center1.x(), eye_center1.y(), eye_size_x, eye_size_y);
+    draw_ellipse(&painter, eye_center2.x(), eye_center2.y(), eye_size_x, eye_size_y);
+    //painter.drawEllipse(eye_center1, eye_size_x, eye_size_y);
+    //painter.drawEllipse(eye_center2, eye_size_x, eye_size_y);
     //Draw cat's whiskers
     for (int i = 1; i < 7; i++)
     {
         painter.drawLine(wiskers_dots[0], wiskers_dots[i]);
     }
     //Draw body
-    ///painter.save();
-    ///painter.translate(rotate_center_x, rotate_center_y);
-    ///painter.rotate(-angle);
-    ///painter.translate(-rotate_center_x, -rotate_center_y);
+    draw_ellipse(&painter, body_center.x(), body_center.y(), body_width, body_height);
+
+    /*painter.save();
+    painter.translate(rotate_center_x, rotate_center_y);
+    painter.rotate(-angle);
+    painter.translate(-rotate_center_x, -rotate_center_y);
+
     painter.drawEllipse(body_center, body_width, body_height);
-    painter.restore();
-    //painter.drawEllipse(body_center, body_width, body_height);
-    //painter.drawEllipse(QPointF(x, y), rad, rad);
-    //painter.drawEllipse(QPointF(x, y + rad * 2), rad, rad);
+
+    painter.restore();*/
     //---------------------------DRAW END---------------------------
 
 

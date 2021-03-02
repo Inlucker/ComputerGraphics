@@ -22,6 +22,7 @@ private:
     float rotate_x(float x0, float y0);
     float rotate_y(float x0, float y0);
     void rotate(float *x0, float *y0);
+    void draw_ellipse(QPainter *painter, const float xc, const float yc, float a, float b);
 
 protected:
     void paintEvent(QPaintEvent *);
