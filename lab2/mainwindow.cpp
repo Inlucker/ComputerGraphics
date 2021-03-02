@@ -65,11 +65,11 @@ void MainWindow::on_create_btn_clicked()
         canvas->float_y[canvas->cur_id] = y;
         canvas->x[canvas->cur_id] = canvas->float_x[canvas->cur_id];
         canvas->y[canvas->cur_id] = canvas->float_y[canvas->cur_id];
-        canvas->size_x[canvas->cur_id] = canvas->size_x[prev_id];
-        canvas->size_y[canvas->cur_id] = canvas->size_y[prev_id];
-        canvas->angle[canvas->cur_id] = canvas->angle[prev_id];
-        canvas->rotate_center_x[canvas->cur_id] = canvas->rotate_center_x[prev_id];
-        canvas->rotate_center_y[canvas->cur_id] = canvas->rotate_center_x[prev_id];
+        canvas->size_x[canvas->cur_id] = 1;
+        canvas->size_y[canvas->cur_id] = 1;
+        canvas->angle[canvas->cur_id] = 0;
+        canvas->rotate_center_x[canvas->cur_id] = 0;
+        canvas->rotate_center_y[canvas->cur_id] = 0;
         canvas->is_visible[canvas->cur_id] = true;
         canvas->update();
     }
