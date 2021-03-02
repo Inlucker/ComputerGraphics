@@ -104,6 +104,7 @@ void Canvas::paintEvent(QPaintEvent *event)
 
     float x_center = width() / 2;
     float y_center = height() / 2;
+    //cout << width() << " " << height() << endl;
     //cout << x_center << " " << y_center << endl;
     //cout << this->width() << " " << this->height() << endl;
 

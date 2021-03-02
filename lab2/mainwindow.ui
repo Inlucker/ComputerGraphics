@@ -2,12 +2,15 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>795</width>
-    <height>670</height>
+    <width>1095</width>
+    <height>970</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,8 +22,8 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>601</width>
-      <height>601</height>
+      <width>901</width>
+      <height>901</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout"/>
@@ -28,7 +31,7 @@
    <widget class="QLabel" name="start_coords_label">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>920</x>
       <y>10</y>
       <width>161</width>
       <height>21</height>
@@ -44,7 +47,7 @@
    <widget class="QLabel" name="x_start_label">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>920</x>
       <y>40</y>
       <width>21</width>
       <height>21</height>
@@ -60,7 +63,7 @@
    <widget class="QLabel" name="y_start_label">
     <property name="geometry">
      <rect>
-      <x>700</x>
+      <x>1000</x>
       <y>40</y>
       <width>21</width>
       <height>21</height>
@@ -76,7 +79,7 @@
    <widget class="QLineEdit" name="x_start">
     <property name="geometry">
      <rect>
-      <x>640</x>
+      <x>940</x>
       <y>40</y>
       <width>61</width>
       <height>21</height>
@@ -86,7 +89,7 @@
    <widget class="QLineEdit" name="y_start">
     <property name="geometry">
      <rect>
-      <x>720</x>
+      <x>1020</x>
       <y>40</y>
       <width>61</width>
       <height>21</height>
@@ -96,7 +99,7 @@
    <widget class="QPushButton" name="create_btn">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>920</x>
       <y>70</y>
       <width>161</width>
       <height>31</height>
@@ -109,7 +112,7 @@
    <widget class="QLabel" name="move_label">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>920</x>
       <y>116</y>
       <width>161</width>
       <height>20</height>
@@ -125,7 +128,7 @@
    <widget class="QLabel" name="x_move_label">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>920</x>
       <y>140</y>
       <width>21</width>
       <height>21</height>
@@ -141,7 +144,7 @@
    <widget class="QLineEdit" name="x_move">
     <property name="geometry">
      <rect>
-      <x>640</x>
+      <x>940</x>
       <y>140</y>
       <width>61</width>
       <height>21</height>
@@ -151,7 +154,7 @@
    <widget class="QLineEdit" name="y_move">
     <property name="geometry">
      <rect>
-      <x>720</x>
+      <x>1020</x>
       <y>140</y>
       <width>61</width>
       <height>21</height>
@@ -161,7 +164,7 @@
    <widget class="QPushButton" name="move_btn">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>920</x>
       <y>170</y>
       <width>161</width>
       <height>31</height>
@@ -174,7 +177,7 @@
    <widget class="QLabel" name="y_move_label">
     <property name="geometry">
      <rect>
-      <x>700</x>
+      <x>1000</x>
       <y>140</y>
       <width>21</width>
       <height>21</height>
@@ -190,7 +193,7 @@
    <widget class="QLabel" name="coords_label">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>920</x>
       <y>470</y>
       <width>161</width>
       <height>91</height>
@@ -203,7 +206,7 @@
    <widget class="QPushButton" name="change_size_btn">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>920</x>
       <y>300</y>
       <width>161</width>
       <height>31</height>
@@ -216,7 +219,7 @@
    <widget class="QLabel" name="y_size_label">
     <property name="geometry">
      <rect>
-      <x>700</x>
+      <x>1000</x>
       <y>270</y>
       <width>21</width>
       <height>21</height>
@@ -232,7 +235,7 @@
    <widget class="QLabel" name="size_label">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>920</x>
       <y>216</y>
       <width>161</width>
       <height>20</height>
@@ -248,7 +251,7 @@
    <widget class="QLineEdit" name="y_size">
     <property name="geometry">
      <rect>
-      <x>720</x>
+      <x>1020</x>
       <y>270</y>
       <width>61</width>
       <height>21</height>
@@ -258,7 +261,7 @@
    <widget class="QLabel" name="x_size_label">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>920</x>
       <y>270</y>
       <width>21</width>
       <height>21</height>
@@ -274,7 +277,7 @@
    <widget class="QLineEdit" name="x_size">
     <property name="geometry">
      <rect>
-      <x>640</x>
+      <x>940</x>
       <y>270</y>
       <width>61</width>
       <height>21</height>
@@ -284,7 +287,7 @@
    <widget class="QLineEdit" name="y_size_center">
     <property name="geometry">
      <rect>
-      <x>720</x>
+      <x>1020</x>
       <y>240</y>
       <width>61</width>
       <height>21</height>
@@ -294,7 +297,7 @@
    <widget class="QLabel" name="x_size_center_label">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>920</x>
       <y>240</y>
       <width>21</width>
       <height>21</height>
@@ -310,7 +313,7 @@
    <widget class="QLineEdit" name="x_size_center">
     <property name="geometry">
      <rect>
-      <x>640</x>
+      <x>940</x>
       <y>240</y>
       <width>61</width>
       <height>21</height>
@@ -320,7 +323,7 @@
    <widget class="QLabel" name="y_size_center_label">
     <property name="geometry">
      <rect>
-      <x>700</x>
+      <x>1000</x>
       <y>240</y>
       <width>21</width>
       <height>21</height>
@@ -336,7 +339,7 @@
    <widget class="QLineEdit" name="y_rotate_center">
     <property name="geometry">
      <rect>
-      <x>720</x>
+      <x>1020</x>
       <y>370</y>
       <width>61</width>
       <height>21</height>
@@ -346,7 +349,7 @@
    <widget class="QLabel" name="y_rotate_center_label">
     <property name="geometry">
      <rect>
-      <x>700</x>
+      <x>1000</x>
       <y>370</y>
       <width>21</width>
       <height>21</height>
@@ -362,7 +365,7 @@
    <widget class="QLabel" name="rotate_label">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>920</x>
       <y>346</y>
       <width>161</width>
       <height>20</height>
@@ -378,7 +381,7 @@
    <widget class="QLineEdit" name="x_rotate_center">
     <property name="geometry">
      <rect>
-      <x>640</x>
+      <x>940</x>
       <y>370</y>
       <width>61</width>
       <height>21</height>
@@ -388,7 +391,7 @@
    <widget class="QPushButton" name="rotate_btn">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>920</x>
       <y>430</y>
       <width>161</width>
       <height>31</height>
@@ -401,7 +404,7 @@
    <widget class="QLabel" name="rotate_angle_label">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>920</x>
       <y>400</y>
       <width>51</width>
       <height>21</height>
@@ -417,7 +420,7 @@
    <widget class="QLabel" name="x_rotate_center_label">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>920</x>
       <y>370</y>
       <width>21</width>
       <height>21</height>
@@ -433,7 +436,7 @@
    <widget class="QLineEdit" name="rotate_angle">
     <property name="geometry">
      <rect>
-      <x>670</x>
+      <x>970</x>
       <y>400</y>
       <width>41</width>
       <height>21</height>
@@ -443,7 +446,7 @@
    <widget class="QLabel" name="in_degrees_label">
     <property name="geometry">
      <rect>
-      <x>720</x>
+      <x>1020</x>
       <y>400</y>
       <width>61</width>
       <height>21</height>
@@ -459,7 +462,7 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>920</x>
       <y>570</y>
       <width>161</width>
       <height>41</height>
@@ -475,7 +478,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>795</width>
+     <width>1095</width>
      <height>20</height>
     </rect>
    </property>
