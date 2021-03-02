@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->y_rotate_center->setText("0");
     ui->rotate_angle->setText("0");
     ui->coords_label->setText("Текущее состояние:\nИзображение\nне отображается");
-    /*ui->coords_label->setText(tr("Текущее состояние:\nX: %1 Y: %2\nKx: %3 Ky: %4\nУгол: %5")
+    /*ui->coords_label->setText(tr("Текущее состояние:\nКоординаты центра X: %1 Y: %2\nКоэф. масшт. Kx: %3 Ky: %4\nУгол: %5")
                                                .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
                                                .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));*/
 }
@@ -88,7 +88,7 @@ void MainWindow::on_create_btn_clicked()
     if (!canvas->is_visible[canvas->cur_id])
         ui->coords_label->setText("Текущее состояние:\nИзображение\nне отображается");
     else
-        ui->coords_label->setText(tr("Текущее состояние:\nX: %1 Y: %2\nKx: %3 Ky: %4\nУгол: %5")
+        ui->coords_label->setText(tr("Текущее состояние:\nКоординаты центра X: %1 Y: %2\nКоэф. масшт. Kx: %3 Ky: %4\nУгол: %5")
                                                .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
                                                .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));
 }
@@ -142,7 +142,7 @@ void MainWindow::on_move_btn_clicked()
     if (!canvas->is_visible[canvas->cur_id])
         ui->coords_label->setText("Текущее состояние:\nИзображение\nне отображается");
     else
-        ui->coords_label->setText(tr("Текущее состояние:\nX: %1 Y: %2\nKx: %3 Ky: %4\nУгол: %5")
+        ui->coords_label->setText(tr("Текущее состояние:\nКоординаты центра X: %1 Y: %2\nКоэф. масшт. Kx: %3 Ky: %4\nУгол: %5")
                                                .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
                                                .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));
 }
@@ -201,7 +201,7 @@ void MainWindow::on_change_size_btn_clicked()
     if (!canvas->is_visible[canvas->cur_id])
         ui->coords_label->setText("Текущее состояние:\nИзображение\nне отображается");
     else
-        ui->coords_label->setText(tr("Текущее состояние:\nX: %1 Y: %2\nKx: %3 Ky: %4\nУгол: %5")
+        ui->coords_label->setText(tr("Текущее состояние:\nКоординаты центра X: %1 Y: %2\nКоэф. масшт. Kx: %3 Ky: %4\nУгол: %5")
                                                .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
                                                .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));
 }
@@ -260,7 +260,7 @@ void MainWindow::on_rotate_btn_clicked()
     if (!canvas->is_visible[canvas->cur_id])
         ui->coords_label->setText("Текущее состояние:\nИзображение\nне отображается");
     else
-        ui->coords_label->setText(tr("Текущее состояние:\nX: %1 Y: %2\nKx: %3 Ky: %4\nУгол: %5")
+        ui->coords_label->setText(tr("Текущее состояние:\nКоординаты центра X: %1 Y: %2\nКоэф. масшт. Kx: %3 Ky: %4\nУгол: %5")
                                                .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
                                                .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));
 }
@@ -282,7 +282,7 @@ void MainWindow::on_pushButton_clicked()
     if (!canvas->is_visible[canvas->cur_id])
         ui->coords_label->setText("Текущее состояние:\nИзображение\nне отображается");
     else
-        ui->coords_label->setText(tr("Текущее состояние:\nX: %1 Y: %2\nKx: %3 Ky: %4\nУгол: %5")
+        ui->coords_label->setText(tr("Текущее состояние:\nКоординаты центра X: %1 Y: %2\nКоэф. масшт. Kx: %3 Ky: %4\nУгол: %5")
                                                .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
                                                .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));
     /*ui->coords_label->setText(tr("Текущее состояние:\nX: %1 Y: %2\nKx: %3 Ky: %4\nУгол: %5\n%6 first_id: %7")
