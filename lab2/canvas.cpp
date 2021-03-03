@@ -1,7 +1,5 @@
 #include "canvas.h"
 
-#define PI 3.14159265
-
 Canvas::Canvas()
 {
     setStyleSheet("background-color:white;");
@@ -37,8 +35,6 @@ Canvas::Canvas()
 
     //Head params
     head = NULL;
-    /*head_center_x = x[cur_id];
-    head_center_y = y[cur_id] - rad_y * 2;*/
     head_size_x = rad_x;
     head_size_y = rad_y;
 
@@ -50,71 +46,19 @@ Canvas::Canvas()
     delta_y1 = sqrt((1 - pow((ear_offset) / rad_x, 2)) * pow(rad_y, 2));
     delta_y2 = sqrt((1 - pow((ear_width * 2 + ear_offset) / rad_x, 2)) * pow(rad_y, 2));
 
-    /*float x11 = head_center_x - ear_offset;
-    float y11 = head_center_y - delta_y1;
-    ear1_dots[0].setX(x11);
-    ear1_dots[0].setY(y11);
-
-    float x21 = head_center_x + ear_offset;
-    float y21 = head_center_y - delta_y1;
-    ear2_dots[0].setX(x21);
-    ear2_dots[0].setY(y21);
-
-    float x12 = head_center_x - ear_offset - ear_width;
-    float y12 = head_center_y - head_size_y - ear_height;
-    ear1_dots[1].setX(x12);
-    ear1_dots[1].setY(y12);
-
-    float x22 = head_center_x + ear_offset + ear_width;
-    float y22 = head_center_y - head_size_y - ear_height;
-    ear2_dots[1].setX(x22);
-    ear2_dots[1].setY(y22);
-
-    float x13 = head_center_x - ear_offset - ear_width * 2;
-    float y13 = head_center_y - delta_y2;
-    ear1_dots[2].setX(x13);
-    ear1_dots[2].setY(y13);
-
-    float x23 = head_center_x + ear_offset + ear_width * 2;
-    float y23 = head_center_y - delta_y2;
-    ear2_dots[2].setX(x23);
-    ear2_dots[2].setY(y23);*/
-
     //Set eyes params
     eye_width = base_size * 10;
     eye_height = base_size * 5;
     eye_size_x = base_size * 5;
     eye_size_y = base_size * 5;
 
-    /*eye1_x = head_center_x - eye_width;
-    eye1_y = head_center_y - eye_height;
-    eye2_x = head_center_x + eye_width;
-    eye2_y = head_center_y - eye_height;*/
-
     //Set whiskers params
     len = base_size * 35;
     wisk_height = base_size * 10;
-    /*wisk_center_x = x[cur_id];
-    wisk_center_y = y[cur_id] - rad_y * 2 + wisk_height;
-    wisk_x1 = wisk_center_x - len;
-    wisk_x2 = wisk_center_x + len;
-    wisk_y1 = wisk_center_y;
-    wisk_y2 = wisk_center_y + wisk_height;
-    wisk_y3 = wisk_center_y - wisk_height;*/
-
-    /*wiskers_dots[0].setX(wisk_center_x); wiskers_dots[0].setY(wisk_center_y);
-    wiskers_dots[1].setX(wisk_x1); wiskers_dots[1].setY(wisk_y1);
-    wiskers_dots[2].setX(wisk_x1); wiskers_dots[2].setY(wisk_y2);
-    wiskers_dots[3].setX(wisk_x1); wiskers_dots[3].setY(wisk_y3);
-    wiskers_dots[4].setX(wisk_x2); wiskers_dots[4].setY(wisk_y1);
-    wiskers_dots[5].setX(wisk_x2); wiskers_dots[5].setY(wisk_y2);
-    wiskers_dots[6].setX(wisk_x2); wiskers_dots[6].setY(wisk_y3);*/
 
     //Set body params
     body_width = rad_x;
     body_height = rad_y * 2;
-    /*body_center_x = x[cur_id];
-    body_center_y = y[cur_id] + rad_y;*/
     //------------------------SET PARAMS END------------------------//
 }
 

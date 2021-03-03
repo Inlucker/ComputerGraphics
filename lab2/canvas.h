@@ -9,6 +9,8 @@
 #include <math.h>
 #include <map>
 
+#define PI 3.14159265
+
 #define GAP 100
 
 #define NOTHING -1

@@ -28,9 +28,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->y_rotate_center->setText("0");
     ui->rotate_angle->setText("0");
     ui->coords_label->setText("Текущее состояние:\nИзображение\nне отображается");
-    /*ui->coords_label->setText(tr("Текущее состояние:\nКоординаты центра:\nX: %1 Y: %2\nКоэф. масштабирования:\nKx: %3 Ky: %4\nУгол: %5")
-                                               .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
-                                               .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));*/
 
     connect(ui->get_coords_info, SIGNAL(triggered()), this, SLOT(on_get_coords_info_clicked())); // Обработчик удаления записи
 }
@@ -120,6 +117,9 @@ void MainWindow::on_move_btn_clicked()
                 canvas->first_id = 0;
         }
 
+        center_x += x;
+        center_y += y;
+
         canvas->transofrmation[canvas->cur_id] = MOVE;
 
         canvas->float_x[canvas->cur_id] = x;
@@ -152,9 +152,7 @@ void MainWindow::on_move_btn_clicked()
     if (!canvas->is_visible[canvas->cur_id])
         ui->coords_label->setText("Текущее состояние:\nИзображение\nне отображается");
     else
-        ui->coords_label->setText(tr("Текущее состояние:\nКоординаты центра:\nX: %1 Y: %2\nКоэф. масштабирования:\nKx: %3 Ky: %4\nУгол: %5")
-                                               .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
-                                               .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));
+        ui->coords_label->setText(tr("Текущее состояние:\nКоординаты центра:\nX: %1 Y: %2").arg(center_x).arg(center_y));
 }
 
 void MainWindow::on_change_size_btn_clicked()
@@ -182,6 +180,9 @@ void MainWindow::on_change_size_btn_clicked()
             if (canvas->first_id >= GAP)
                 canvas->first_id = 0;
         }
+
+        center_x = kx * center_x + xc * (1 - kx);
+        center_y = ky * center_y + yc * (1 - ky);
 
         canvas->transofrmation[canvas->cur_id] = SCALE;
 
@@ -215,9 +216,7 @@ void MainWindow::on_change_size_btn_clicked()
     if (!canvas->is_visible[canvas->cur_id])
         ui->coords_label->setText("Текущее состояние:\nИзображение\nне отображается");
     else
-        ui->coords_label->setText(tr("Текущее состояние:\nКоординаты центра:\nX: %1 Y: %2\nКоэф. масштабирования:\nKx: %3 Ky: %4\nУгол: %5")
-                                               .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
-                                               .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));
+        ui->coords_label->setText(tr("Текущее состояние:\nКоординаты центра:\nX: %1 Y: %2").arg(center_x).arg(center_y));
 }
 
 void MainWindow::on_rotate_btn_clicked()
@@ -243,6 +242,9 @@ void MainWindow::on_rotate_btn_clicked()
             if (canvas->first_id >= GAP)
                 canvas->first_id = 0;
         }
+
+        center_x = xc + (center_x - xc) * cos(angle * PI / 180);
+        center_y = yc + (center_y - yc) * cos(angle * PI / 180);
 
         canvas->transofrmation[canvas->cur_id] = ROTATE;
 
@@ -279,9 +281,7 @@ void MainWindow::on_rotate_btn_clicked()
     if (!canvas->is_visible[canvas->cur_id])
         ui->coords_label->setText("Текущее состояние:\nИзображение\nне отображается");
     else
-        ui->coords_label->setText(tr("Текущее состояние:\nКоординаты центра:\nX: %1 Y: %2\nКоэф. масштабирования:\nKx: %3 Ky: %4\nУгол: %5")
-                                               .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
-                                               .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));
+        ui->coords_label->setText(tr("Текущее состояние:\nКоординаты центра:\nX: %1 Y: %2").arg(center_x).arg(center_y));
 }
 
 void MainWindow::on_pushButton_clicked()
@@ -301,12 +301,7 @@ void MainWindow::on_pushButton_clicked()
     if (!canvas->is_visible[canvas->cur_id])
         ui->coords_label->setText("Текущее состояние:\nИзображение\nне отображается");
     else
-        ui->coords_label->setText(tr("Текущее состояние:\nКоординаты центра:\nX: %1 Y: %2\nКоэф. масштабирования:\nKx: %3 Ky: %4\nУгол: %5")
-                                               .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
-                                               .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));
-    /*ui->coords_label->setText(tr("Текущее состояние:\nX: %1 Y: %2\nKx: %3 Ky: %4\nУгол: %5\n%6 first_id: %7")
-                              .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
-                              .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]).arg(canvas->cur_id).arg(canvas->first_id));*/
+        ui->coords_label->setText(tr("Текущее состояние:\nКоординаты центра:\nX: %1 Y: %2").arg(center_x).arg(center_y));
 }
 
 void MainWindow::on_get_coords_info_clicked()
