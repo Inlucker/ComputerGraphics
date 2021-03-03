@@ -262,8 +262,8 @@ void Canvas::paintEvent(QPaintEvent *event)
             {
                 int tmp_dots_number;
                 //HEAD
-                head = create_ellipse(head_center_x, head_center_y, head_size_x, head_size_y, &tmp_dots_number);
-                //cout << tmp_dots_number << endl;
+                head = create_ellipse(head_center_x, head_center_y, head_size_x, head_size_y, &head_dots_number);
+                //cout << head_dots_number << endl;
 
                 //EARS
                 {
@@ -300,10 +300,10 @@ void Canvas::paintEvent(QPaintEvent *event)
 
                 //EYES
                 {
-                    eye1 = create_ellipse(eye1_x, eye1_y, eye_size_x, eye_size_y, &tmp_dots_number);
-                    //cout << tmp_dots_number << endl;
-                    eye2 = create_ellipse(eye2_x, eye2_y, eye_size_x, eye_size_y, &tmp_dots_number);
-                    //cout << tmp_dots_number << endl;
+                    eye1 = create_ellipse(eye1_x, eye1_y, eye_size_x, eye_size_y, &eye1_dots_number);
+                    //cout << eye1_dots_number << endl;
+                    eye2 = create_ellipse(eye2_x, eye2_y, eye_size_x, eye_size_y, &eye2_dots_number);
+                    //cout << eye2_dots_number << endl;
                 }
 
                 //WHISKERS
@@ -322,27 +322,85 @@ void Canvas::paintEvent(QPaintEvent *event)
                     body_center_x = x[cur_id];
                     body_center_y = y[cur_id] + rad_y;
 
-                    body = create_ellipse(body_center_x, body_center_y, body_width, body_height, &tmp_dots_number);
-                    cout << tmp_dots_number << endl;
+                    body = create_ellipse(body_center_x, body_center_y, body_width, body_height, &body_dots_number);
+                    //cout << body_dots_number << endl;
                 }
 
             }
             case MOVE:
             {
             //HEAD
-
+            {
+                QPolygonF ellipse = *head;
+                for (int i = 0; i < head_dots_number; i++)
+                {
+                    QPointF tmp = ellipse[i];
+                    //cout << float(tmp.x()) << " " << float(tmp.y()) << endl;
+                    (*head)[i].setX(tmp.x() + float_x[cur_id]);
+                    (*head)[i].setY(tmp.y() + float_y[cur_id]);
+                }
+            }
 
             //EARS
+            {
+                ear1_dots[0].setX(ear1_dots[0].x() + float_x[cur_id]);
+                ear1_dots[0].setY(ear1_dots[0].y() + float_y[cur_id]);
 
+                ear2_dots[0].setX(ear2_dots[0].x() + float_x[cur_id]);
+                ear2_dots[0].setY(ear2_dots[0].y() + float_y[cur_id]);
+
+                ear1_dots[1].setX(ear1_dots[1].x() + float_x[cur_id]);
+                ear1_dots[1].setY(ear1_dots[1].y() + float_y[cur_id]);
+
+                ear2_dots[1].setX(ear2_dots[1].x() + float_x[cur_id]);
+                ear2_dots[1].setY(ear2_dots[1].y() + float_y[cur_id]);
+
+                ear1_dots[2].setX(ear1_dots[2].x() + float_x[cur_id]);
+                ear1_dots[2].setY(ear1_dots[2].y() + float_y[cur_id]);
+
+                ear2_dots[2].setX(ear2_dots[2].x() + float_x[cur_id]);
+                ear2_dots[2].setY(ear2_dots[2].y() + float_y[cur_id]);
+            }
 
             //EYES
-
+            {
+                QPolygonF ellipse = *eye1;
+                for (int i = 0; i < eye1_dots_number; i++)
+                {
+                    QPointF tmp = ellipse[i];
+                    (*eye1)[i].setX(tmp.x() + float_x[cur_id]);
+                    (*eye1)[i].setY(tmp.y() + float_y[cur_id]);
+                }
+                ellipse = *eye2;
+                for (int i = 0; i < eye2_dots_number; i++)
+                {
+                    QPointF tmp = ellipse[i];
+                    (*eye2)[i].setX(tmp.x() + float_x[cur_id]);
+                    (*eye2)[i].setY(tmp.y() + float_y[cur_id]);
+                }
+            }
 
             //WHISKERS
-
+            {
+                wiskers_dots[0].setX(wiskers_dots[0].x() + float_x[cur_id]); wiskers_dots[0].setY(wiskers_dots[0].y() + float_y[cur_id]);
+                wiskers_dots[1].setX(wiskers_dots[1].x() + float_x[cur_id]); wiskers_dots[1].setY(wiskers_dots[1].y() + float_y[cur_id]);
+                wiskers_dots[2].setX(wiskers_dots[2].x() + float_x[cur_id]); wiskers_dots[2].setY(wiskers_dots[2].y() + float_y[cur_id]);
+                wiskers_dots[3].setX(wiskers_dots[3].x() + float_x[cur_id]); wiskers_dots[3].setY(wiskers_dots[3].y() + float_y[cur_id]);
+                wiskers_dots[4].setX(wiskers_dots[4].x() + float_x[cur_id]); wiskers_dots[4].setY(wiskers_dots[4].y() + float_y[cur_id]);
+                wiskers_dots[5].setX(wiskers_dots[5].x() + float_x[cur_id]); wiskers_dots[5].setY(wiskers_dots[5].y() + float_y[cur_id]);
+                wiskers_dots[6].setX(wiskers_dots[6].x() + float_x[cur_id]); wiskers_dots[6].setY(wiskers_dots[6].y() + float_y[cur_id]);
+            }
 
             //BODY
-
+            {
+                QPolygonF ellipse = *body;
+                for (int i = 0; i < body_dots_number; i++)
+                {
+                    QPointF tmp = ellipse[i];
+                    (*body)[i].setX(tmp.x() + float_x[cur_id]);
+                    (*body)[i].setY(tmp.y() + float_y[cur_id]);
+                }
+            }
 
             }
             case SCALE:

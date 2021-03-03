@@ -118,20 +118,20 @@ void MainWindow::on_move_btn_clicked()
                 canvas->first_id = 0;
         }
 
-        canvas->transofrmation[canvas->cur_id] = CREATE;
+        canvas->transofrmation[canvas->cur_id] = MOVE;
 
-        canvas->float_x[canvas->cur_id] = canvas->float_x[prev_id] + x;
-        canvas->float_y[canvas->cur_id] = canvas->float_y[prev_id] + y;
+        canvas->float_x[canvas->cur_id] = x;
+        canvas->float_y[canvas->cur_id] = y;
         canvas->x[canvas->cur_id] = canvas->float_x[canvas->cur_id];
         canvas->y[canvas->cur_id] = canvas->float_y[canvas->cur_id];
         //Без изменений
-        canvas->size_center_x[canvas->cur_id] = canvas->size_center_x[prev_id];
-        canvas->size_center_y[canvas->cur_id] = canvas->size_center_y[prev_id];
-        canvas->size_x[canvas->cur_id] = canvas->size_x[prev_id];
-        canvas->size_y[canvas->cur_id] = canvas->size_y[prev_id];
-        canvas->angle[canvas->cur_id] = canvas->angle[prev_id];
-        canvas->rotate_center_x[canvas->cur_id] = canvas->rotate_center_x[prev_id];
-        canvas->rotate_center_y[canvas->cur_id] = canvas->rotate_center_y[prev_id];
+        canvas->size_center_x[canvas->cur_id] = 0;
+        canvas->size_center_y[canvas->cur_id] = 0;
+        canvas->size_x[canvas->cur_id] = 1;
+        canvas->size_y[canvas->cur_id] = 1;
+        canvas->angle[canvas->cur_id] = 0;
+        canvas->rotate_center_x[canvas->cur_id] = 0;
+        canvas->rotate_center_y[canvas->cur_id] = 0;
         canvas->is_visible[canvas->cur_id] = canvas->is_visible[prev_id];
         canvas->update();
     }

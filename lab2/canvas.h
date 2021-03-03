@@ -4,6 +4,7 @@
 #include <QGraphicsView>
 #include <QWidget>
 #include <QPainter>
+#include <QList>
 #include <iostream>
 #include <math.h>
 #include <map>
@@ -70,7 +71,7 @@ private:
 
     //Head params
     QPolygonF *head = NULL;
-    //int head_dots_number = 0;
+    int head_dots_number = 0;
 
     float head_center_x = x[cur_id];
     float head_center_y = y[cur_id] - rad_y * 2;
@@ -89,7 +90,9 @@ private:
 
     //Set eyes params
     QPolygonF *eye1 = NULL;
+    int eye1_dots_number = 0;
     QPolygonF *eye2 = NULL;
+    int eye2_dots_number = 0;
 
     float eye_width = base_size * 10;
     float eye_height = base_size * 5;
@@ -115,6 +118,7 @@ private:
 
     //Set body params
     QPolygonF *body;
+    int body_dots_number = 0;
 
     int body_width = rad_x;
     int body_height = rad_y * 2;
