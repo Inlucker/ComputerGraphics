@@ -4,7 +4,6 @@
 
 Canvas::Canvas()
 {
-    //setGeometry(QRect(0, 0, 600, 600));
     setStyleSheet("background-color:white;");
 
     float_x[0] = 0;
@@ -38,7 +37,7 @@ Canvas::Canvas()
 
     //Head params
     head = NULL;
-    head_dots_number = 0;
+    //head_dots_number = 0;
     head_center_x = x[cur_id];
     head_center_y = y[cur_id] - rad_y * 2;
     head_size_x = rad_x;
@@ -92,33 +91,31 @@ Canvas::Canvas()
     eye1_y = head_center_y - eye_height;
     eye2_x = head_center_x + eye_width;
     eye2_y = head_center_y - eye_height;
-    //HERE
+
     //Set whiskers params
-    float len = base_size * 35;
-    float wisk_height = base_size * 10;
-    float wisk_center_x = x[cur_id];
-    float wisk_center_y = y[cur_id] - rad_y * 2 + wisk_height;
+    len = base_size * 35;
+    wisk_height = base_size * 10;
+    wisk_center_x = x[cur_id];
+    wisk_center_y = y[cur_id] - rad_y * 2 + wisk_height;
+    wisk_x1 = wisk_center_x - len;
+    wisk_x2 = wisk_center_x + len;
+    wisk_y1 = wisk_center_y;
+    wisk_y2 = wisk_center_y + wisk_height;
+    wisk_y3 = wisk_center_y - wisk_height;
 
-    float wisk_x1 = wisk_center_x - len;
-    float wisk_x2 = wisk_center_x + len;
-    float wisk_y1 = wisk_center_y;
-    float wisk_y2 = wisk_center_y + wisk_height;
-    float wisk_y3 = wisk_center_y - wisk_height;
-
-    QPointF wiskers_dots[7];
-    wiskers_dots[0].setX(wisk_center_x); wiskers_dots[0].setY(wisk_center_y);
+    /*wiskers_dots[0].setX(wisk_center_x); wiskers_dots[0].setY(wisk_center_y);
     wiskers_dots[1].setX(wisk_x1); wiskers_dots[1].setY(wisk_y1);
     wiskers_dots[2].setX(wisk_x1); wiskers_dots[2].setY(wisk_y2);
     wiskers_dots[3].setX(wisk_x1); wiskers_dots[3].setY(wisk_y3);
     wiskers_dots[4].setX(wisk_x2); wiskers_dots[4].setY(wisk_y1);
     wiskers_dots[5].setX(wisk_x2); wiskers_dots[5].setY(wisk_y2);
-    wiskers_dots[6].setX(wisk_x2); wiskers_dots[6].setY(wisk_y3);
+    wiskers_dots[6].setX(wisk_x2); wiskers_dots[6].setY(wisk_y3);*/
+
     //Set body params
-    float body_center_x = x[cur_id];
-    float body_center_y = y[cur_id] + rad_y;
-    int body_width = rad_x;
-    int body_height = rad_y * 2;
-    QPointF body_center = QPointF(body_center_x, body_center_y);
+    body_width = rad_x;
+    body_height = rad_y * 2;
+    body_center_x = x[cur_id];
+    body_center_y = y[cur_id] + rad_y;
     //------------------------SET PARAMS END------------------------//
 }
 
@@ -263,11 +260,13 @@ void Canvas::paintEvent(QPaintEvent *event)
         {
             case CREATE:
             {
+                int tmp_dots_number;
                 //HEAD
-                head = create_ellipse(head_center_x, head_center_y, head_size_x, head_size_y, &head_dots_number);
-                //cout << head_dots_number << endl;
+                head = create_ellipse(head_center_x, head_center_y, head_size_x, head_size_y, &tmp_dots_number);
+                //cout << tmp_dots_number << endl;
 
                 //EARS
+                {
                 float x11 = head_center_x - ear_offset;
                 float y11 = head_center_y - delta_y1;
                 ear1_dots[0].setX(x11);
@@ -297,11 +296,53 @@ void Canvas::paintEvent(QPaintEvent *event)
                 float y23 = head_center_y - delta_y2;
                 ear2_dots[2].setX(x23);
                 ear2_dots[2].setY(y23);
+                }
 
-                //
+                //EYES
+                {
+                    eye1 = create_ellipse(eye1_x, eye1_y, eye_size_x, eye_size_y, &tmp_dots_number);
+                    //cout << tmp_dots_number << endl;
+                    eye2 = create_ellipse(eye2_x, eye2_y, eye_size_x, eye_size_y, &tmp_dots_number);
+                    //cout << tmp_dots_number << endl;
+                }
+
+                //WHISKERS
+                {
+                    wiskers_dots[0].setX(wisk_center_x); wiskers_dots[0].setY(wisk_center_y);
+                    wiskers_dots[1].setX(wisk_x1); wiskers_dots[1].setY(wisk_y1);
+                    wiskers_dots[2].setX(wisk_x1); wiskers_dots[2].setY(wisk_y2);
+                    wiskers_dots[3].setX(wisk_x1); wiskers_dots[3].setY(wisk_y3);
+                    wiskers_dots[4].setX(wisk_x2); wiskers_dots[4].setY(wisk_y1);
+                    wiskers_dots[5].setX(wisk_x2); wiskers_dots[5].setY(wisk_y2);
+                    wiskers_dots[6].setX(wisk_x2); wiskers_dots[6].setY(wisk_y3);
+                }
+
+                //BODY
+                {
+                    body_center_x = x[cur_id];
+                    body_center_y = y[cur_id] + rad_y;
+
+                    body = create_ellipse(body_center_x, body_center_y, body_width, body_height, &tmp_dots_number);
+                    cout << tmp_dots_number << endl;
+                }
+
             }
             case MOVE:
             {
+            //HEAD
+
+
+            //EARS
+
+
+            //EYES
+
+
+            //WHISKERS
+
+
+            //BODY
+
 
             }
             case SCALE:
@@ -504,6 +545,7 @@ void Canvas::paintEvent(QPaintEvent *event)
         //--------------------------DRAW START--------------------------//
         //Draw head
         painter.drawPolygon(*head);
+
         //Draw ears
         for (int i = 0; i < 2; i++)
         {
@@ -511,6 +553,18 @@ void Canvas::paintEvent(QPaintEvent *event)
             painter.drawLine(ear2_dots[i], ear2_dots[i + 1]);
         }
 
+        //Draw eyes
+        painter.drawPolygon(*eye1);
+        painter.drawPolygon(*eye2);
+
+        //Draw cat's whiskers
+        for (int i = 1; i < 7; i++)
+        {
+            painter.drawLine(wiskers_dots[0], wiskers_dots[i]);
+        }
+
+        //Draw body
+        painter.drawPolygon(*body);
         //---------------------------DRAW END---------------------------//
     }
     painter.end(); //Освобождение контекста

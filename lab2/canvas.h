@@ -70,7 +70,7 @@ private:
 
     //Head params
     QPolygonF *head = NULL;
-    int head_dots_number = 0;
+    //int head_dots_number = 0;
 
     float head_center_x = x[cur_id];
     float head_center_y = y[cur_id] - rad_y * 2;
@@ -99,6 +99,27 @@ private:
     float eye1_y = head_center_y - eye_height;
     float eye2_x = head_center_x + eye_width;
     float eye2_y = head_center_y - eye_height;
+
+    //Set whiskers params
+    QPointF wiskers_dots[7];
+
+    float len = base_size * 35;
+    float wisk_height = base_size * 10;
+    float wisk_center_x = x[cur_id];
+    float wisk_center_y = y[cur_id] - rad_y * 2 + wisk_height;
+    float wisk_x1 = wisk_center_x - len;
+    float wisk_x2 = wisk_center_x + len;
+    float wisk_y1 = wisk_center_y;
+    float wisk_y2 = wisk_center_y + wisk_height;
+    float wisk_y3 = wisk_center_y - wisk_height;
+
+    //Set body params
+    QPolygonF *body;
+
+    int body_width = rad_x;
+    int body_height = rad_y * 2;
+    float body_center_x = x[cur_id];
+    float body_center_y = y[cur_id] + rad_y;
 
     QPainter painter;
 
