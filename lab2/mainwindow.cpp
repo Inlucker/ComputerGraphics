@@ -113,7 +113,7 @@ void MainWindow::on_create_btn_clicked()
     if (!canvas->is_visible[canvas->cur_id])
         ui->coords_label->setText("Текущее состояние:\nИзображение\nне отображается");
     else
-        ui->coords_label->setText(tr("Текущее состояние:\nКоординаты центра:\nX: %1 Y: %2").arg(center_x).arg(center_y));
+        ui->coords_label->setText(tr("Текущее состояние:\nКоординаты центра:\nX: %1 Y: %2\nX_f: %3\nY_f: %4").arg(int(center_x)).arg(int(center_y)).arg(center_x).arg(center_y));
 }
 
 void MainWindow::on_move_btn_clicked()
@@ -173,7 +173,7 @@ void MainWindow::on_move_btn_clicked()
     if (!canvas->is_visible[canvas->cur_id])
         ui->coords_label->setText("Текущее состояние:\nИзображение\nне отображается");
     else
-        ui->coords_label->setText(tr("Текущее состояние:\nКоординаты центра:\nX: %1 Y: %2").arg(center_x).arg(center_y));
+        ui->coords_label->setText(tr("Текущее состояние:\nКоординаты центра:\nX: %1 Y: %2\nX_f: %3\nY_f: %4").arg(int(center_x)).arg(int(center_y)).arg(center_x).arg(center_y));
 }
 
 void MainWindow::on_change_size_btn_clicked()
@@ -238,7 +238,7 @@ void MainWindow::on_change_size_btn_clicked()
     if (!canvas->is_visible[canvas->cur_id])
         ui->coords_label->setText("Текущее состояние:\nИзображение\nне отображается");
     else
-        ui->coords_label->setText(tr("Текущее состояние:\nКоординаты центра:\nX: %1 Y: %2").arg(center_x).arg(center_y));
+        ui->coords_label->setText(tr("Текущее состояние:\nКоординаты центра:\nX: %1 Y: %2\nX_f: %3\nY_f: %4").arg(int(center_x)).arg(int(center_y)).arg(center_x).arg(center_y));
 }
 
 void MainWindow::on_rotate_btn_clicked()
@@ -309,7 +309,7 @@ void MainWindow::on_rotate_btn_clicked()
     if (!canvas->is_visible[canvas->cur_id])
         ui->coords_label->setText("Текущее состояние:\nИзображение\nне отображается");
     else
-        ui->coords_label->setText(tr("Текущее состояние:\nКоординаты центра:\nX: %1 Y: %2").arg(center_x).arg(center_y));
+        ui->coords_label->setText(tr("Текущее состояние:\nКоординаты центра:\nX: %1 Y: %2\nX_f: %3\nY_f: %4").arg(int(center_x)).arg(int(center_y)).arg(center_x).arg(center_y));
 }
 
 void MainWindow::on_pushButton_clicked()
@@ -358,7 +358,7 @@ void MainWindow::on_pushButton_clicked()
     if (!canvas->is_visible[canvas->cur_id])
         ui->coords_label->setText("Текущее состояние:\nИзображение\nне отображается");
     else
-        ui->coords_label->setText(tr("Текущее состояние:\nКоординаты центра:\nX: %1 Y: %2").arg(center_x).arg(center_y));
+        ui->coords_label->setText(tr("Текущее состояние:\nКоординаты центра:\nX: %1 Y: %2\nX_f: %3\nY_f: %4").arg(int(center_x)).arg(int(center_y)).arg(center_x).arg(center_y));
 }
 
 void MainWindow::on_get_coords_info_clicked()
