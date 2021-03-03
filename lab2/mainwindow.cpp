@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#define EPS 1e-3
+#define EPS 1e-4
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -37,6 +37,25 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+float MainWindow::rotate_x(float x0, float y0, float xc, float yc, float radians)
+{
+    float rez = xc + (x0 - xc) * cos(radians) + (y0 - yc) * sin(radians);
+    return rez;
+}
+
+float MainWindow::rotate_y(float x0, float y0, float xc, float yc, float radians)
+{
+    float rez = yc - (x0 - xc) * sin(radians) + (y0 - yc) * cos(radians);
+    return rez;
+}
+
+void MainWindow::rotate(float *x0, float *y0, float xc, float yc, float radians)
+{
+    float new_x = rotate_x(*x0, *y0, xc, yc, radians);
+    float new_y = rotate_y(*x0, *y0, xc, yc, radians);
+    *x0 = new_x;
+    *y0 = new_y;
+}
 
 void MainWindow::on_create_btn_clicked()
 {
@@ -63,6 +82,7 @@ void MainWindow::on_create_btn_clicked()
         center_y = y;
 
         canvas->transofrmation[canvas->cur_id] = CREATE;
+        canvas->reverse = false;
 
         canvas->float_x[canvas->cur_id] = x;
         canvas->float_y[canvas->cur_id] = y;
@@ -121,6 +141,7 @@ void MainWindow::on_move_btn_clicked()
         center_y += y;
 
         canvas->transofrmation[canvas->cur_id] = MOVE;
+        canvas->reverse = false;
 
         canvas->float_x[canvas->cur_id] = x;
         canvas->float_y[canvas->cur_id] = y;
@@ -185,6 +206,7 @@ void MainWindow::on_change_size_btn_clicked()
         center_y = ky * center_y + yc * (1 - ky);
 
         canvas->transofrmation[canvas->cur_id] = SCALE;
+        canvas->reverse = false;
 
         canvas->size_center_x[canvas->cur_id] = xc;
         canvas->size_center_y[canvas->cur_id] = yc;
@@ -243,10 +265,16 @@ void MainWindow::on_rotate_btn_clicked()
                 canvas->first_id = 0;
         }
 
-        center_x = xc + (center_x - xc) * cos(angle * PI / 180);
-        center_y = yc + (center_y - yc) * cos(angle * PI / 180);
+        float radians = angle * PI / 180;
+        float new_x = center_x;
+        float new_y = center_y;
+        rotate(&new_x, &new_y, xc, yc, radians);
+
+        center_x = new_x;
+        center_y = new_y;
 
         canvas->transofrmation[canvas->cur_id] = ROTATE;
+        canvas->reverse = false;
 
         canvas->angle[canvas->cur_id] = angle;
         if (abs(canvas->angle[canvas->cur_id] - 360) <= EPS || canvas->angle[canvas->cur_id] > 360)
@@ -293,9 +321,38 @@ void MainWindow::on_pushButton_clicked()
     }
     else
     {
+        int prev_id = canvas->cur_id;
         canvas->cur_id -= 1;
         if (canvas->cur_id < 0)
             canvas->cur_id = GAP - 1;
+        canvas->reverse = true;
+        switch (canvas->transofrmation[prev_id])
+        {
+            case MOVE:
+            {
+                center_x -= canvas->float_x[prev_id];
+                center_y -= canvas->float_y[prev_id];
+            }
+            case SCALE:
+            {
+                center_x = (1 / canvas->size_x[prev_id]) * center_x + canvas->size_center_x[prev_id] * (1 - (1 / canvas->size_x[prev_id]));
+                center_y = (1 / canvas->size_y[prev_id]) * center_y + canvas->size_center_y[prev_id] * (1 - (1 / canvas->size_y[prev_id]));
+            }
+            case ROTATE:
+            {
+                float radians = (-canvas->angle[prev_id]) * PI / 180;
+                float new_x = center_x;
+                float new_y = center_y;
+                rotate(&new_x, &new_y, canvas->rotate_center_x[prev_id], canvas->rotate_center_x[prev_id], radians);
+                center_x = new_x;
+                center_y = new_y;
+            }
+            default:
+            {
+                //nothing
+            }
+
+        }
     }
     canvas->update();
     if (!canvas->is_visible[canvas->cur_id])

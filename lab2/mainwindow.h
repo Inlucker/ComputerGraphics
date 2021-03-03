@@ -17,6 +17,11 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private:
+    float rotate_x(float x0, float y0, float xc, float yc, float radians);
+    float rotate_y(float x0, float y0, float xc, float yc, float radians);
+    void rotate(float *x0, float *y0, float xc, float yc, float radians);
+
 private slots:
     void on_create_btn_clicked();
 

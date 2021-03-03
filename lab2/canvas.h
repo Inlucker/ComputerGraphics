@@ -62,6 +62,8 @@ public:
 
     int transofrmation[GAP];
 
+    bool reverse = false;
+
 private:
     //Base params
     float base_size = 1;
