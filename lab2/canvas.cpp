@@ -11,6 +11,9 @@ Canvas::Canvas()
     float_y[0] = 0;
     x[0] = 0;
     y[0] = 0;
+
+    size_center_x[0] = 0;
+    size_center_y[0] = 0;
     size_x[0] = 1;
     size_y[0] = 1;
 
@@ -56,6 +59,16 @@ void Canvas::rotate(float *x0, float *y0)
     *y0 = new_y;
 }
 
+void Canvas::scale(float *x0, float *y0)
+{
+    //float new_x = size_x[cur_id] * (*x0) + size_center_x[cur_id] * (1 - size_x[cur_id]);
+    //float new_y = size_y[cur_id] * (*y0) + size_center_y[cur_id] * (1 - size_y[cur_id]);
+    float new_x = size_x[cur_id] * (*x0) + x[cur_id] * (1 - size_x[cur_id]);
+    float new_y = size_y[cur_id] * (*y0) + y[cur_id] * (1 - size_y[cur_id]);
+    *x0 = new_x;
+    *y0 = new_y;
+}
+
 void Canvas::draw_ellipse(QPainter *painter, const float xc, const float yc, float a, float b)
 {
     float i = - a;
@@ -65,16 +78,18 @@ void Canvas::draw_ellipse(QPainter *painter, const float xc, const float yc, flo
         float y0 = yc + sqrt((1 - (pow(i/a, 2))) * pow(b, 2));
         //cout << i << ": " << x0 << " " << y0 << endl;
         rotate(&x0, &y0);
+        scale(&x0, &y0);
         QPointF cur_dot = QPointF(x0, y0);
         painter->drawPoint(cur_dot);
 
         x0 = xc + i;
         y0 = yc - sqrt((1 - (pow(i/a, 2))) * pow(b, 2));
         rotate(&x0, &y0);
+        scale(&x0, &y0);
         cur_dot.setX(x0);
         cur_dot.setY(y0);
         painter->drawPoint(cur_dot);
-        i++;
+        i += 1.0 / size_x[cur_id];
     }
     i = - b;
     while (i <= b)
@@ -83,6 +98,7 @@ void Canvas::draw_ellipse(QPainter *painter, const float xc, const float yc, flo
         float x0 = xc + sqrt((1 - (pow(i/b, 2))) * pow(a, 2));
         //cout << i << ": " << x0 << " " << y0 << endl;
         rotate(&x0, &y0);
+        scale(&x0, &y0);
         QPointF cur_dot = QPointF(x0, y0);
         //cout << i << ": " << int(cur_dot.x()) << " " << int(cur_dot.y()) << endl;
         painter->drawPoint(cur_dot);
@@ -90,10 +106,11 @@ void Canvas::draw_ellipse(QPainter *painter, const float xc, const float yc, flo
         y0 = yc + i;
         x0 = xc - sqrt((1 - (pow(i/b, 2))) * pow(a, 2));
         rotate(&x0, &y0);
+        scale(&x0, &y0);
         cur_dot.setX(x0);
         cur_dot.setY(y0);
         painter->drawPoint(cur_dot);
-        i++;
+        i += 1.0 / size_y[cur_id];
     }
 }
 
@@ -115,20 +132,28 @@ void Canvas::paintEvent(QPaintEvent *event)
     if (is_visible[cur_id])
     {
         //-----------------------SET PARAMS START-----------------------//
+        //Set x, y by size_center
+        //x[cur_id] = kx * canvas->float_x[prev_id] + xc * (1 - kx);
+        //canvas->float_y[canvas->cur_id] = ky * canvas->float_y[prev_id] + yc * (1 - ky);
         //Set radians by angle
         radians = angle[cur_id] * PI / 180;
         //Set radius by size
-        float rad_x = size_x[cur_id] * 25;
-        float rad_y = size_y[cur_id] * 25;
+        /*float rad_x = size_x[cur_id] * 25;
+        float rad_y = size_y[cur_id] * 25;*/
+        float rad_x = base_size * 25;
+        float rad_y = base_size * 25;
         //Set head params
         float head_center_x = x[cur_id];
         float head_center_y = y[cur_id] - rad_y * 2;
         int head_size_x = rad_x;
         int head_size_y = rad_y;
         //Set ears params
-        float ear_offset = size_x[cur_id] * 5;
+        /*float ear_offset = size_x[cur_id] * 5;
         float ear_height = size_y[cur_id] * 15;
-        float ear_width = size_x[cur_id] * 7;
+        float ear_width = size_x[cur_id] * 7;*/
+        float ear_offset = base_size * 5;
+        float ear_height = base_size * 15;
+        float ear_width = base_size * 7;
 
         float delta_y1 = sqrt((1 - pow((ear_offset) / rad_x, 2)) * pow(rad_y, 2));
         float delta_y2 = sqrt((1 - pow((ear_width * 2 + ear_offset) / rad_x, 2)) * pow(rad_y, 2));
@@ -165,17 +190,23 @@ void Canvas::paintEvent(QPaintEvent *event)
         ear2_dots[2].setX(x23);
         ear2_dots[2].setY(y23);
         //Set eyes params
-        float eye_width = size_x[cur_id] * 10;
+        /*float eye_width = size_x[cur_id] * 10;
         float eye_height = size_y[cur_id] * 5;
         int eye_size_x = size_x[cur_id] * 5;
-        int eye_size_y = size_y[cur_id] * 5;
+        int eye_size_y = size_y[cur_id] * 5;*/
+        float eye_width = base_size * 10;
+        float eye_height = base_size * 5;
+        int eye_size_x = base_size * 5;
+        int eye_size_y = base_size * 5;
         float eye1_x = head_center_x - eye_width;
         float eye1_y = head_center_y - eye_height;
         float eye2_x = head_center_x + eye_width;
         float eye2_y = head_center_y - eye_height;
         //Set whiskers params
-        float len = size_x[cur_id] * 35;
-        float wisk_height = size_y[cur_id] * 10;
+        /*float len = size_x[cur_id] * 35;
+        float wisk_height = size_y[cur_id] * 10;*/
+        float len = base_size * 35;
+        float wisk_height = base_size * 10;
         float wisk_center_x = x[cur_id];
         float wisk_center_y = y[cur_id] - rad_y * 2 + wisk_height;
 
@@ -202,6 +233,10 @@ void Canvas::paintEvent(QPaintEvent *event)
         //------------------------SET PARAMS END------------------------//
 
         //-------------------------ROTATE START-------------------------//
+        //Rotate center
+        rotate(&float_x[cur_id], &float_y[cur_id]);
+        x[cur_id] = float_x[cur_id];
+        y[cur_id] = float_y[cur_id];
         //Rotate head
         //rotate(&head_center_x, &head_center_y);
         QPointF head_center = QPointF(head_center_x, head_center_y);
@@ -235,6 +270,33 @@ void Canvas::paintEvent(QPaintEvent *event)
             wiskers_dots[i].setY(tmp_y);
         }
         //--------------------------ROTATE END--------------------------//
+
+        //--------------------------SCALE START-------------------------//
+        //Scale ears
+        for (int i = 0; i < 3; i++)
+        {
+            float tmp_x = ear1_dots[i].x();
+            float tmp_y = ear1_dots[i].y();
+            scale(&tmp_x, &tmp_y);
+            ear1_dots[i].setX(tmp_x);
+            ear1_dots[i].setY(tmp_y);
+
+            tmp_x = ear2_dots[i].x();
+            tmp_y = ear2_dots[i].y();
+            scale(&tmp_x, &tmp_y);
+            ear2_dots[i].setX(tmp_x);
+            ear2_dots[i].setY(tmp_y);
+        }
+        //Scale whiskers
+        for (int i = 0; i < 7; i++)
+        {
+            float tmp_x = wiskers_dots[i].x();
+            float tmp_y = wiskers_dots[i].y();
+            scale(&tmp_x, &tmp_y);
+            wiskers_dots[i].setX(tmp_x);
+            wiskers_dots[i].setY(tmp_y);
+        }
+        //---------------------------SCALE END--------------------------//
 
         //--------------------------DRAW START--------------------------//
         //Draw head
