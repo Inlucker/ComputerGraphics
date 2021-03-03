@@ -242,24 +242,27 @@ void MainWindow::on_rotate_btn_clicked()
                 canvas->first_id = 0;
         }
 
-        canvas->angle[canvas->cur_id] = canvas->angle[prev_id] + angle;
+        canvas->transofrmation[canvas->cur_id] = ROTATE;
+
+        canvas->angle[canvas->cur_id] = angle;
         if (abs(canvas->angle[canvas->cur_id] - 360) <= EPS || canvas->angle[canvas->cur_id] > 360)
         {
             canvas->angle[canvas->cur_id] -= int(canvas->angle[canvas->cur_id] / 360) * 360;
         }
         if (abs(canvas->angle[canvas->cur_id] - int(canvas->angle[canvas->cur_id] / 360) * 360) <= EPS)
             canvas->angle[canvas->cur_id] = 0;
+
         canvas->rotate_center_x[canvas->cur_id] = xc;
         canvas->rotate_center_y[canvas->cur_id] = yc;
         //Без изменений
-        canvas->float_x[canvas->cur_id] = canvas->float_x[prev_id];
-        canvas->float_y[canvas->cur_id] = canvas->float_y[prev_id];
+        canvas->float_x[canvas->cur_id] = 0;
+        canvas->float_y[canvas->cur_id] = 0;
         canvas->x[canvas->cur_id] = canvas->float_x[canvas->cur_id];
         canvas->y[canvas->cur_id] = canvas->float_y[canvas->cur_id];
-        canvas->size_center_x[canvas->cur_id] = canvas->size_center_x[prev_id];
-        canvas->size_center_y[canvas->cur_id] = canvas->size_center_y[prev_id];
-        canvas->size_x[canvas->cur_id] = canvas->size_x[prev_id];
-        canvas->size_y[canvas->cur_id] = canvas->size_y[prev_id];
+        canvas->size_center_x[canvas->cur_id] = 0;
+        canvas->size_center_y[canvas->cur_id] = 0;
+        canvas->size_x[canvas->cur_id] = 1;
+        canvas->size_y[canvas->cur_id] = 1;
         canvas->is_visible[canvas->cur_id] = canvas->is_visible[prev_id];
         canvas->update();
     }

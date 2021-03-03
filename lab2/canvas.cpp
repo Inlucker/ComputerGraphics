@@ -130,7 +130,7 @@ float Canvas::rotate_x(float x0, float y0)
     //return x_center + (x - x_center) * cos(radians) + (y - y_center) * sin(radians);
     float rez = rotate_center_x[cur_id] + (x0 - rotate_center_x[cur_id]) * cos(radians) + (y0 - rotate_center_y[cur_id]) * sin(radians);
     //cout << "x1 = " << x_center << " + (" << x0 << " - " << x_center << ") * " << cos(radians) << " + (" << y0 << " - " << y_center << ") * " << sin(radians) << " = " << rez << endl;
-    //cout << "x1 = " << x_center << " + (" << y0 << " - " << y_center << ") = " << rez << endl;
+    //cout << "x1 = " << rotate_center_x[cur_id] << " + (" << y0 << " - " << rotate_center_y[cur_id] << ") = " << rez << endl;
     return rez;
 }
 
@@ -396,7 +396,6 @@ void Canvas::paintEvent(QPaintEvent *event)
                     for (int i = 0; i < head_dots_number; i++)
                     {
                         QPointF tmp = ellipse[i];
-                        //cout << float(tmp.x()) << " " << float(tmp.y()) << endl;
                         (*head)[i].setX(size_x[cur_id] * tmp.x() + size_center_x[cur_id] * (1 - size_x[cur_id]));
                         (*head)[i].setY(size_y[cur_id] * tmp.y() + size_center_y[cur_id] * (1 - size_y[cur_id]));
                     }
@@ -451,6 +450,86 @@ void Canvas::paintEvent(QPaintEvent *event)
             }
             case ROTATE:
             {
+            //HEAD
+            {
+                //Set radians by angle
+                radians = angle[cur_id] * PI / 180;
+                QPolygonF ellipse = *head;
+                for (int i = 0; i < head_dots_number; i++)
+                {
+                    QPointF tmp = ellipse[i];
+                    float new_x = tmp.x();
+                    float new_y = tmp.y();
+                    rotate(&new_x, &new_y);
+
+                    (*head)[i].setX(new_x);
+                    (*head)[i].setY(new_y);
+                }
+            }
+
+            //EARS
+            for (int i = 0; i < 3; i++)
+            {
+                float new_x = ear1_dots[i].x();
+                float new_y = ear1_dots[i].y();
+                rotate(&new_x, &new_y);
+                ear1_dots[i].setX(new_x);
+                ear1_dots[i].setY(new_y);
+
+                new_x = ear2_dots[i].x();
+                new_y = ear2_dots[i].y();
+                rotate(&new_x, &new_y);
+                ear2_dots[i].setX(new_x);
+                ear2_dots[i].setY(new_y);
+            }
+
+            //EYES
+            {
+                QPolygonF ellipse = *eye1;
+                for (int i = 0; i < eye1_dots_number; i++)
+                {
+                    QPointF tmp = ellipse[i];
+                    float new_x = tmp.x();
+                    float new_y = tmp.y();
+                    rotate(&new_x, &new_y);
+                    (*eye1)[i].setX(new_x);
+                    (*eye1)[i].setY(new_y);
+                }
+                ellipse = *eye2;
+                for (int i = 0; i < eye2_dots_number; i++)
+                {
+                    QPointF tmp = ellipse[i];
+                    float new_x = tmp.x();
+                    float new_y = tmp.y();
+                    rotate(&new_x, &new_y);
+                    (*eye2)[i].setX(new_x);
+                    (*eye2)[i].setY(new_y);
+                }
+            }
+
+            //WHISKERS
+            for (int i = 0; i < 7; i++)
+            {
+                float new_x = wiskers_dots[i].x();
+                float new_y = wiskers_dots[i].y();
+                rotate(&new_x, &new_y);
+                wiskers_dots[i].setX(new_x);
+                wiskers_dots[i].setY(new_y);
+            }
+
+            //BODY
+            {
+                QPolygonF ellipse = *body;
+                for (int i = 0; i < body_dots_number; i++)
+                {
+                    QPointF tmp = ellipse[i];
+                    float new_x = tmp.x();
+                    float new_y = tmp.y();
+                    rotate(&new_x, &new_y);
+                    (*body)[i].setX(new_x);
+                    (*body)[i].setY(new_y);
+                }
+            }
 
             }
             default:
