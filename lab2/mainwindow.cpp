@@ -118,6 +118,8 @@ void MainWindow::on_move_btn_clicked()
                 canvas->first_id = 0;
         }
 
+        canvas->transofrmation[canvas->cur_id] = CREATE;
+
         canvas->float_x[canvas->cur_id] = canvas->float_x[prev_id] + x;
         canvas->float_y[canvas->cur_id] = canvas->float_y[prev_id] + y;
         canvas->x[canvas->cur_id] = canvas->float_x[canvas->cur_id];
