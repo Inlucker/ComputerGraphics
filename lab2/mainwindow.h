@@ -33,6 +33,9 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
+    float center_x = 0;
+    float center_y = 0;
+
     Canvas *canvas;
 };
 #endif // MAINWINDOW_H

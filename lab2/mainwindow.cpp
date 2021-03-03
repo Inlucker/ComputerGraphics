@@ -62,6 +62,10 @@ void MainWindow::on_create_btn_clicked()
                 canvas->first_id = 0;
         }
 
+        center_x = x;
+        center_y = y;
+
+        canvas->transofrmation[canvas->cur_id] = CREATE;
 
         canvas->float_x[canvas->cur_id] = x;
         canvas->float_y[canvas->cur_id] = y;
@@ -92,9 +96,7 @@ void MainWindow::on_create_btn_clicked()
     if (!canvas->is_visible[canvas->cur_id])
         ui->coords_label->setText("Текущее состояние:\nИзображение\nне отображается");
     else
-        ui->coords_label->setText(tr("Текущее состояние:\nКоординаты центра:\nX: %1 Y: %2\nКоэф. масштабирования:\nKx: %3 Ky: %4\nУгол: %5")
-                                               .arg(canvas->float_x[canvas->cur_id]).arg(canvas->float_y[canvas->cur_id]).arg(canvas->size_x[canvas->cur_id])
-                                               .arg(canvas->size_y[canvas->cur_id]).arg(canvas->angle[canvas->cur_id]));
+        ui->coords_label->setText(tr("Текущее состояние:\nКоординаты центра:\nX: %1 Y: %2").arg(center_x).arg(center_y));
 }
 
 void MainWindow::on_move_btn_clicked()

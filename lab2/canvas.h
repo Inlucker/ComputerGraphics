@@ -31,8 +31,8 @@ private:
     float rotate_x(float x0, float y0);
     float rotate_y(float x0, float y0);
     void rotate(float *x0, float *y0);
-    void scale(float *x0, float *y0);
-    void draw_ellipse(QPainter *painter, const float xc, const float yc, float a, float b);
+    //void scale(float *x0, float *y0);
+    //void draw_ellipse(QPainter *painter, const float xc, const float yc, float a, float b);
 
     QPolygonF *create_ellipse(const float xc, const float yc, const float a, const float b, int *dots_number);
 
