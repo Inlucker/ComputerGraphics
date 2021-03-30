@@ -8,7 +8,11 @@ enum Algroitm
 {
     NO_ALG,
     DIG_DIF_ANALIZ,
-    CLEAN,
+    BREZENHAM_FLOAT,
+    BREZENHAM_INT,
+    BREZENHAM_STEP_REM,
+    VU,
+    STANDART
 };
 
 class Canvas : public QWidget
@@ -17,13 +21,16 @@ public:
     explicit Canvas(QWidget *parent = nullptr);
     ~Canvas();
 
+    void draw();
     void setPenColor(QColor color);
+    void clean();
 
 protected:
     void paintEvent(QPaintEvent *);
 
 public:
-    Algroitm method;
+    //bool isClean;// = false;
+    Algroitm method;// = DIG_DIF_ANALIZ;
     double X_start;
     double Y_start;
     double X_end;
@@ -39,7 +46,7 @@ private:
 
 private:
     //void draw_point(QPoint);
-    void clean();
+    //void clean();
 
 };
 

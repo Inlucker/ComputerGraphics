@@ -7,6 +7,13 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    ui->method_comboBox->addItem("ЦДА");
+    ui->method_comboBox->addItem("Брезенхем (int)");
+    ui->method_comboBox->addItem("Брезенхем (float)");
+    ui->method_comboBox->addItem("Брезенхем с устранением ступенчатости");
+    ui->method_comboBox->addItem("Ву");
+    ui->method_comboBox->addItem("QT");
+
     ui->penColor_comboBox->addItem("Чёрный");
     ui->penColor_comboBox->addItem("Красный");
     ui->penColor_comboBox->addItem("Зелёный");
@@ -34,8 +41,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_draw_Btn_clicked()
 {
-    canvas->method = DIG_DIF_ANALIZ;
-
     bool isXsFloat = false;
     float Xs = ui->X_start_Edit->text().toFloat(&isXsFloat);
 
@@ -85,14 +90,14 @@ void MainWindow::on_draw_Btn_clicked()
         X = X + dX, Y += dY;
     }*/
     //canvas->setPenColor(Qt::green);
+    canvas->draw();
     canvas->update();
 
 }
 
 void MainWindow::on_clean_Btn_clicked()
 {
-    canvas->method = CLEAN;
-    canvas->update();
+    canvas->clean();
 }
 
 void MainWindow::on_penColor_comboBox_activated(int index)
@@ -122,7 +127,6 @@ void MainWindow::on_penColor_comboBox_activated(int index)
 
 void MainWindow::on_backgroundColor_comboBox_activated(int index)
 {
-
     switch (index)
     {
         case 0:
@@ -144,4 +148,33 @@ void MainWindow::on_backgroundColor_comboBox_activated(int index)
             //???
             break;
     }
+}
+
+void MainWindow::on_method_comboBox_activated(int index)
+{
+    switch (index)
+    {
+        case 0:
+            canvas->method = DIG_DIF_ANALIZ;
+            break;
+        case 1:
+            canvas->method = BREZENHAM_FLOAT;
+            break;
+        case 2:
+            canvas->method = BREZENHAM_INT;
+            break;
+        case 3:
+            canvas->method = BREZENHAM_STEP_REM;
+            break;
+        case 4:
+            canvas->method = VU;
+            break;
+        case 5:
+            canvas->method = STANDART;
+            break;
+        default:
+            //???
+            break;
+    }
+
 }
