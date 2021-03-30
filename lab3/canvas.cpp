@@ -5,6 +5,7 @@
 Canvas::Canvas(QWidget *parent) : QWidget(parent)
 {
     setStyleSheet("background-color:white;");
+    //background_color = Qt::white;
     clean();
     pen = QPen(Qt::black);
 }
@@ -83,11 +84,11 @@ void Canvas::paintEvent(QPaintEvent *event)
 
     QPainter painter2(this);
 
-    float x_center = width() / 2;
-    float y_center = height() / 2;
-    painter2.translate(x_center, y_center);
+    //float x_center = width() / 2;
+    //float y_center = height() / 2;
+    //painter2.translate(x_center, y_center);
 
-    painter2.scale(1, -1);
+    //painter2.scale(1, -1);
 
     //painter.drawPixmap(width() / 2, height() / 2, my_pixmap);
     painter2.drawPixmap(0, 0, my_pixmap);
@@ -109,5 +110,5 @@ void Canvas::paintEvent(QPaintEvent *event)
 void Canvas::clean()
 {
     my_pixmap = QPixmap(2000, 2000);
-    my_pixmap.fill(Qt::white);
+    my_pixmap.fill(QColor(0,0,0,0));
 }

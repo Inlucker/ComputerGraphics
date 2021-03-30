@@ -29,6 +29,8 @@ public:
     double X_end;
     double Y_end;
 
+    //QColor background_color;
+
 private:
     //QPainter painter;
     QPen pen;

@@ -24,6 +24,8 @@ private slots:
 
     void on_penColor_comboBox_activated(int index);
 
+    void on_backgroundColor_comboBox_activated(int index);
+
 private:
     Ui::MainWindow *ui;
 

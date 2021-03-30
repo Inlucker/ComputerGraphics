@@ -11,6 +11,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->penColor_comboBox->addItem("Красный");
     ui->penColor_comboBox->addItem("Зелёный");
     ui->penColor_comboBox->addItem("Синий");
+    ui->penColor_comboBox->addItem("Белый");
+
+    ui->backgroundColor_comboBox->addItem("Белый");
+    ui->backgroundColor_comboBox->addItem("Красный");
+    ui->backgroundColor_comboBox->addItem("Зелёный");
+    ui->backgroundColor_comboBox->addItem("Синий");
+    ui->backgroundColor_comboBox->addItem("Чёрный");
 
     this->setFixedHeight(this->height());
     this->setFixedWidth(this->width());
@@ -103,6 +110,35 @@ void MainWindow::on_penColor_comboBox_activated(int index)
             break;
         case 3:
             canvas->setPenColor(Qt::blue);
+            break;
+        case 4:
+            canvas->setPenColor(Qt::white);
+            break;
+        default:
+            //???
+            break;
+    }
+}
+
+void MainWindow::on_backgroundColor_comboBox_activated(int index)
+{
+
+    switch (index)
+    {
+        case 0:
+            canvas->setStyleSheet("background-color:white;");
+            break;
+        case 1:
+            canvas->setStyleSheet("background-color:red;");
+            break;
+        case 2:
+            canvas->setStyleSheet("background-color:green;");
+            break;
+        case 3:
+            canvas->setStyleSheet("background-color:blue;");
+            break;
+        case 4:
+            canvas->setStyleSheet("background-color:black;");
             break;
         default:
             //???
