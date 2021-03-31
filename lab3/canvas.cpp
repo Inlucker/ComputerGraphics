@@ -1,6 +1,6 @@
 #include "canvas.h"
-#include "math.h"
-#include "iostream"
+#include <math.h>
+#include <iostream>
 
 Canvas::Canvas(QWidget *parent) : QWidget(parent)
 {
@@ -95,6 +95,16 @@ void Canvas::paintEvent(QPaintEvent *event)
     //painter.end(); //Освобождение контекста
 }
 
+int sign(double val)
+{
+  if (val > 0)
+      return 1;
+  if (val < 0)
+      return -1;
+  else
+      return 0;
+}
+
 void Canvas::draw()
 {
     switch (method)
@@ -116,9 +126,9 @@ void Canvas::draw()
         */
 
             double dX = fabs(X_start - X_end), dY = abs(Y_start - Y_end);
-            double l = fmax(dX, dY);
-            dX = (X_end - X_start) / l;
-            dY = (Y_end - Y_start) / l;
+            double step = fmax(dX, dY);
+            dX = (X_end - X_start) / step;
+            dY = (Y_end - Y_start) / step;
             double X = X_start, Y = Y_start;
 
             QPainter painter(&my_pixmap);
@@ -130,6 +140,143 @@ void Canvas::draw()
                 //QPoint p = QPoint(int(X), int(Y));
                 //draw_point(p);
                 X = X + dX, Y += dY;
+            }
+            break;
+        }
+        case BREZENHAM_FLOAT:
+        {
+            /*
+            1. Ввод исходных данных (Xн, Yн), (Xк, Yк)
+            2. X = Xн ; Y = Yн
+            3. dx = Xк - Xн; dx = Xк - Xн
+            4. Sх = sign(dx); Sy = sign(dy)
+            5. dx = |dx|; dy = |dy|
+            6. Если dx > dy, то обмен = 0, иначе обмен = 1; t = dx; dx = dy; dy = t
+            7. m = dy / dx; e = m - 0.5
+            8. Цикл определения отрезка (по i от 1 до dx + 1)
+               8.1. Высвечивание T(x, y)
+               8.2. Если e >= 0, то
+                1) если обмен = 0, то y = y + sy, иначе x = x + sx
+                2) e = e - 1
+               8.3. Если обмен = 0, то x = x + sx, иначе y = y + sy
+               8.4. e = e + m
+               8.5. Конец цикла
+            9. Конец
+            */
+
+            int X = X_start, Y = Y_start;
+            double dX = fabs(X_end - X_start), dY = fabs(Y_end - Y_start);
+            int SX = sign(dX), SY = sign(dY);
+
+            double step;
+            if (dY >= dX)
+            {
+                //dX, dY = dY, dX;
+                double tmp = dX;
+                dX = dY;
+                dY = tmp;
+                step = 1; // шагаем по y
+            }
+            else
+                step = 0;
+
+            double tg = dY / dX; // tангенс угла наклона
+            double er = tg - 0.5; // начальное значение ошибки
+
+            QPainter painter(&my_pixmap);
+            painter.setPen(pen);
+
+            while (X != X_end || Y != Y_end)
+            {
+                painter.drawPoint(X, Y);
+
+                if (er >= 0)
+                {
+                    if (step == 1) // dy >= dx
+                        X += SX;
+                    else // dy < dx
+                        Y += SY;
+                    er -= 1; // отличие от целого
+                    //stairs.append(st)
+                    //st = 0
+                }
+                if (er <= 0)
+                {
+                    if (step == 0) // dy < dx
+                        X += SX;
+                    else // dy >= dx
+                        Y += SY;
+                    //st += 1
+                    er += tg; // отличие от целого
+                }
+            }
+            break;
+        }
+        case BREZENHAM_INT:
+        {
+            /*
+            1. Ввод исходных данных (Xн, Yн), (Xк, Yк)
+            2. X = Xн ; Y = Yн
+            3. dx = Xк - Xн; dx = Xк - Xн
+            4. Sх = sign(dx); Sy = sign(dy)
+            5. dx = |dx|; dy = |dy|
+            6. Если dx > dy, то обмен = 0, иначе обмен = 1; t = dx; dx = dy; dy = t
+            7. (для челочисленного e = 2dy - dx)
+            8. Цикл определения отрезка (по i от 1 до dx + 1)
+               8.1. Высвечивание T(x, y)
+               8.2. Если e >= 0, то
+                1) если обмен = 0, то y = y + sy, иначе x = x + sx
+                2) (для целочисленного e = e - 2dx)
+               8.3. Если обмен = 0, то x = x + sx, иначе y = y + sy
+               8.4. (для целочисленного e = e + 2dy)
+               8.5. Конец цикла
+            9. Конец
+            */
+
+            int X = X_start, Y = Y_start;
+            double dX = fabs(X_end - X_start), dY = fabs(Y_end - Y_start);
+            int SX = sign(dX), SY = sign(dY);
+
+            double step;
+            if (dY >= dX)
+            {
+                //dX, dY = dY, dX;
+                double tmp = dX;
+                dX = dY;
+                dY = tmp;
+                step = 1; // шагаем по y
+            }
+            else
+                step = 0;
+
+            double er = 2 * dY - dX; // отличие от вещественного (e = tg - 1 / 2) tg = dy / dx
+
+            QPainter painter(&my_pixmap);
+            painter.setPen(pen);
+
+            while (X != X_end || Y != Y_end)
+            {
+                painter.drawPoint(int(X), int(Y));
+
+                if (er >= 0)
+                {
+                    if (step == 1) // dy >= dx
+                        X += SX;
+                    else // dy < dx
+                        Y += SY;
+                    er -= 2 * dX; // отличие от вещественного (e -= 1)
+                    //stairs.append(st)
+                    //st = 0
+                }
+                if (er <= 0)
+                {
+                    if (step == 0) // dy < dx
+                        X += SX;
+                    else // dy >= dx
+                        Y += SY;
+                    //st += 1
+                    er += 2 * dY; // отличие от вещественного (e += tg)
+                }
             }
             break;
         }

@@ -127,7 +127,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>0</string>
+      <string>222</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="X_end_Edit">
@@ -140,7 +140,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>0</string>
+      <string>444</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_X_end">

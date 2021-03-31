@@ -54,22 +54,22 @@ void MainWindow::on_draw_Btn_clicked()
     float Ye = ui->Y_end_Edit->text().toFloat(&isYeFloat);
 
     if (isXsFloat)
-        canvas->X_start = Xs;
+        canvas->X_start = round(Xs);
     else
         QMessageBox::information(this, "Error", "X начальный должен быть вещественным числом");
 
     if (isYsFloat)
-        canvas->Y_start = Ys;
+        canvas->Y_start = round(Ys);
     else
         QMessageBox::information(this, "Error", "Y начальный должен быть вещественным числом");
 
     if (isXsFloat)
-        canvas->X_end = Xe;
+        canvas->X_end = round(Xe);
     else
         QMessageBox::information(this, "Error", "X конечный должен быть вещественным числом");
 
     if (isXsFloat)
-        canvas->Y_end = Ye;
+        canvas->Y_end = round(Ye);
     else
         QMessageBox::information(this, "Error", "Y конечный должен быть вещественным числом");
 
@@ -158,10 +158,10 @@ void MainWindow::on_method_comboBox_activated(int index)
             canvas->method = DIG_DIF_ANALIZ;
             break;
         case 1:
-            canvas->method = BREZENHAM_FLOAT;
+            canvas->method = BREZENHAM_INT;
             break;
         case 2:
-            canvas->method = BREZENHAM_INT;
+            canvas->method = BREZENHAM_FLOAT;
             break;
         case 3:
             canvas->method = BREZENHAM_STEP_REM;

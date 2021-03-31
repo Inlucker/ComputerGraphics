@@ -31,10 +31,10 @@ protected:
 public:
     //bool isClean;// = false;
     Algroitm method;// = DIG_DIF_ANALIZ;
-    double X_start;
-    double Y_start;
-    double X_end;
-    double Y_end;
+    int X_start;
+    int Y_start;
+    int X_end;
+    int Y_end;
 
     //QColor background_color;
 
