@@ -134,12 +134,13 @@ void Canvas::draw()
             QPainter painter(&my_pixmap);
             painter.setPen(pen);
 
+            painter.drawPoint(int(X), int(Y));
             while (fabs(X - X_end) > 1 || fabs(Y - Y_end) > 1)
             {
-                painter.drawPoint(int(X), int(Y));
                 //QPoint p = QPoint(int(X), int(Y));
                 //draw_point(p);
                 X = X + dX, Y += dY;
+                painter.drawPoint(int(X), int(Y));
             }
             break;
         }
@@ -165,14 +166,15 @@ void Canvas::draw()
             */
 
             int X = X_start, Y = Y_start;
-            double dX = fabs(X_end - X_start), dY = fabs(Y_end - Y_start);
+            int dX = X_end - X_start, dY = Y_end - Y_start;
             int SX = sign(dX), SY = sign(dY);
+            dX = abs(dX), dY = abs(dY);
 
-            double step;
+            int step;
             if (dY >= dX)
             {
                 //dX, dY = dY, dX;
-                double tmp = dX;
+                int tmp = dX;
                 dX = dY;
                 dY = tmp;
                 step = 1; // шагаем по y
@@ -180,16 +182,15 @@ void Canvas::draw()
             else
                 step = 0;
 
-            double tg = dY / dX; // tангенс угла наклона
+            double tg = double(dY) / double(dX) ; // tангенс угла наклона
             double er = tg - 0.5; // начальное значение ошибки
 
             QPainter painter(&my_pixmap);
             painter.setPen(pen);
 
+            painter.drawPoint(X, Y);
             while (X != X_end || Y != Y_end)
             {
-                painter.drawPoint(X, Y);
-
                 if (er >= 0)
                 {
                     if (step == 1) // dy >= dx
@@ -209,6 +210,7 @@ void Canvas::draw()
                     //st += 1
                     er += tg; // отличие от целого
                 }
+                painter.drawPoint(X, Y);
             }
             break;
         }
@@ -234,14 +236,15 @@ void Canvas::draw()
             */
 
             int X = X_start, Y = Y_start;
-            double dX = fabs(X_end - X_start), dY = fabs(Y_end - Y_start);
+            int dX = X_end - X_start, dY = Y_end - Y_start;
             int SX = sign(dX), SY = sign(dY);
+            dX = abs(dX), dY = abs(dY);
 
-            double step;
+            int step;
             if (dY >= dX)
             {
                 //dX, dY = dY, dX;
-                double tmp = dX;
+                int tmp = dX;
                 dX = dY;
                 dY = tmp;
                 step = 1; // шагаем по y
@@ -249,15 +252,14 @@ void Canvas::draw()
             else
                 step = 0;
 
-            double er = 2 * dY - dX; // отличие от вещественного (e = tg - 1 / 2) tg = dy / dx
+            int er = 2 * dY - dX; // отличие от вещественного (e = tg - 1 / 2) tg = dy / dx
 
             QPainter painter(&my_pixmap);
             painter.setPen(pen);
 
+            painter.drawPoint(X, Y);
             while (X != X_end || Y != Y_end)
             {
-                painter.drawPoint(int(X), int(Y));
-
                 if (er >= 0)
                 {
                     if (step == 1) // dy >= dx
@@ -277,7 +279,61 @@ void Canvas::draw()
                     //st += 1
                     er += 2 * dY; // отличие от вещественного (e += tg)
                 }
+                painter.drawPoint(X, Y);
             }
+            break;
+        }
+        case BREZENHAM_STEP_REM:
+        {
+            int X = X_start, Y = Y_start;
+            int I = 100;
+            //fill = get_rgb_intensity(canvas, fill, I)
+            int dX = X_end - X_start, dY = Y_end - Y_start;
+            int SX = sign(dX), SY = sign(dY);
+            dX = abs(dX), dY = abs(dY);
+
+            int step;
+            if (dY >= dX)
+            {
+                int tmp = dX;
+                dX = dY;
+                dY = tmp;
+                step = 1;
+            }
+            else
+                step = 0;
+
+            double tg = double(dY) / double(dX) * double(I); // тангенс угла наклона (умножаем на инт., чтобы не приходилось умножать внутри цикла
+            //double er = double(I) / 2; // интенсивность для высвечивания начального пикселя
+            double er = 0.5;
+            double w = double(I) - tg; // пороговое значение
+
+            QPainter painter(&my_pixmap);
+            painter.setPen(pen);
+
+            painter.drawPoint(X, Y);
+            while (X != X_end || Y != Y_end)
+            {
+                if (er < w)
+                {
+                    if (step == 0) // dy < dx
+                        X += SX; // -1 if dx < 0, 0 if dx = 0, 1 if dx > 0
+                    else // dy >= dx
+                        Y += SY; // -1 if dy < 0, 0 if dy = 0, 1 if dy > 0
+                    //st += 1 // stepping
+                    er += tg;
+                }
+                else if (er >= w)
+                {
+                    X += SX;
+                    Y += SY;
+                    er -= w;
+                    //stairs.append(st)
+                    //st = 0
+                }
+                painter.drawPoint(X, Y);
+            }
+
             break;
         }
         default:
