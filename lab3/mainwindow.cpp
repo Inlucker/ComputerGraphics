@@ -111,7 +111,7 @@ void MainWindow::on_penColor_comboBox_activated(int index)
             canvas->setPenColor(Qt::red);
             break;
         case 2:
-            canvas->setPenColor(Qt::green);
+            canvas->setPenColor(Qt::darkGreen);
             break;
         case 3:
             canvas->setPenColor(Qt::blue);
