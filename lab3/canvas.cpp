@@ -105,6 +105,21 @@ int sign(double val)
       return 0;
 }
 
+void Canvas::plot(QPainter *p, int x, int y, int c)
+{
+    setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue(), int(double(c))));
+    p->setPen(pen);
+    p->drawPoint(x, y);
+}
+
+void Canvas::DrawPoint(QPainter *p, bool steep, int x, int y, int c)
+{
+    if (!steep)
+        plot(p, x, y, c);
+    else
+        plot(p, y, x, c);
+}
+
 void Canvas::draw()
 {
     QPainter painter(&my_pixmap);
@@ -128,9 +143,9 @@ void Canvas::draw()
         */
 
             double dX = fabs(X_start - X_end), dY = abs(Y_start - Y_end);
-            double step = fmax(dX, dY);
-            dX = (X_end - X_start) / step;
-            dY = (Y_end - Y_start) / step;
+            double steep = fmax(dX, dY);
+            dX = (X_end - X_start) / steep;
+            dY = (Y_end - Y_start) / steep;
             double X = X_start, Y = Y_start;
 
             //QPainter painter(&my_pixmap);
@@ -172,17 +187,17 @@ void Canvas::draw()
             int SX = sign(dX), SY = sign(dY);
             dX = abs(dX), dY = abs(dY);
 
-            int step;
+            int steep;
             if (dY >= dX)
             {
                 //dX, dY = dY, dX;
                 int tmp = dX;
                 dX = dY;
                 dY = tmp;
-                step = 1; // шагаем по y
+                steep = 1; // шагаем по y
             }
             else
-                step = 0;
+                steep = 0;
 
             double tg = double(dY) / double(dX) ; // tангенс угла наклона
             double er = tg - 0.5; // начальное значение ошибки
@@ -195,7 +210,7 @@ void Canvas::draw()
             {
                 if (er >= 0)
                 {
-                    if (step == 1) // dy >= dx
+                    if (steep == 1) // dy >= dx
                         X += SX;
                     else // dy < dx
                         Y += SY;
@@ -205,7 +220,7 @@ void Canvas::draw()
                 }
                 if (er <= 0)
                 {
-                    if (step == 0) // dy < dx
+                    if (steep == 0) // dy < dx
                         X += SX;
                     else // dy >= dx
                         Y += SY;
@@ -242,17 +257,17 @@ void Canvas::draw()
             int SX = sign(dX), SY = sign(dY);
             dX = abs(dX), dY = abs(dY);
 
-            int step;
+            int steep;
             if (dY >= dX)
             {
                 //dX, dY = dY, dX;
                 int tmp = dX;
                 dX = dY;
                 dY = tmp;
-                step = 1; // шагаем по y
+                steep = 1; // шагаем по y
             }
             else
-                step = 0;
+                steep = 0;
 
             int er = 2 * dY - dX; // отличие от вещественного (e = tg - 1 / 2) tg = dy / dx
 
@@ -264,7 +279,7 @@ void Canvas::draw()
             {
                 if (er >= 0)
                 {
-                    if (step == 1) // dy >= dx
+                    if (steep == 1) // dy >= dx
                         X += SX;
                     else // dy < dx
                         Y += SY;
@@ -274,7 +289,7 @@ void Canvas::draw()
                 }
                 if (er <= 0)
                 {
-                    if (step == 0) // dy < dx
+                    if (steep == 0) // dy < dx
                         X += SX;
                     else // dy >= dx
                         Y += SY;
@@ -319,35 +334,36 @@ void Canvas::draw()
             int SX = sign(dX), SY = sign(dY);
             dX = abs(dX), dY = abs(dY);
 
-            int step;
+            int steep;
             if (dY >= dX)
             {
                 int tmp = dX;
                 dX = dY;
                 dY = tmp;
-                step = 1;
+                steep = 1;
             }
             else
-                step = 0;
+                steep = 0;
 
             double tg = double(dY) / double(dX) * double(I); // тангенс угла наклона (умножаем на инт., чтобы не приходилось умножать внутри цикла
             double er = double(I) / 2; // интенсивность для высвечивания начального пикселя
             double w = double(I) - tg; // пороговое значение
-            std::cout << w << std::endl;
-            std::cout << tg << std::endl;
+            //std::cout << w << std::endl;
+            //std::cout << tg << std::endl;
 
-            setPenColor(QColor(0, 0, 0, int(double(er))));
+            /*setPenColor(QColor(0, 0, 0, int(double(er))));
             painter.setPen(pen);
-            painter.drawPoint(X, Y);
+            painter.drawPoint(X, Y);*/
+            plot(&painter, X, Y, int(er));
             while (X != X_end || Y != Y_end)
             {
                 if (er < w)
                 {
-                    if (step == 0) // dy < dx
+                    if (steep == 0) // dy < dx
                         X += SX; // -1 if dx < 0, 0 if dx = 0, 1 if dx > 0
                     else // dy >= dx
                         Y += SY; // -1 if dy < 0, 0 if dy = 0, 1 if dy > 0
-                    //st += 1 // stepping
+                    //st += 1 // steepping
                     er += tg;
                 }
                 else if (er >= w)
@@ -360,14 +376,95 @@ void Canvas::draw()
                 }
                 //std::cout << er << std::endl;
                 //std::cout << int(255.0 / 50.0 * double(er)) << std::endl;
-                setPenColor(QColor(0, 0, 0, int(double(er))));
+                plot(&painter, X, Y, int(er));
+                /*setPenColor(QColor(0, 0, 0, int(double(er))));
                 painter.setPen(pen);
-                painter.drawPoint(X, Y);
+                painter.drawPoint(X, Y);*/
             }
             break;
         }
         case VU:
         {
+            /*
+            private void WuLine(int x0, int y0, int x1, int y1)
+            {
+                var steep = Math.Abs(y1 - y0) > Math.Abs(x1 - x0);
+                if (steep)
+                {
+                    Swap(ref x0, ref y0);
+                    Swap(ref x1, ref y1);
+                }
+                if (x0 > x1)
+                {
+                    Swap(ref x0, ref x1);
+                    Swap(ref y0, ref y1);
+                }
+
+                DrawPoint(steep, x0, y0, 1); // Эта функция автоматом меняет координаты местами в зависимости от переменной steep
+                DrawPoint(steep, x1, y1, 1); // Последний аргумент — интенсивность в долях единицы
+                float dx = x1 - x0;
+                float dy = y1 - y0;
+                float gradient = dy / dx;
+                float y = y0 + gradient;
+                for (var x = x0 + 1; x <= x1 - 1; x++)
+                {
+                    DrawPoint(steep, x, (int)y, 1 - (y - (int)y));
+                    DrawPoint(steep, x, (int)y + 1, y - (int)y);
+                    y += gradient;
+                }
+            }
+            */
+
+            int I = 255;
+            bool steep = abs(Y_end - Y_start) > abs(X_end - X_start);
+
+            if (steep)
+            {
+                int tmp = X_start;
+                X_start = Y_start;
+                Y_start = tmp;
+
+                tmp = X_end;
+                X_end = Y_end;
+                Y_end = tmp;
+            }
+            if (X_start > X_end)
+            {
+                int tmp = X_start;
+                X_start = X_end;
+                X_end = tmp;
+
+                tmp = Y_start;
+                Y_start = Y_end;
+                Y_end = tmp;
+            }
+
+            DrawPoint(&painter, steep, X_start, Y_start, I);
+            DrawPoint(&painter, steep, X_end, Y_end, I);
+
+            double dX = X_end - X_start, dY = Y_end - Y_start;
+
+            double tg;
+            if (dX == 0)
+                tg = 1;
+            else
+                tg = dY / dX;
+
+            //int xend = round(X_start);
+            //int yend = Y_start + tg * (xend - X_start);
+            //int  xpx1 = xend;
+            //double y = double(yend) + tg;
+            double y = Y_start + tg;
+
+            //xend = int(double(X_end) + 0.5);
+            //int xpx2 = xend;
+            for (int x = X_start + 1; x < X_end; x++)
+            {
+                DrawPoint(&painter, steep, x, int(y), I*(abs(1.0 - y + int(y))));
+                DrawPoint(&painter, steep, x, int(y)+1, I*(abs(y - int(y))));
+                y += tg;
+            }
+
 
         }
         case STANDART:

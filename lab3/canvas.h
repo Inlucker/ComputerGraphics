@@ -45,6 +45,8 @@ private:
     //algroitm metod;
 
 private:
+    void plot(QPainter *p, int x, int y, int c);
+    void DrawPoint(QPainter *p, bool steep, int x, int y, int c);
     //void draw_point(QPoint);
     //void clean();
 
