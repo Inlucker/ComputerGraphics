@@ -107,6 +107,8 @@ int sign(double val)
 
 void Canvas::draw()
 {
+    QPainter painter(&my_pixmap);
+    painter.setPen(pen);
     switch (method)
     {
         case DIG_DIF_ANALIZ:
@@ -131,8 +133,8 @@ void Canvas::draw()
             dY = (Y_end - Y_start) / step;
             double X = X_start, Y = Y_start;
 
-            QPainter painter(&my_pixmap);
-            painter.setPen(pen);
+            //QPainter painter(&my_pixmap);
+            //painter.setPen(pen);
 
             painter.drawPoint(int(X), int(Y));
             while (fabs(X - X_end) > 1 || fabs(Y - Y_end) > 1)
@@ -185,8 +187,8 @@ void Canvas::draw()
             double tg = double(dY) / double(dX) ; // tангенс угла наклона
             double er = tg - 0.5; // начальное значение ошибки
 
-            QPainter painter(&my_pixmap);
-            painter.setPen(pen);
+            //QPainter painter(&my_pixmap);
+            //painter.setPen(pen);
 
             painter.drawPoint(X, Y);
             while (X != X_end || Y != Y_end)
@@ -254,8 +256,8 @@ void Canvas::draw()
 
             int er = 2 * dY - dX; // отличие от вещественного (e = tg - 1 / 2) tg = dy / dx
 
-            QPainter painter(&my_pixmap);
-            painter.setPen(pen);
+            //QPainter painter(&my_pixmap);
+            //painter.setPen(pen);
 
             painter.drawPoint(X, Y);
             while (X != X_end || Y != Y_end)
@@ -285,8 +287,33 @@ void Canvas::draw()
         }
         case BREZENHAM_STEP_REM:
         {
+            /*
+            1. Ввод Xн, Yн, Xк, Yк, I - количество уровней интенсивности.
+            2. Вычисление приращений dX = Xк-Xн и dY = Yк-Yн.
+            3. Вычисление шага изменения каждой координаты: SX = sign(dX), SY = sign(dY).
+            4. dX = |dX|, dY = |dY|.
+            5. m = dY / dX
+            6. Если m > 1
+                6.1.t = dX;
+                6.2 dX = dY;
+                6.3 dY = t;
+                6.4 m = 1/m;
+                6.5 obmen = 0, если m < 1, иначе obmen = 1
+            7. e = I / 2
+            8. X = Xн, Y = Yн.
+            9. m = mI, W = I-m.
+            10. Высвечивание пиксела с координатами (X,Y) интенсивностью E(e).
+            11. Цикл от i = 1 до i = dX с шагом 1:
+                11.1. Если e < W, то
+                      11.1.1 если obmen = 0, то X = X + SX, иначе Y = Y + SY
+                      11.1.2 e = e + m.
+                11.2 иначе
+                      11.2.1 X = X + SX, Y = Y + SY, e = e - W.
+                11. 3 Высвечивание пикселя с координатами (X,Y) интенсивностью E(e).
+            12. Конец цикла.
+            */
             int X = X_start, Y = Y_start;
-            int I = 100;
+            int I = 255;
             //fill = get_rgb_intensity(canvas, fill, I)
             int dX = X_end - X_start, dY = Y_end - Y_start;
             int SX = sign(dX), SY = sign(dY);
@@ -304,13 +331,13 @@ void Canvas::draw()
                 step = 0;
 
             double tg = double(dY) / double(dX) * double(I); // тангенс угла наклона (умножаем на инт., чтобы не приходилось умножать внутри цикла
-            //double er = double(I) / 2; // интенсивность для высвечивания начального пикселя
-            double er = 0.5;
+            double er = double(I) / 2; // интенсивность для высвечивания начального пикселя
             double w = double(I) - tg; // пороговое значение
+            std::cout << w << std::endl;
+            std::cout << tg << std::endl;
 
-            QPainter painter(&my_pixmap);
+            setPenColor(QColor(0, 0, 0, int(double(er))));
             painter.setPen(pen);
-
             painter.drawPoint(X, Y);
             while (X != X_end || Y != Y_end)
             {
@@ -331,10 +358,23 @@ void Canvas::draw()
                     //stairs.append(st)
                     //st = 0
                 }
+                //std::cout << er << std::endl;
+                //std::cout << int(255.0 / 50.0 * double(er)) << std::endl;
+                setPenColor(QColor(0, 0, 0, int(double(er))));
+                painter.setPen(pen);
                 painter.drawPoint(X, Y);
             }
-
             break;
+        }
+        case VU:
+        {
+
+        }
+        case STANDART:
+        {
+            //QPainter painter(&my_pixmap);
+            //painter.setPen(pen);
+            painter.drawLine(X_start, Y_start, X_end, Y_end);
         }
         default:
         //???
