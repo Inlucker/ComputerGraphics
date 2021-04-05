@@ -120,6 +120,53 @@ void Canvas::DrawPoint(QPainter *p, bool steep, int x, int y, int c)
         plot(p, y, x, c);
 }
 
+/*void swap_func(int *a, int *b)
+{
+    int tmp = *a;
+    *a = *b;
+    *b = tmp;
+}
+
+// возвращает абсолютное значение числа
+float absolute(float x)
+{
+    if (x < 0)
+        return -x;
+    else
+        return x;
+}
+
+
+// возвращает целую часть числа с плавающей точкой
+int iPartOfNumber(float x)
+{
+    return (int)x;
+}
+
+
+// округляет число
+int roundNumber(float x)
+{
+    return iPartOfNumber(x + 0.5) ;
+}
+
+
+// возвращает дробную часть числа
+float fPartOfNumber(float x)
+{
+    if (x>0)
+        return x - iPartOfNumber(x);
+    else
+        return x - (iPartOfNumber(x)+1);
+}
+
+
+// возвращает 1 - дробная часть числа
+float rfPartOfNumber(float x)
+{
+    return 1 - fPartOfNumber(x);
+}*/
+
 void Canvas::draw()
 {
     QPainter painter(&my_pixmap);
@@ -329,7 +376,6 @@ void Canvas::draw()
             */
             int X = X_start, Y = Y_start;
             int I = 255;
-            //fill = get_rgb_intensity(canvas, fill, I)
             int dX = X_end - X_start, dY = Y_end - Y_start;
             int SX = sign(dX), SY = sign(dY);
             dX = abs(dX), dY = abs(dY);
@@ -450,14 +496,8 @@ void Canvas::draw()
             else
                 tg = dY / dX;
 
-            //int xend = round(X_start);
-            //int yend = Y_start + tg * (xend - X_start);
-            //int  xpx1 = xend;
-            //double y = double(yend) + tg;
             double y = Y_start + tg;
 
-            //xend = int(double(X_end) + 0.5);
-            //int xpx2 = xend;
             for (int x = X_start + 1; x < X_end; x++)
             {
                 DrawPoint(&painter, steep, x, int(y), I*(abs(1.0 - y + int(y))));
@@ -465,13 +505,69 @@ void Canvas::draw()
                 y += tg;
             }
 
+            /*int x0 = X_start, x1 = X_end;
+            int y0 = Y_start, y1 = Y_end;
+            int steep = absolute(y1 - y0) > absolute(x1 - x0) ;
+            // меняем координаты, если наклон> 1 или мы
+            // рисовать задом наперед
+            if (steep)
+            {
+                swap_func(&x0, &y0);
+                swap_func(&x1, &y1);
+            }
 
+            if (x0 > x1)
+            {
+                swap_func(&x0, &x1);
+                swap_func(&y0, &y1);
+            }
+
+
+            // вычислить наклон
+            float dx = x1-x0;
+            float dy = y1-y0;
+            float gradient = dy/dx;
+            if (dx == 0.0)
+                gradient = 1;
+
+            int xpxl1 = x0;
+            int xpxl2 = x1;
+            float intersectY = y0;
+
+            // основной цикл
+            if (steep)
+            {
+                int x;
+                for (x = xpxl1; x <=xpxl2; x++)
+                {
+                    // покрытие пикселей определяется дробным
+                    // часть координаты y
+                    plot(&painter, iPartOfNumber(intersectY), x, I * rfPartOfNumber(intersectY));
+                    plot(&painter, iPartOfNumber(intersectY)-1, x, I * fPartOfNumber(intersectY));
+                    intersectY += gradient;
+                }
+            }
+            else
+            {
+                int x;
+                for (x = xpxl1 ; x <=xpxl2 ; x++)
+                {
+                    // покрытие пикселей определяется дробным
+                    // часть координаты y
+                    plot(&painter, x, iPartOfNumber(intersectY), I * rfPartOfNumber(intersectY));
+                    plot(&painter, x, iPartOfNumber(intersectY)-1, I * fPartOfNumber(intersectY));
+                    intersectY += gradient;
+                }
+            }*/
+
+            break;
         }
         case STANDART:
         {
             //QPainter painter(&my_pixmap);
             //painter.setPen(pen);
             painter.drawLine(X_start, Y_start, X_end, Y_end);
+            break;
         }
         default:
         //???
