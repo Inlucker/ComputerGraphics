@@ -22,6 +22,7 @@ public:
     ~Canvas();
 
     void draw();
+    void drawSpectre();
     void setPenColor(QColor color);
     void clean();
 
@@ -35,6 +36,8 @@ public:
     int Y_start;
     int X_end;
     int Y_end;
+    double angle;
+    double length;
 
     //QColor background_color;
 
@@ -47,6 +50,12 @@ private:
 private:
     void plot(QPainter *p, int x, int y, int c);
     void DrawPoint(QPainter *p, bool steep, int x, int y, int c);
+    void DrawLineDGA(int X_start, int X_end, int Y_start, int Y_end);
+    void DrawLineBrezenheimInt(int X_start, int X_end, int Y_start, int Y_end);
+    void DrawLineBrezenheimFloat(int X_start, int X_end, int Y_start, int Y_end);
+    void DrawLineBrezenheimSmooth(int X_start, int X_end, int Y_start, int Y_end);
+    void DrawLineVu(int X_start, int X_end, int Y_start, int Y_end);
+    void DrawLineQt(int X_start, int X_end, int Y_start, int Y_end);
     //void draw_point(QPoint);
     //void clean();
 

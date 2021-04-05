@@ -179,3 +179,25 @@ void MainWindow::on_method_comboBox_activated(int index)
     }
 
 }
+
+void MainWindow::on_Create_Spectre_Btn_clicked()
+{
+    bool isAngleFloat = false;
+    float Angle = ui->Angle_Edit->text().toFloat(&isAngleFloat);
+
+    bool isLengthFloat = false;
+    float Length = ui->Length_Edit->text().toFloat(&isLengthFloat);
+
+    if (isAngleFloat)
+        canvas->angle = Angle;
+    else
+        QMessageBox::information(this, "Error", "Угол должен быть вещественным числом");
+
+    if (isLengthFloat)
+        canvas->length = Length;
+    else
+        QMessageBox::information(this, "Error", "Длина отрезка должна быть вещественным числом");
+
+    canvas->drawSpectre();
+    canvas->update();
+}

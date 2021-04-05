@@ -28,6 +28,8 @@ private slots:
 
     void on_method_comboBox_activated(int index);
 
+    void on_Create_Spectre_Btn_clicked();
+
 private:
     Ui::MainWindow *ui;
 
