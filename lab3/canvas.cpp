@@ -123,6 +123,7 @@ void Canvas::DrawPoint(QPainter *p, bool steep, int x, int y, int c)
 void Canvas::DrawLineDGA(int X_start, int X_end, int Y_start, int Y_end)
 {
     QPainter painter(&my_pixmap);
+    setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
     painter.setPen(pen);
     /*
         1. Ввод (xн, ун), (хк, ук)
@@ -160,6 +161,7 @@ void Canvas::DrawLineDGA(int X_start, int X_end, int Y_start, int Y_end)
 void Canvas::DrawLineBrezenheimInt(int X_start, int X_end, int Y_start, int Y_end)
 {
     QPainter painter(&my_pixmap);
+    setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
     painter.setPen(pen);
     /*
     1. Ввод исходных данных (Xн, Yн), (Xк, Yк)
@@ -231,6 +233,7 @@ void Canvas::DrawLineBrezenheimInt(int X_start, int X_end, int Y_start, int Y_en
 void Canvas::DrawLineBrezenheimFloat(int X_start, int X_end, int Y_start, int Y_end)
 {
     QPainter painter(&my_pixmap);
+    setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
     painter.setPen(pen);
     /*
     1. Ввод исходных данных (Xн, Yн), (Xк, Yк)
@@ -521,6 +524,7 @@ void Canvas::DrawLineVu(int X_start, int X_end, int Y_start, int Y_end)
 void Canvas::DrawLineQt(int X_start, int X_end, int Y_start, int Y_end)
 {
     QPainter painter(&my_pixmap);
+    setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
     painter.setPen(pen);
     painter.drawLine(X_start, Y_start, X_end, Y_end);
 }
@@ -616,17 +620,17 @@ void Canvas::draw()
 
 void Canvas::drawSpectre()
 {
-    angle = angle * M_PI / 180.0;
+    //angle = angle * M_PI / 180.0;
     double X0 = 350, Y0 = 300;
-    double X1 = X0, Y1 = Y0 - length;
+    //double X1 = X0, Y1 = Y0 - length;
     switch (method)
     {
         case DIG_DIF_ANALIZ:
         {
             double tmpAngle = 0;
-            while(tmpAngle < 2 * M_PI)
+            while (tmpAngle < 360) //2 * M_PI)
             {
-                DrawLineDGA(X0, int(length * cos(tmpAngle) + X0), Y0, int(length * cos((90 * M_PI / 180.0) - tmpAngle) + Y0));
+                DrawLineDGA(X0, round(length * cos(tmpAngle * M_PI / 180.0) + X0), Y0, round(length * cos((90 - tmpAngle) * M_PI / 180.0) + Y0));
                 tmpAngle += angle;
             }
             break;
@@ -634,9 +638,9 @@ void Canvas::drawSpectre()
         case BREZENHAM_FLOAT:
         {
             double tmpAngle = 0;
-            while(tmpAngle < 2 * M_PI)
+            while (tmpAngle < 360)
             {
-                DrawLineBrezenheimFloat(X0, int(length * cos(tmpAngle) + X0), Y0, int(length * cos((90 * M_PI / 180.0) - tmpAngle) + Y0));
+                DrawLineBrezenheimFloat(X0, round(length * cos(tmpAngle * M_PI / 180.0) + X0), Y0, round(length * cos((90 - tmpAngle) * M_PI / 180.0) + Y0));
                 tmpAngle += angle;
             }
             break;
@@ -644,9 +648,9 @@ void Canvas::drawSpectre()
         case BREZENHAM_INT:
         {
             double tmpAngle = 0;
-            while(tmpAngle < 2 * M_PI)
+            while (tmpAngle < 360)
             {
-                DrawLineBrezenheimInt(X0, int(length * cos(tmpAngle) + X0), Y0, int(length * cos((90 * M_PI / 180.0) - tmpAngle) + Y0));
+                DrawLineBrezenheimInt(X0, round(length * cos(tmpAngle * M_PI / 180.0) + X0), Y0, round(length * cos((90 - tmpAngle) * M_PI / 180.0) + Y0));
                 tmpAngle += angle;
             }
             break;
@@ -654,9 +658,9 @@ void Canvas::drawSpectre()
         case BREZENHAM_STEP_REM:
         {
             double tmpAngle = 0;
-            while(tmpAngle < 2 * M_PI)
+            while (tmpAngle < 360)
             {
-                DrawLineBrezenheimSmooth(X0, int(length * cos(tmpAngle) + X0), Y0, int(length * cos((90 * M_PI / 180.0) - tmpAngle) + Y0));
+                DrawLineBrezenheimSmooth(X0, round(length * cos(tmpAngle * M_PI / 180.0) + X0), Y0, round(length * cos((90 - tmpAngle) * M_PI / 180.0) + Y0));
                 tmpAngle += angle;
             }
             break;
@@ -664,9 +668,9 @@ void Canvas::drawSpectre()
         case VU:
         {
             double tmpAngle = 0;
-            while(tmpAngle < 2 * M_PI)
+            while (tmpAngle < 360)
             {
-                DrawLineVu(X0, int(length * cos(tmpAngle) + X0), Y0, int(length * cos((90 * M_PI / 180.0) - tmpAngle) + Y0));
+                DrawLineVu(X0, round(length * cos(tmpAngle * M_PI / 180.0) + X0), Y0, round(length * cos((90 - tmpAngle) * M_PI / 180.0) + Y0));
                 tmpAngle += angle;
             }
             break;
@@ -674,9 +678,9 @@ void Canvas::drawSpectre()
         case STANDART:
         {
             double tmpAngle = 0;
-            while(tmpAngle < 2 * M_PI)
+            while (tmpAngle < 360)
             {
-                DrawLineQt(X0, int(length * cos(tmpAngle) + X0), Y0, int(length * cos((90 * M_PI / 180.0) - tmpAngle) + Y0));
+                DrawLineQt(X0, round(length * cos(tmpAngle * M_PI / 180.0) + X0), Y0, round(length * cos((90 - tmpAngle) * M_PI / 180.0) + Y0));
                 tmpAngle += angle;
             }
             break;
