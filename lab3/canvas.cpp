@@ -139,23 +139,23 @@ void Canvas::DrawLineDGA(int X_start, int X_end, int Y_start, int Y_end)
         8. Конец.
     */
 
-        double dX = fabs(X_start - X_end), dY = abs(Y_start - Y_end);
-        double steep = fmax(dX, dY);
-        dX = (X_end - X_start) / steep;
-        dY = (Y_end - Y_start) / steep;
-        double X = X_start, Y = Y_start;
+    double dX = fabs(X_start - X_end), dY = abs(Y_start - Y_end);
+    double steep = fmax(dX, dY);
+    dX = (X_end - X_start) / steep;
+    dY = (Y_end - Y_start) / steep;
+    double X = X_start, Y = Y_start;
 
-        //QPainter painter(&my_pixmap);
-        //painter.setPen(pen);
+    //QPainter painter(&my_pixmap);
+    //painter.setPen(pen);
 
+    painter.drawPoint(int(X), int(Y));
+    while (fabs(X - X_end) > 1 || fabs(Y - Y_end) > 1)
+    {
+        //QPoint p = QPoint(int(X), int(Y));
+        //draw_point(p);
+        X = X + dX, Y += dY;
         painter.drawPoint(int(X), int(Y));
-        while (fabs(X - X_end) > 1 || fabs(Y - Y_end) > 1)
-        {
-            //QPoint p = QPoint(int(X), int(Y));
-            //draw_point(p);
-            X = X + dX, Y += dY;
-            painter.drawPoint(int(X), int(Y));
-        }
+    }
 }
 
 void Canvas::DrawLineBrezenheimInt(int X_start, int X_end, int Y_start, int Y_end)
@@ -529,6 +529,29 @@ void Canvas::DrawLineQt(int X_start, int X_end, int Y_start, int Y_end)
     painter.drawLine(X_start, Y_start, X_end, Y_end);
 }
 
+int Canvas::getStairsDGA(int X_start, int X_end, int Y_start, int Y_end)
+{
+    double dX = fabs(X_start - X_end), dY = abs(Y_start - Y_end);
+    double tg;
+    if (dX)
+        tg = dY / dX;
+    else
+        tg = 0;
+    double steep = fmax(dX, dY);
+    dX = (X_end - X_start) / steep;
+    dY = (Y_end - Y_start) / steep;
+    double X = X_start, Y = Y_start;
+
+    int stairsNumber = 0;
+    while (fabs(X - X_end) > 1 || fabs(Y - Y_end) > 1)
+    {
+        if ((abs(int(X) - int(X + dX)) >= 1 && tg > 1) || (abs(int(Y) - int(Y + dY)) >= 1 && 1 >= tg))
+            stairsNumber++;
+        X = X + dX, Y += dY;
+    }
+    return stairsNumber;
+}
+
 /*void swap_func(int *a, int *b)
 {
     int tmp = *a;
@@ -781,3 +804,45 @@ double Canvas::getTime(float length, Algoritm alg)
     //clean();
     return dur.count()/ITERATIONS;
 }
+
+/*int Canvas::getStages(int angle)
+{
+    int rez = 0;
+    switch (method)
+    {
+        case DIG_DIF_ANALIZ:
+        {
+            DrawLineDGA(X_start, X_end, Y_start, Y_end);
+            break;
+        }
+        case BREZENHAM_FLOAT:
+        {
+            DrawLineBrezenheimFloat(X_start, X_end, Y_start, Y_end);
+            break;
+        }
+        case BREZENHAM_INT:
+        {
+            DrawLineBrezenheimInt(X_start, X_end, Y_start, Y_end);
+            break;
+        }
+        case BREZENHAM_STEP_REM:
+        {
+            DrawLineBrezenheimSmooth(X_start, X_end, Y_start, Y_end);
+            break;
+        }
+        case VU:
+        {
+            DrawLineVu(X_start, X_end, Y_start, Y_end);
+            break;
+        }
+        case STANDART:
+        {
+            rez = -1;
+            break;
+        }
+        default:
+        //???
+        break;
+    }
+    return rez;
+}*/

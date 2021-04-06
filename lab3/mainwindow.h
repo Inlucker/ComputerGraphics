@@ -3,6 +3,7 @@
 
 #include "canvas.h"
 #include "graphform.h"
+#include "stageform.h"
 #include <QMainWindow>
 #include <QMessageBox>
 
@@ -32,11 +33,16 @@ private slots:
     void on_Create_Spectre_Btn_clicked();
     void on_show_graphs_Btn_clicked();
 
+    void on_stage_Btn_clicked();
+
 private:
     Ui::MainWindow *ui;
 
     Canvas *canvas;
 
     GraphForm* graphForm;
+    StageForm* stageForm;
+
+    void getXYs(QVector<double> *x, QVector<double> *y, int *n, double length, Algoritm method);
 };
 #endif // MAINWINDOW_H

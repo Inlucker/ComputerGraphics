@@ -13,17 +13,20 @@ SOURCES += \
     graphform.cpp \
     main.cpp \
     mainwindow.cpp \
-    qcustomplot.cpp
+    qcustomplot.cpp \
+    stageform.cpp
 
 HEADERS += \
     canvas.h \
     graphform.h \
     mainwindow.h \
-    qcustomplot.h
+    qcustomplot.h \
+    stageform.h
 
 FORMS += \
     graphform.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    stageform.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

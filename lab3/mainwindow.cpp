@@ -37,12 +37,14 @@ MainWindow::MainWindow(QWidget *parent)
     //graphForm->makePlot();
     //graphForm->show();
 
+    stageForm = new StageForm();
 }
 
 MainWindow::~MainWindow()
 {
     delete canvas;
     delete graphForm;
+    delete stageForm;
     delete ui;
 }
 
@@ -231,18 +233,125 @@ void MainWindow::on_show_graphs_Btn_clicked()
         times[3] = canvas->getTime(Len, BREZENHAM_STEP_REM);
         times[4] = canvas->getTime(Len, VU);
         times[5] = canvas->getTime(Len, STANDART);
-        for (int i = 0; i < 6; i++)
+        /*for (int i = 0; i < 6; i++)
         {
             std::cout << times[i] << std::endl;
             //if (times[i] <= 0.00001)
                 //times[i] = 2 + 0.1 * i;
-        }
+        }*/
         graphForm->makePlot(times, Len);
-        printf("%.6f", Len);
+        //printf("%.6f", Len);
         graphForm->show();
         graphForm->activateWindow();
     }
     else
         QMessageBox::information(this, "Error", "Длина отрезка должна быть вещественным числом");
 
+}
+
+void MainWindow::on_stage_Btn_clicked()
+{
+    QVector<double> x, y;
+    int n = 0;
+    getXYs(&x, &y, &n, 100, canvas->method);
+    /*QVector<double> x(101), y(101); // initialize with entries 0..100
+    for (int i=0; i<101; ++i)
+    {
+      x[i] = i - 50; // x goes from -1 to 1
+      y[i] = x[i]*x[i]; // let's plot a quadratic function
+    }
+    n = 101;*/
+    stageForm->makePlot(x, y, n);
+    stageForm->show();
+    stageForm->activateWindow();
+}
+
+void MainWindow::getXYs(QVector<double> *x, QVector<double> *y, int *n, double length, Algoritm method)
+{
+    QVector<double> res_x, res_y;
+    int res_n = 0;
+    double X0 = 350, Y0 = 300;
+    //double X1 = X0, Y1 = Y0 - length;
+    switch (method)
+    {
+        case DIG_DIF_ANALIZ:
+        {
+            double tmpAngle = 0;
+            while (tmpAngle < 90) //2 * M_PI)
+            {
+                res_y.append(double(canvas->getStairsDGA(X0, round(length * cos(tmpAngle * M_PI / 180.0) + X0), Y0, round(length * cos((90 - tmpAngle) * M_PI / 180.0) + Y0))));
+                res_x.append(tmpAngle);
+                printf("x:%f y:%f;\n", res_x[res_n], res_y[res_n]);
+                res_n++;
+                tmpAngle += 1.0;
+            }
+            break;
+        }
+        case BREZENHAM_FLOAT:
+        {
+            double tmpAngle = 0;
+            while (tmpAngle < 90)
+            {
+                res_x.append(double(canvas->getStairsDGA(X0, round(length * cos(tmpAngle * M_PI / 180.0) + X0), Y0, round(length * cos((90 - tmpAngle) * M_PI / 180.0) + Y0))));
+                res_y.append(tmpAngle);
+                res_n++;
+                tmpAngle += 1.0;
+            }
+            break;
+        }
+        case BREZENHAM_INT:
+        {
+            double tmpAngle = 0;
+            while (tmpAngle < 90)
+            {
+                res_x.append(double(canvas->getStairsDGA(X0, round(length * cos(tmpAngle * M_PI / 180.0) + X0), Y0, round(length * cos((90 - tmpAngle) * M_PI / 180.0) + Y0))));
+                res_y.append(tmpAngle);
+                res_n++;
+                tmpAngle += 1.0;
+            }
+            break;
+        }
+        case BREZENHAM_STEP_REM:
+        {
+            double tmpAngle = 0;
+            while (tmpAngle < 90)
+            {
+                res_x.append(double(canvas->getStairsDGA(X0, round(length * cos(tmpAngle * M_PI / 180.0) + X0), Y0, round(length * cos((90 - tmpAngle) * M_PI / 180.0) + Y0))));
+                res_y.append(tmpAngle);
+                res_n++;
+                tmpAngle += 1.0;
+            }
+            break;
+        }
+        case VU:
+        {
+            double tmpAngle = 0;
+            while (tmpAngle < 90)
+            {
+                res_x.append(double(canvas->getStairsDGA(X0, round(length * cos(tmpAngle * M_PI / 180.0) + X0), Y0, round(length * cos((90 - tmpAngle) * M_PI / 180.0) + Y0))));
+                res_y.append(tmpAngle);
+                res_n++;
+                tmpAngle += 1.0;
+            }
+            break;
+        }
+        case STANDART:
+        {
+            double tmpAngle = 0;
+            while (tmpAngle < 90)
+            {
+                res_x.append(double(canvas->getStairsDGA(X0, round(length * cos(tmpAngle * M_PI / 180.0) + X0), Y0, round(length * cos((90 - tmpAngle) * M_PI / 180.0) + Y0))));
+                res_y.append(tmpAngle);
+                res_n++;
+                tmpAngle += 1.0;
+            }
+            break;
+        }
+        default:
+        //???
+        break;
+    }
+    *x = res_x;
+    *y = res_y;
+    *n = res_n;
 }
