@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "canvas.h"
+#include "graphform.h"
 #include <QMainWindow>
 #include <QMessageBox>
 
@@ -29,10 +30,13 @@ private slots:
     void on_method_comboBox_activated(int index);
 
     void on_Create_Spectre_Btn_clicked();
+    void on_show_graphs_Btn_clicked();
 
 private:
     Ui::MainWindow *ui;
 
     Canvas *canvas;
+
+    GraphForm* graphForm;
 };
 #endif // MAINWINDOW_H

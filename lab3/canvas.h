@@ -4,12 +4,12 @@
 #include <QWidget>
 #include <QPainter>
 
-enum Algroitm
+enum Algoritm
 {
     NO_ALG,
     DIG_DIF_ANALIZ,
-    BREZENHAM_FLOAT,
     BREZENHAM_INT,
+    BREZENHAM_FLOAT,
     BREZENHAM_STEP_REM,
     VU,
     STANDART
@@ -26,12 +26,14 @@ public:
     void setPenColor(QColor color);
     void clean();
 
+    double getTime(float length, Algoritm alg);
+
 protected:
     void paintEvent(QPaintEvent *);
 
 public:
     //bool isClean;// = false;
-    Algroitm method;// = DIG_DIF_ANALIZ;
+    Algoritm method;// = DIG_DIF_ANALIZ;
     int X_start;
     int Y_start;
     int X_end;

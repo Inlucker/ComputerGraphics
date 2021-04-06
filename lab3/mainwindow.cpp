@@ -32,10 +32,17 @@ MainWindow::MainWindow(QWidget *parent)
 
     canvas = new Canvas();
     ui->gridLayout->addWidget(canvas);
+
+    graphForm = new GraphForm();
+    //graphForm->makePlot();
+    //graphForm->show();
+
 }
 
 MainWindow::~MainWindow()
 {
+    delete canvas;
+    delete graphForm;
     delete ui;
 }
 
@@ -91,8 +98,11 @@ void MainWindow::on_draw_Btn_clicked()
         X = X + dX, Y += dY;
     }*/
     //canvas->setPenColor(Qt::green);
-    canvas->draw();
-    canvas->update();
+    if (isXsFloat && isYsFloat && isXsFloat && isXsFloat)
+    {
+        canvas->draw();
+        canvas->update();
+    }
 
 }
 
@@ -198,6 +208,41 @@ void MainWindow::on_Create_Spectre_Btn_clicked()
     else
         QMessageBox::information(this, "Error", "Длина отрезка должна быть вещественным числом");
 
-    canvas->drawSpectre();
-    canvas->update();
+    if (isAngleFloat && isLengthFloat)
+    {
+        canvas->drawSpectre();
+        canvas->update();
+    }
+}
+
+#include <iostream>
+
+void MainWindow::on_show_graphs_Btn_clicked()
+{
+    bool isLengthFloat = false;
+    float Len = ui->Len_Edit->text().toFloat(&isLengthFloat);
+
+    if (isLengthFloat)
+    {
+        double times[6];
+        times[0] = canvas->getTime(Len, DIG_DIF_ANALIZ);
+        times[1] = canvas->getTime(Len, BREZENHAM_INT);
+        times[2] = canvas->getTime(Len, BREZENHAM_FLOAT);
+        times[3] = canvas->getTime(Len, BREZENHAM_STEP_REM);
+        times[4] = canvas->getTime(Len, VU);
+        times[5] = canvas->getTime(Len, STANDART);
+        for (int i = 0; i < 6; i++)
+        {
+            std::cout << times[i] << std::endl;
+            //if (times[i] <= 0.00001)
+                //times[i] = 2 + 0.1 * i;
+        }
+        graphForm->makePlot(times, Len);
+        printf("%.6f", Len);
+        graphForm->show();
+        graphForm->activateWindow();
+    }
+    else
+        QMessageBox::information(this, "Error", "Длина отрезка должна быть вещественным числом");
+
 }

@@ -706,3 +706,78 @@ void Canvas::clean()
     my_pixmap.fill(QColor(0,0,0,0));
     update();
 }
+
+#include <chrono>
+
+using namespace std;
+
+#define ITERATIONS 10000
+
+double Canvas::getTime(float length, Algoritm alg)
+{
+    //srand(time(0));
+    int X_start = 10000, X_end = 10000 + length, Y_start = 10000, Y_end = 10000;
+    auto start = chrono::high_resolution_clock::now();
+    auto end = chrono::high_resolution_clock::now();
+    //std::chrono::time_point<std::chrono::high_resolution_clock> start, end;
+    switch (alg)
+    {
+        case DIG_DIF_ANALIZ:
+        {
+            start = chrono::high_resolution_clock::now();
+            for (int i = 0; i < ITERATIONS; i++)
+                DrawLineDGA(X_start, X_end, Y_start, Y_end);
+            end = chrono::high_resolution_clock::now();
+            break;
+        }
+        case BREZENHAM_FLOAT:
+        {
+            start = chrono::high_resolution_clock::now();
+            for (int i = 0; i < ITERATIONS; i++)
+                DrawLineBrezenheimFloat(X_start, X_end, Y_start, Y_end);
+            end = chrono::high_resolution_clock::now();
+            break;
+        }
+        case BREZENHAM_INT:
+        {
+            start = chrono::high_resolution_clock::now();
+            for (int i = 0; i < ITERATIONS; i++)
+                DrawLineBrezenheimInt(X_start, X_end, Y_start, Y_end);
+            end = chrono::high_resolution_clock::now();
+            break;
+        }
+        case BREZENHAM_STEP_REM:
+        {
+            start = chrono::high_resolution_clock::now();
+            for (int i = 0; i < ITERATIONS; i++)
+                DrawLineBrezenheimSmooth(X_start, X_end, Y_start, Y_end);
+            end = chrono::high_resolution_clock::now();
+            break;
+        }
+        case VU:
+        {
+            start = chrono::high_resolution_clock::now();
+            for (int i = 0; i < ITERATIONS; i++)
+                DrawLineVu(X_start, X_end, Y_start, Y_end);
+            end = chrono::high_resolution_clock::now();
+            break;
+        }
+        case STANDART:
+        {
+            start = chrono::high_resolution_clock::now();
+            for (int i = 0; i < ITERATIONS; i++)
+                DrawLineQt(X_start, X_end, Y_start, Y_end);
+            end = chrono::high_resolution_clock::now();
+            break;
+        }
+        default:
+        //???
+        break;
+    }
+    chrono::duration<double> dur = end - start;
+    //cout << "here1" << endl;
+    //cout << end << " " << start << " " << dur.count() << endl;
+    //cout << "here2" << endl;
+    //clean();
+    return dur.count()/ITERATIONS;
+}
