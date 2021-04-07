@@ -189,7 +189,6 @@ void MainWindow::on_method_comboBox_activated(int index)
             //???
             break;
     }
-
 }
 
 void MainWindow::on_Create_Spectre_Btn_clicked()
@@ -251,20 +250,33 @@ void MainWindow::on_show_graphs_Btn_clicked()
 
 void MainWindow::on_stage_Btn_clicked()
 {
-    QVector<double> x, y;
-    int n = 0;
-    getXYs(&x, &y, &n, 100, canvas->method);
-    /*QVector<double> x(101), y(101); // initialize with entries 0..100
-    for (int i=0; i<101; ++i)
+
+    bool isLengthFloat = false;
+    float Len = ui->Len_Edit->text().toFloat(&isLengthFloat);
+
+    if (isLengthFloat)
     {
-      x[i] = i - 50; // x goes from -1 to 1
-      y[i] = x[i]*x[i]; // let's plot a quadratic function
+        QVector<double> x, y;
+        int n = 0;
+        getXYs(&x, &y, &n, Len, canvas->method);
+
+        if (n != -1 || canvas->method != STANDART)
+        {
+            stageForm->makePlot(x, y, n, canvas->method);
+            stageForm->show();
+            stageForm->activateWindow();
+        }
+        else
+        {
+            QMessageBox::information(this, "Error", "Нельзя оценить ступенчатость для алгоритма QT");
+        }
     }
-    n = 101;*/
-    stageForm->makePlot(x, y, n);
-    stageForm->show();
-    stageForm->activateWindow();
+    else
+        QMessageBox::information(this, "Error", "Длина отрезка должна быть вещественным числом");
+
 }
+
+#define MAX_ANGLE 90
 
 void MainWindow::getXYs(QVector<double> *x, QVector<double> *y, int *n, double length, Algoritm method)
 {
@@ -277,23 +289,10 @@ void MainWindow::getXYs(QVector<double> *x, QVector<double> *y, int *n, double l
         case DIG_DIF_ANALIZ:
         {
             double tmpAngle = 0;
-            while (tmpAngle < 90) //2 * M_PI)
+            while (tmpAngle <= MAX_ANGLE) //2 * M_PI)
             {
-                res_y.append(double(canvas->getStairsDGA(X0, round(length * cos(tmpAngle * M_PI / 180.0) + X0), Y0, round(length * cos((90 - tmpAngle) * M_PI / 180.0) + Y0))));
                 res_x.append(tmpAngle);
-                printf("x:%f y:%f;\n", res_x[res_n], res_y[res_n]);
-                res_n++;
-                tmpAngle += 1.0;
-            }
-            break;
-        }
-        case BREZENHAM_FLOAT:
-        {
-            double tmpAngle = 0;
-            while (tmpAngle < 90)
-            {
-                res_x.append(double(canvas->getStairsDGA(X0, round(length * cos(tmpAngle * M_PI / 180.0) + X0), Y0, round(length * cos((90 - tmpAngle) * M_PI / 180.0) + Y0))));
-                res_y.append(tmpAngle);
+                res_y.append(double(getStairsDGA(X0, round(length * cos(tmpAngle * M_PI / 180.0) + X0), Y0, round(length * cos((90 - tmpAngle) * M_PI / 180.0) + Y0))));
                 res_n++;
                 tmpAngle += 1.0;
             }
@@ -302,10 +301,22 @@ void MainWindow::getXYs(QVector<double> *x, QVector<double> *y, int *n, double l
         case BREZENHAM_INT:
         {
             double tmpAngle = 0;
-            while (tmpAngle < 90)
+            while (tmpAngle <= MAX_ANGLE)
             {
-                res_x.append(double(canvas->getStairsDGA(X0, round(length * cos(tmpAngle * M_PI / 180.0) + X0), Y0, round(length * cos((90 - tmpAngle) * M_PI / 180.0) + Y0))));
-                res_y.append(tmpAngle);
+                res_x.append(tmpAngle);
+                res_y.append(double(getStairsBrezenheimInt(X0, round(length * cos(tmpAngle * M_PI / 180.0) + X0), Y0, round(length * cos((90 - tmpAngle) * M_PI / 180.0) + Y0))));
+                res_n++;
+                tmpAngle += 1.0;
+            }
+            break;
+        }
+        case BREZENHAM_FLOAT:
+        {
+            double tmpAngle = 0;
+            while (tmpAngle <= MAX_ANGLE)
+            {
+                res_x.append(tmpAngle);
+                res_y.append(double(getStairsBrezenheimFloat(X0, round(length * cos(tmpAngle * M_PI / 180.0) + X0), Y0, round(length * cos((90 - tmpAngle) * M_PI / 180.0) + Y0))));
                 res_n++;
                 tmpAngle += 1.0;
             }
@@ -314,10 +325,10 @@ void MainWindow::getXYs(QVector<double> *x, QVector<double> *y, int *n, double l
         case BREZENHAM_STEP_REM:
         {
             double tmpAngle = 0;
-            while (tmpAngle < 90)
+            while (tmpAngle <= MAX_ANGLE)
             {
-                res_x.append(double(canvas->getStairsDGA(X0, round(length * cos(tmpAngle * M_PI / 180.0) + X0), Y0, round(length * cos((90 - tmpAngle) * M_PI / 180.0) + Y0))));
-                res_y.append(tmpAngle);
+                res_x.append(tmpAngle);
+                res_y.append(double(getStairsBrezenheimSmooth(X0, round(length * cos(tmpAngle * M_PI / 180.0) + X0), Y0, round(length * cos((90 - tmpAngle) * M_PI / 180.0) + Y0))));
                 res_n++;
                 tmpAngle += 1.0;
             }
@@ -326,10 +337,11 @@ void MainWindow::getXYs(QVector<double> *x, QVector<double> *y, int *n, double l
         case VU:
         {
             double tmpAngle = 0;
-            while (tmpAngle < 90)
+            while (tmpAngle <= MAX_ANGLE)
             {
-                res_x.append(double(canvas->getStairsDGA(X0, round(length * cos(tmpAngle * M_PI / 180.0) + X0), Y0, round(length * cos((90 - tmpAngle) * M_PI / 180.0) + Y0))));
-                res_y.append(tmpAngle);
+                res_x.append(tmpAngle);
+                res_y.append(double(getStairsVu(X0, round(length * cos(tmpAngle * M_PI / 180.0) + X0), Y0, round(length * cos((90 - tmpAngle) * M_PI / 180.0) + Y0))));
+                printf("x:%f y:%f;\n", res_x[res_n], res_y[res_n]);
                 res_n++;
                 tmpAngle += 1.0;
             }
@@ -337,14 +349,7 @@ void MainWindow::getXYs(QVector<double> *x, QVector<double> *y, int *n, double l
         }
         case STANDART:
         {
-            double tmpAngle = 0;
-            while (tmpAngle < 90)
-            {
-                res_x.append(double(canvas->getStairsDGA(X0, round(length * cos(tmpAngle * M_PI / 180.0) + X0), Y0, round(length * cos((90 - tmpAngle) * M_PI / 180.0) + Y0))));
-                res_y.append(tmpAngle);
-                res_n++;
-                tmpAngle += 1.0;
-            }
+            res_n = -1;
             break;
         }
         default:
@@ -354,4 +359,245 @@ void MainWindow::getXYs(QVector<double> *x, QVector<double> *y, int *n, double l
     *x = res_x;
     *y = res_y;
     *n = res_n;
+}
+
+int MainWindow::sign(double val)
+{
+  if (val > 0)
+      return 1;
+  if (val < 0)
+      return -1;
+  else
+      return 0;
+}
+
+int MainWindow::getStairsDGA(int X_start, int X_end, int Y_start, int Y_end)
+{
+    double dX = fabs(X_start - X_end), dY = fabs(Y_start - Y_end);
+    double tg;
+    if (dX)
+        tg = dY / dX;
+    else
+        tg = 0;
+    double steep = fmax(dX, dY);
+    dX = (X_end - X_start) / steep;
+    dY = (Y_end - Y_start) / steep;
+    double X = X_start, Y = Y_start;
+
+    int stairsNumber = 1;
+    while (fabs(X - X_end) > 1 || fabs(Y - Y_end) > 1)
+    {
+        if ((abs(int(X) - int(X + dX)) >= 1 && tg > 1) || (abs(int(Y) - int(Y + dY)) >= 1 && 1 >= tg && tg != 0))
+            stairsNumber++;
+        X = X + dX, Y += dY;
+    }
+    return stairsNumber;
+}
+
+int MainWindow::getStairsBrezenheimInt(int X_start, int X_end, int Y_start, int Y_end)
+{
+    int X = X_start, Y = Y_start;
+    int dX = X_end - X_start, dY = Y_end - Y_start;
+    int SX = sign(dX), SY = sign(dY);
+    dX = abs(dX), dY = abs(dY);
+
+    int steep;
+    if (dY >= dX)
+    {
+        //dX, dY = dY, dX;
+        int tmp = dX;
+        dX = dY;
+        dY = tmp;
+        steep = 1; // шагаем по y
+    }
+    else
+        steep = 0;
+
+    int er = 2 * dY - dX; // отличие от вещественного (e = tg - 1 / 2) tg = dy / dx
+
+    //QPainter painter(&my_pixmap);
+    //painter.setPen(pen);
+
+    //painter.drawPoint(X, Y);
+    int stairsNumber = 1;
+    while (X != X_end || Y != Y_end)
+    {
+        if (er >= 0)
+        {
+            if (steep == 1) // dy >= dx
+                X += SX;
+            else // dy < dx
+                Y += SY;
+            er -= 2 * dX; // отличие от вещественного (e -= 1)
+            stairsNumber++;
+            //stairs.append(st)
+            //st = 0
+        }
+        if (er <= 0)
+        {
+            if (steep == 0) // dy < dx
+                X += SX;
+            else // dy >= dx
+                Y += SY;
+            //st += 1
+            er += 2 * dY; // отличие от вещественного (e += tg)
+        }
+        //painter.drawPoint(X, Y);
+    }
+    return stairsNumber;
+}
+
+int MainWindow::getStairsBrezenheimFloat(int X_start, int X_end, int Y_start, int Y_end)
+{
+    int X = X_start, Y = Y_start;
+    int dX = X_end - X_start, dY = Y_end - Y_start;
+    int SX = sign(dX), SY = sign(dY);
+    dX = abs(dX), dY = abs(dY);
+
+    int steep;
+    if (dY >= dX)
+    {
+        //dX, dY = dY, dX;
+        int tmp = dX;
+        dX = dY;
+        dY = tmp;
+        steep = 1; // шагаем по y
+    }
+    else
+        steep = 0;
+
+    double tg = double(dY) / double(dX) ; // tангенс угла наклона
+    double er = tg - 0.5; // начальное значение ошибки
+
+    //QPainter painter(&my_pixmap);
+    //painter.setPen(pen);
+
+    //painter.drawPoint(X, Y);
+    int stairsNumber = 1;
+    while (X != X_end || Y != Y_end)
+    {
+        if (er >= 0)
+        {
+            if (steep == 1) // dy >= dx
+                X += SX;
+            else // dy < dx
+                Y += SY;
+            er -= 1; // отличие от целого
+            stairsNumber++;
+            //stairs.append(st)
+            //st = 0
+        }
+        if (er <= 0)
+        {
+            if (steep == 0) // dy < dx
+                X += SX;
+            else // dy >= dx
+                Y += SY;
+            //st += 1
+            er += tg; // отличие от целого
+        }
+        //painter.drawPoint(X, Y);
+    }
+    return stairsNumber;
+}
+
+int MainWindow::getStairsBrezenheimSmooth(int X_start, int X_end, int Y_start, int Y_end)
+{
+    int X = X_start, Y = Y_start;
+    int I = 255;
+    int dX = X_end - X_start, dY = Y_end - Y_start;
+    int SX = sign(dX), SY = sign(dY);
+    dX = abs(dX), dY = abs(dY);
+
+    int steep;
+    if (dY >= dX)
+    {
+        int tmp = dX;
+        dX = dY;
+        dY = tmp;
+        steep = 1;
+    }
+    else
+        steep = 0;
+
+    double tg = double(dY) / double(dX) * double(I); // тангенс угла наклона (умножаем на инт., чтобы не приходилось умножать внутри цикла
+    double er = double(I) / 2; // интенсивность для высвечивания начального пикселя
+    double w = double(I) - tg; // пороговое значение
+
+    //plot(&painter, X, Y, int(er));
+    int stairsNumber = 1;
+    while (X != X_end || Y != Y_end)
+    {
+        if (er < w)
+        {
+            if (steep == 0) // dy < dx
+                X += SX; // -1 if dx < 0, 0 if dx = 0, 1 if dx > 0
+            else // dy >= dx
+                Y += SY; // -1 if dy < 0, 0 if dy = 0, 1 if dy > 0
+            //st += 1 // steepping
+            er += tg;
+        }
+        else if (er >= w)
+        {
+            X += SX;
+            Y += SY;
+            er -= w;
+            stairsNumber++;
+            //stairs.append(st)
+            //st = 0
+        }
+        //plot(&painter, X, Y, int(er));
+    }
+    return stairsNumber;
+}
+
+int MainWindow::getStairsVu(int X_start, int X_end, int Y_start, int Y_end)
+{
+    //int I = 255;
+    bool steep = abs(Y_end - Y_start) > abs(X_end - X_start);
+
+    if (steep)
+    {
+        int tmp = X_start;
+        X_start = Y_start;
+        Y_start = tmp;
+
+        tmp = X_end;
+        X_end = Y_end;
+        Y_end = tmp;
+    }
+    if (X_start > X_end)
+    {
+        int tmp = X_start;
+        X_start = X_end;
+        X_end = tmp;
+
+        tmp = Y_start;
+        Y_start = Y_end;
+        Y_end = tmp;
+    }
+
+    //DrawPoint(&painter, steep, X_start, Y_start, I);
+    //DrawPoint(&painter, steep, X_end, Y_end, I);
+    int stairsNumber = 1;
+
+    double dX = X_end - X_start, dY = Y_end - Y_start;
+
+    double tg;
+    if (dX == 0)
+        tg = 1;
+    else
+        tg = dY / dX;
+
+    double y = Y_start + tg;
+
+    for (int x = X_start + 1; x < X_end; x++)
+    {
+        //DrawPoint(&painter, steep, x, int(y), I*(abs(1.0 - y + int(y))));
+        //DrawPoint(&painter, steep, x, int(y)+1, I*(abs(y - int(y))));
+        if ((abs(int(x) - int(x + 1)) >= 1 && fabs(tg) > 1) || !( 1 > abs(int(y) - int(y + tg)) >= fabs(tg)))
+            stairsNumber++;
+        y += tg;
+    }
+    return stairsNumber;
 }

@@ -44,5 +44,12 @@ private:
     StageForm* stageForm;
 
     void getXYs(QVector<double> *x, QVector<double> *y, int *n, double length, Algoritm method);
+
+    int sign(double val);
+    int getStairsDGA(int X_start, int X_end, int Y_start, int Y_end);
+    int getStairsBrezenheimInt(int X_start, int X_end, int Y_start, int Y_end);
+    int getStairsBrezenheimFloat(int X_start, int X_end, int Y_start, int Y_end);
+    int getStairsBrezenheimSmooth(int X_start, int X_end, int Y_start, int Y_end);
+    int getStairsVu(int X_start, int X_end, int Y_start, int Y_end);
 };
 #endif // MAINWINDOW_H

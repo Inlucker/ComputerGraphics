@@ -139,7 +139,7 @@ void Canvas::DrawLineDGA(int X_start, int X_end, int Y_start, int Y_end)
         8. Конец.
     */
 
-    double dX = fabs(X_start - X_end), dY = abs(Y_start - Y_end);
+    double dX = fabs(X_start - X_end), dY = fabs(Y_start - Y_end);
     double steep = fmax(dX, dY);
     dX = (X_end - X_start) / steep;
     dY = (Y_end - Y_start) / steep;
@@ -527,29 +527,6 @@ void Canvas::DrawLineQt(int X_start, int X_end, int Y_start, int Y_end)
     setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
     painter.setPen(pen);
     painter.drawLine(X_start, Y_start, X_end, Y_end);
-}
-
-int Canvas::getStairsDGA(int X_start, int X_end, int Y_start, int Y_end)
-{
-    double dX = fabs(X_start - X_end), dY = abs(Y_start - Y_end);
-    double tg;
-    if (dX)
-        tg = dY / dX;
-    else
-        tg = 0;
-    double steep = fmax(dX, dY);
-    dX = (X_end - X_start) / steep;
-    dY = (Y_end - Y_start) / steep;
-    double X = X_start, Y = Y_start;
-
-    int stairsNumber = 0;
-    while (fabs(X - X_end) > 1 || fabs(Y - Y_end) > 1)
-    {
-        if ((abs(int(X) - int(X + dX)) >= 1 && tg > 1) || (abs(int(Y) - int(Y + dY)) >= 1 && 1 >= tg))
-            stairsNumber++;
-        X = X + dX, Y += dY;
-    }
-    return stairsNumber;
 }
 
 /*void swap_func(int *a, int *b)

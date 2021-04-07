@@ -16,7 +16,7 @@ public:
     explicit StageForm(QWidget *parent = nullptr);
     ~StageForm();
 
-    void makePlot(QVector<double> x, QVector<double> y, int n);
+    void makePlot(QVector<double> x, QVector<double> y, int n, Algoritm alg);
 private:
     Ui::StageForm *ui;
 };

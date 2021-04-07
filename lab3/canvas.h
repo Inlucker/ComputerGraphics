@@ -29,8 +29,6 @@ public:
     double getTime(float length, Algoritm alg);
     //int getStages(int angle);
 
-    int getStairsDGA(int X_start, int X_end, int Y_start, int Y_end);
-
 protected:
     void paintEvent(QPaintEvent *);
 

@@ -82,6 +82,7 @@ GraphForm::GraphForm(QWidget *parent) :
 
 GraphForm::~GraphForm()
 {
+    delete time;
     delete ui;
 }
 
