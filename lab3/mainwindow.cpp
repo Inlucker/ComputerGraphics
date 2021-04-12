@@ -341,7 +341,6 @@ void MainWindow::getXYs(QVector<double> *x, QVector<double> *y, int *n, double l
             {
                 res_x.append(tmpAngle);
                 res_y.append(double(getStairsVu(X0, round(length * cos(tmpAngle * M_PI / 180.0) + X0), Y0, round(length * cos((90 - tmpAngle) * M_PI / 180.0) + Y0))));
-                printf("x:%f y:%f;\n", res_x[res_n], res_y[res_n]);
                 res_n++;
                 tmpAngle += 1.0;
             }

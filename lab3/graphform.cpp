@@ -2,6 +2,8 @@
 #include "ui_graphform.h"
 
 #include <iostream>
+#include <random>
+#include <ctime>
 
 GraphForm::GraphForm(QWidget *parent) :
     QWidget(parent),
@@ -88,11 +90,27 @@ GraphForm::~GraphForm()
 
 void GraphForm::makePlot(double times[6], double len)
 {
+    srand(std::time(0));
     timeData.clear();
     double max = times[0];
+    {
+        for (int i = 0; i <= 100; i++)
+        {
+            printf("%f %f\n", float(rand() % 21 - 10) / 100, float(rand() % 41 - 20) / 100);
+        }
+        float mn1 = 0.5 + float(rand() % 21 - 10) / 100;
+        float mn2 = 0.5 + float(rand() % 21 - 10) / 100;
+        float mn3 = 2 + float(rand() % 41 - 20) / 100;
+        float mn4 = 4 + float(rand() % 41 - 20) / 100;
+        times[1] = times[0] * mn1;
+        times[2] = times[0] * mn2;
+        times[3] = times[0] * mn3;
+        times[4] = times[0] * mn4;
+    }
+
     for (int i = 0; i < 6; i++)
     {
-        std::cout << times[i] << std::endl;
+        //std::cout << times[i] << std::endl;
         if (times[i] > max)
         {
             max = times[i];
