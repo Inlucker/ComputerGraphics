@@ -96,7 +96,7 @@ void GraphForm::makePlot(double times[6], double len)
     {
         for (int i = 0; i <= 100; i++)
         {
-            printf("%f %f\n", float(rand() % 21 - 10) / 100, float(rand() % 41 - 20) / 100);
+            //printf("%f %f\n", float(rand() % 21 - 10) / 100, float(rand() % 41 - 20) / 100);
         }
         float mn1 = 0.5 + float(rand() % 21 - 10) / 100;
         float mn2 = 0.5 + float(rand() % 21 - 10) / 100;
