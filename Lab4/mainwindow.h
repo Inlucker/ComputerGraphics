@@ -30,6 +30,10 @@ private slots:
 
     void on_draw_ellipse_Btn_clicked();
 
+    void on_pushButton_clicked();
+
+    void on_pushButton_2_clicked();
+
 private:
     Ui::MainWindow *ui;
     Canvas *canvas;

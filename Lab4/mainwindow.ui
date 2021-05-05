@@ -307,7 +307,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>0</string>
+      <string>350</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_X_center_2">
@@ -338,7 +338,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>0</string>
+      <string>350</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="R1_Edit">
@@ -351,7 +351,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>444</string>
+      <string>10</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_R1_2">
@@ -400,7 +400,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>222</string>
+      <string>300</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="circle_number_Edit">
@@ -413,7 +413,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>0</string>
+      <string>10</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_circle_number">
@@ -488,7 +488,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>0</string>
+      <string>350</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_X_center_3">
@@ -519,7 +519,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>0</string>
+      <string>350</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="a_Edit_2">
@@ -532,7 +532,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>444</string>
+      <string>1</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_R1_3">
@@ -581,7 +581,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>222</string>
+      <string>50</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="ellipse_number_Edit">
@@ -594,7 +594,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>0</string>
+      <string>10</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_circle_number_2">
@@ -615,7 +615,7 @@
       <string>Кол-во эл. = </string>
      </property>
     </widget>
-    <widget class="QRadioButton" name="radioButton_3">
+    <widget class="QRadioButton" name="a_change">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -627,8 +627,11 @@
      <property name="text">
       <string>Измение по a</string>
      </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
     </widget>
-    <widget class="QRadioButton" name="radioButton_4">
+    <widget class="QRadioButton" name="b_change">
      <property name="geometry">
       <rect>
        <x>120</x>
@@ -669,7 +672,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>0</string>
+      <string>10</string>
      </property>
     </widget>
     <widget class="QPushButton" name="pushButton_2">
