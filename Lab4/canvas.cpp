@@ -194,11 +194,12 @@ void Canvas::DrawCircleBrezenham(int X_c, int Y_c, int R)
     int x = 0;
     int y = R;
     int er = 2*(1-R);
-    int y_end = 0;
+    int y_end = R/sqrt(2);//= 0;
     //plotEllipse(&painter, X_c, Y_c, x, y);
     while(y >= y_end)
     {
         plot4(&painter, X_c, Y_c, x, y);
+        plot4(&painter, X_c, Y_c, y, x);
         if (er < 0)
         {
             int d1 = 2*er + 2*y - 1;
@@ -290,7 +291,32 @@ void Canvas::DrawEllipseBrezenham(int X_c, int Y_c, int A, int B)
 
 void Canvas::DrawCircleMidpoint(int X_c, int Y_c, int R)
 {
-    DrawEllipseMidpoint(X_c, Y_c, R, R);
+    //DrawEllipseMidpoint(X_c, Y_c, R, R);
+
+    QPainter painter(&my_pixmap);
+    setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
+    painter.setPen(pen);
+
+    int x = 0;
+    int y = R;
+
+    int d = 1 - R;
+    plot4(&painter, X_c, Y_c, x, y);
+    plot4(&painter, X_c, Y_c, y, x);
+
+    while (x < y)
+    {
+        x++;
+        if (d < 0)
+            d += 2*x + 1;
+        else
+        {
+            y--;
+            d += 2*(x - y) + 1;
+        }
+        plot4(&painter, X_c, Y_c, x, y);
+        plot4(&painter, X_c, Y_c, y, x);
+    }
 }
 
 void Canvas::DrawEllipseMidpoint(int X_c, int Y_c, int A, int B)
@@ -371,15 +397,15 @@ void Canvas::DrawEllipseMidpoint(int X_c, int Y_c, int A, int B)
         }
     }*/
 
-    int dx, dy, d1, d2, x, y;
+    //int dx, dy, d1, d2, x, y;
     int a_sqr = A * A; // a^2, a - большая полуось
     int b_sqr = B * B; // b^2, b - малая полуось
-    x = 0;
-    y = B;
+    int x = 0;
+    int y = B;
     // Начальный параметр решения области 1
-    d1 = (b_sqr) - (a_sqr * B) + (0.25 * a_sqr);
-    dx = 2 * b_sqr * x;
-    dy = 2 * a_sqr * y;
+    double d1 = (b_sqr) - (a_sqr * B) + (0.25 * a_sqr);
+    int dx = 2 * b_sqr * x;
+    int dy = 2 * a_sqr * y;
 
     // Для региона 1
     while (dx < dy)
@@ -405,9 +431,9 @@ void Canvas::DrawEllipseMidpoint(int X_c, int Y_c, int A, int B)
     }
 
     // Параметр решения области 2
-    d2 = ((b_sqr) * ((x + 0.5) * (x + 0.5))) +
-         ((a_sqr) * ((y - 1) * (y - 1))) -
-          (a_sqr * b_sqr);
+    double d2 = ((b_sqr) * ((x + 0.5) * (x + 0.5))) +
+                ((a_sqr) * ((y - 1) * (y - 1))) -
+                 (a_sqr * b_sqr);
 
     // Построение точек области 2
     while (y >= 0)
