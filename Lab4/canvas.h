@@ -58,6 +58,7 @@ private:
 
 private:
     void plot(QPainter *p, int x, int y);
+    void plot4(QPainter *p, int X_c, int Y_c, int x, int y);
     //void DrawPoint(QPainter *p, bool steep, int x, int y);
     void DrawCircleCanon(int X_c, int Y_c, int R);
     void DrawEllipseCanon(int X_c, int Y_c, int A, int B);

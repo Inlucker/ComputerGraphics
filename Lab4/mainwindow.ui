@@ -65,7 +65,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>250</string>
+      <string>350</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_Y_center">
@@ -96,7 +96,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>250</string>
+      <string>350</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="R_Edit">
@@ -804,7 +804,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>50</string>
+      <string>100</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="a_Edit_1">

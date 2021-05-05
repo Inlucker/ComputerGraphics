@@ -41,7 +41,7 @@ double max(double val1, double val2)
 {
   if (val1 >= val2)
       return val1;
-  if (val1 < val2)
+  else
       return -val2;
 }
 
@@ -58,6 +58,15 @@ void Canvas::plot(QPainter *p, int x, int y)
 {
     p->setPen(pen);
     p->drawPoint(x, y);
+}
+
+void Canvas::plot4(QPainter *p, int X_c, int Y_c, int x, int y)
+{
+    p->setPen(pen);
+    p->drawPoint(X_c + x, Y_c + y);
+    p->drawPoint(X_c + x, Y_c - y);
+    p->drawPoint(X_c - x, Y_c + y);
+    p->drawPoint(X_c - x, Y_c - y);
 }
 
 /*void Canvas::DrawPoint(QPainter *p, bool steep, int x, int y)
@@ -159,12 +168,124 @@ void Canvas::DrawEllipseParam(int X_c, int Y_c, int A, int B)
 
 void Canvas::DrawCircleBrezenham(int X_c, int Y_c, int R)
 {
+    /*
+    1. Ввод R, Xc, Yc.
+    2. X = 0, Y = R, Δ = 2(1-R).
+    3. Высвечивание текущего пиксела (X,Y).
+    4. Анализ D:
+       4.1 Если Δ < 0, go to 5.
+       4.2 если Δ = 0, go to 8.
+       4.3 если Δ > 0, go to 6.
+    5. δ1 = 2Δ + 2Y - 1 и анализ полученного значения:
+       5.1 если δ1 =< 0, go to 7.
+       5.2 иначе, go to 8.
+    6. Вычисление параметра δ2 = 2Δ - 2X - 1 и анализ полученного значения:
+       6.1 если δ2 =< 0, go to 8
+       6.2 иначе, go to 9.
+    7. Горизонтальный шаг: X = X + 1; Δ = Δ + 2X + 1. go to 3.
+    8. Диагональный шаг: X = X + 1; Y = Y - 1; Δ = Δ + 2(X - Y + 1). go to 3.
+    9. Вертикальный шаг: Y = Y - 1; Δ = Δ - 2Y + 1. go to 3.
+    10. Конец.
+    */
+    QPainter painter(&my_pixmap);
+    setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
+    painter.setPen(pen);
+
+    int x = 0;
+    int y = R;
+    int er = 2*(1-R);
+    int y_end = 0;
+    //plotEllipse(&painter, X_c, Y_c, x, y);
+    while(y >= y_end)
+    {
+        plot4(&painter, X_c, Y_c, x, y);
+        if (er < 0)
+        {
+            int d1 = 2*er + 2*y - 1;
+            if (d1 < 0)
+            {
+                // horizontal
+                x++;
+                er += 2*x + 1;
+            }
+            else
+            {
+                // diagonal
+                x++;
+                y--;
+                er += 2*(x - y + 1);
+            }
+        }
+        else if (er == 0)
+        {
+            // diagonal
+            x++;
+            y--;
+            er += 2*(x - y + 1);
+        }
+        else
+        {
+            int d2 = 2*er - 2*x - 1;
+            if (d2 < 0)
+            {
+                // diagonal
+                x++;
+                y--;
+                er += 2*(x - y + 1);
+            }
+            else
+            {
+                // vertical
+                y--;
+                er += 1 - 2*y;
+            }
+        }
+    }
 
 }
 
 void Canvas::DrawEllipseBrezenham(int X_c, int Y_c, int A, int B)
 {
+    QPainter painter(&my_pixmap);
+    setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
+    painter.setPen(pen);
 
+    int x = 0; // Компонента x
+    int y = b; // Компонента y
+    int a_sqr = a * a; // a^2, a - большая полуось
+    int b_sqr = b * b; // b^2, b - малая полуось
+    int delta = 4 * b_sqr * ((x + 1) * (x + 1)) + a_sqr * ((2 * y - 1) * (2 * y - 1)) - 4 * a_sqr * b_sqr; // Функция координат точки (x+1, y-1/2)
+    while (a_sqr * (2 * y - 1) > 2 * b_sqr * (x + 1)) // Первая часть дуги
+    {
+        plot4(&painter, X_c, Y_c, x, y);
+        if (delta < 0) // Переход по горизонтали
+        {
+            x++;
+            delta += 4 * b_sqr * (2 * x + 3);
+        }
+        else // Переход по диагонали
+        {
+            x++;
+            delta = delta - 8 * a_sqr * (y - 1) + 4 * b_sqr * (2 * x + 3);
+            y--;
+        }
+    }
+    delta = b_sqr * ((2 * x + 1) * (2 * x + 1)) + 4 * a_sqr * ((y + 1) * (y + 1)) - 4 * a_sqr * b_sqr; // Функция координат точки (x+1/2, y-1)
+    while (y + 1 != 0) // Вторая часть дуги, если не выполняется условие первого цикла, значит выполняется a^2(2y - 1) <= 2b^2(x + 1)
+    {
+        plot4(&painter, X_c, Y_c, x, y);
+        if (delta < 0) // Переход по вертикали
+        {
+            y--;
+            delta += 4 * a_sqr * (2 * y + 3);
+        }
+        else // Переход по диагонали
+        {
+            y--;
+            delta = delta - 8 * b_sqr * (x + 1) + 4 * a_sqr * (2 * y + 3);
+            x++;
+        }
+    }
 }
 
 void Canvas::DrawCircleMidpoint(int X_c, int Y_c, int R)
@@ -209,7 +330,8 @@ void Canvas::drawCircle()
         }
         case BREZENHAM:
         {
-            DrawCircleBrezenham(X_center, Y_center, Radius);
+            //DrawCircleBrezenham(X_center, Y_center, Radius);
+            DrawEllipseBrezenham(X_center, Y_center, Radius, Radius);
             break;
         }
         case MIDPOINT:
