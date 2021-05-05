@@ -251,9 +251,9 @@ void Canvas::DrawEllipseBrezenham(int X_c, int Y_c, int A, int B)
     painter.setPen(pen);
 
     int x = 0; // Компонента x
-    int y = b; // Компонента y
-    int a_sqr = a * a; // a^2, a - большая полуось
-    int b_sqr = b * b; // b^2, b - малая полуось
+    int y = B; // Компонента y
+    int a_sqr = A * A; // a^2, a - большая полуось
+    int b_sqr = B * B; // b^2, b - малая полуось
     int delta = 4 * b_sqr * ((x + 1) * (x + 1)) + a_sqr * ((2 * y - 1) * (2 * y - 1)) - 4 * a_sqr * b_sqr; // Функция координат точки (x+1, y-1/2)
     while (a_sqr * (2 * y - 1) > 2 * b_sqr * (x + 1)) // Первая часть дуги
     {
@@ -290,12 +290,148 @@ void Canvas::DrawEllipseBrezenham(int X_c, int Y_c, int A, int B)
 
 void Canvas::DrawCircleMidpoint(int X_c, int Y_c, int R)
 {
-
+    DrawEllipseMidpoint(X_c, Y_c, R, R);
 }
 
 void Canvas::DrawEllipseMidpoint(int X_c, int Y_c, int A, int B)
 {
+    QPainter painter(&my_pixmap);
+    setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
+    painter.setPen(pen);
+    /*
+    Вход: a, b, xc, yc
 
+    b2 = b * b
+    bd = 2 * b2
+    a2 = a * a
+    ad = 2 * a2
+
+    x = 0, y = b, f = b2 - a2 * b + 0,25 * a2
+
+    while b2 * x > a2 * y do
+        if f > 0 then
+            x = x + 1
+            y = y - 1
+            f = f + bd * x + b2 - ad * y
+        else
+            x = x + 1
+            f = f + bd * x + b2
+
+    f = f + 3 / 4 * (a2 + b2) - (a2 * y + b2 * x)
+
+    while y >= 0 do
+        if f > 0 then
+            y = y - 1
+            x = x + 1
+            f = f + ad * y + a2 - bd * x
+        else
+            y = y - 1
+            f = f + ad * y + a2
+    */
+
+    /*int b2 = B*B;
+    int bd = 2 * b2;
+    int a2 = A * A;
+    int ad = 2 * a2;
+
+    double x = 0, y = b, f = b2 - a2 * b + 0.25 * a2;
+
+    while (b2 * x > a2 * y)
+    {
+        plot4(&painter, X_c, Y_c, x, y);
+        if (f > 0)
+        {
+            x++;
+            y--;
+            f += bd * x + b2 - ad * y;
+        }
+        else
+        {
+            x++;
+            f += bd * x + b2;
+        }
+        plot4(&painter, X_c, Y_c, x, y);
+    }
+
+    f = f + 3 / 4 * (a2 + b2) - (a2 * y + b2 * x);
+
+    while (b2 * x > a2 * y)
+    {
+        plot4(&painter, X_c, Y_c, x, y);
+        if (f > 0)
+        {
+            y--;
+            x++;
+            f += ad * y + a2 - bd * x;
+        }
+        else
+        {
+            y--;
+            f += ad * y + a2;
+        }
+    }*/
+
+    int dx, dy, d1, d2, x, y;
+    int a_sqr = A * A; // a^2, a - большая полуось
+    int b_sqr = B * B; // b^2, b - малая полуось
+    x = 0;
+    y = B;
+    // Начальный параметр решения области 1
+    d1 = (b_sqr) - (a_sqr * B) + (0.25 * a_sqr);
+    dx = 2 * b_sqr * x;
+    dy = 2 * a_sqr * y;
+
+    // Для региона 1
+    while (dx < dy)
+    {
+        // Печать точек на основе 4-сторонней симметрии
+        plot4(&painter, X_c, Y_c, x, y);
+        // Проверка и обновление значения
+        // параметр решения на основе алгоритма
+        if (d1 < 0)
+        {
+            x++;
+            dx = dx + (2 * b_sqr);
+            d1 = d1 + dx + (b_sqr);
+        }
+        else
+        {
+            x++;
+            y--;
+            dx = dx + (2 * b_sqr);
+            dy = dy - (2 * a_sqr);
+            d1 = d1 + dx - dy + (b_sqr);
+        }
+    }
+
+    // Параметр решения области 2
+    d2 = ((b_sqr) * ((x + 0.5) * (x + 0.5))) +
+         ((a_sqr) * ((y - 1) * (y - 1))) -
+          (a_sqr * b_sqr);
+
+    // Построение точек области 2
+    while (y >= 0)
+    {
+        // Печать точек на основе 4-сторонней симметрии
+        plot4(&painter, X_c, Y_c, x, y);
+
+        // Проверка и обновление параметра
+        // значение на основе алгоритма
+        if (d2 > 0)
+        {
+            y--;
+            dy = dy - (2 * a_sqr);
+            d2 = d2 + (a_sqr) - dy;
+        }
+        else
+        {
+            y--;
+            x++;
+            dx = dx + (2 * b_sqr);
+            dy = dy - (2 * a_sqr);
+            d2 = d2 + dx - dy + (a_sqr);
+        }
+    }
 }
 
 void Canvas::DrawCircleQt(int X_c, int Y_c, int R)

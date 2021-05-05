@@ -266,7 +266,7 @@ void MainWindow::on_pushButton_2_clicked()
     float Step = ui->ellipse_spectre_step_Edit->text().toFloat(&isStepFloat);
 
     bool isCircleNumberInt = false;
-    int EllipseN = ui->circle_number_Edit->text().toInt(&isCircleNumberInt);
+    int EllipseN = ui->ellipse_number_Edit->text().toInt(&isCircleNumberInt);
 
     if (isXcFloat)
         canvas->X_center = round(Xc);
