@@ -79,6 +79,7 @@ void CircleTimeGraphs::makePlot(int n, double **funcs, bool isCircle)
 
     //prepare data
     QLineSeries *conanSeries = new QLineSeries();
+    //QScatterSeries  *conanSeries = new QScatterSeries ();
     QLineSeries *paramSeries = new QLineSeries();
     QLineSeries *brezSeries = new QLineSeries();
     QLineSeries *midpointSeries = new QLineSeries();
@@ -120,7 +121,7 @@ void CircleTimeGraphs::makePlot(int n, double **funcs, bool isCircle)
         chart->setTitle("Оценка времени построения окружностей эллипсов");
 
     //add axis to the chart
-    QValueAxis *axisX = new QValueAxis;
+    /*QValueAxis *axisX = new QValueAxis;
     axisX->setTickCount(10);
     axisX->setLabelFormat("%d");
     axisX->setTitleText("Радиус");
@@ -139,11 +140,13 @@ void CircleTimeGraphs::makePlot(int n, double **funcs, bool isCircle)
     conanSeries->attachAxis(axisY);
     brezSeries->attachAxis(axisY);
     midpointSeries->attachAxis(axisY);
-    qtSeries->attachAxis(axisY);
+    qtSeries->attachAxis(axisY);*/
 
-    //chart->createDefaultAxes();
-    cout << "Ymax = " << axisY->max() << endl;
-    axisY->setRange(0.00, axisY->max()*1.1);// I dont know how to get real max, not paramSeries max(
+    //cout << "Ymax = " << axisY->max() << endl;
+    //axisY->setRange(0.00, axisY->max()*1.1); // I dont know how to get real max, not paramSeries max(
+
+    chart->createDefaultAxes();
+
     ui->gridLayout_3->removeWidget(chartView);
 
     //create new view
