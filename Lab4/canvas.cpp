@@ -37,13 +37,13 @@ int sign(double val)
       return 0;
 }
 
-double max(double val1, double val2)
+/*double max(double val1, double val2)
 {
   if (val1 >= val2)
       return val1;
   else
       return -val2;
-}
+}*/
 
 /*void Canvas::plot(QPainter *p, int x, int y, int c)
 {
@@ -80,46 +80,55 @@ void Canvas::plot4(QPainter *p, int X_c, int Y_c, int x, int y)
 void Canvas::DrawCircleCanon(int X_c, int Y_c, int R)
 {
     //(x - X_c)^2 + (y - Y_c)^2 = r^2;
+    //x^2 + y^2 = r^2;
     QPainter painter(&my_pixmap);
     setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
     painter.setPen(pen);
-    QPolygon circle;
 
-    for (int y = Y_c - R; y <= Y_c + R; y++)
+    int x = 0;
+    int y = 0;
+
+    while (x <= R)
     {
-        circle.append(QPoint(sqrt(pow(R, 2) - pow(y-Y_c, 2)) + X_c, y));
-        //plot(&painter, sqrt(pow(R, 2) - pow(y-Y_c, 2)) + X_c, y);
-        //plot(&painter, -sqrt(pow(R, 2) - pow(y-Y_c, 2)) + X_c, y);
+        y = round(sqrt(R*R-x*x));
+        plot4(&painter, X_c, Y_c, x, y);
+        x++;
     }
 
-
-    for (int y = Y_c + R; y >= Y_c - R; y--)
-        circle.append(QPoint(-sqrt(pow(R, 2) - pow(y-Y_c, 2)) + X_c, y));
-
-    for (int x = X_c - R; x <= X_c + R; x++)
+    y = 0;
+    while (y <= R)
     {
-        //plot(&painter, x, sqrt(pow(R, 2) - pow(x-X_c, 2)) + Y_c);
-        //plot(&painter, x, -sqrt(pow(R, 2) - pow(x-X_c, 2)) + Y_c);
+        y++;
+        x = round(sqrt(R*R-y*y));
+        plot4(&painter, X_c, Y_c, x, y);
     }
-
-    painter.drawPolygon(circle);
 }
 
 void Canvas::DrawEllipseCanon(int X_c, int Y_c, int A, int B)
 {
     //(x - X_c)^2/a^2 + (y - Y_c)^2/b^2 = 1;
+    //x^2/a^2 + y^2/b^2 = 1;
     QPainter painter(&my_pixmap);
     setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
     painter.setPen(pen);
-    QPolygon ellipse;
 
-    for (int y = Y_c - B; y <= Y_c + B; y++)
-        ellipse.append(QPoint(sqrt((1 - pow(y-Y_c, 2)/pow(B, 2)) * pow(A, 2)) + X_c, y));
+    double x = 0;
+    double y = 0;
 
-    for (int y = Y_c + B; y >= Y_c - B; y--)
-        ellipse.append(QPoint(-sqrt((1 - pow(y-Y_c, 2)/pow(B, 2)) * pow(A, 2)) + X_c, y));
+    while (x <=A)
+    {
+        y = round(B*sqrt(1-x*x/A/A));
+        plot4(&painter, X_c, Y_c, round(x), y);
+        x++;
+    }
 
-    painter.drawPolygon(ellipse);
+    y = 0;
+    while (y <= B)
+    {
+        x = round(A*sqrt(1-y*y/B/B));
+        plot4(&painter, X_c, Y_c, x, y);
+        y++;
+    }
 }
 
 void Canvas::DrawCircleParam(int X_c, int Y_c, int R)
@@ -129,19 +138,17 @@ void Canvas::DrawCircleParam(int X_c, int Y_c, int R)
     QPainter painter(&my_pixmap);
     setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
     painter.setPen(pen);
-    QPolygon circle;
 
-    double t = 0;
-    double step = (M_PI * 2) / (R * M_PI * 2);
-    //step = 1 / (R * 1);
-    while (t <= M_PI * 2)
+    int x = 0;
+    int y = R;
+    plot4(&painter, X_c, Y_c, x, y);
+    double step = 1.0 / R;
+    for (double t = 0; t <= M_PI/2; t += step)
     {
-        //plot(&painter, X_c + R*cos(t), Y_c + R*sin(t));
-        circle.append(QPoint(X_c + R*cos(t), Y_c + R*sin(t)));
-        t += step;
+        x = round(R*cos(t));
+        y = round(R*sin(t));
+        plot4(&painter, X_c, Y_c, x, y);
     }
-
-    painter.drawPolygon(circle);
 }
 
 void Canvas::DrawEllipseParam(int X_c, int Y_c, int A, int B)
@@ -151,19 +158,17 @@ void Canvas::DrawEllipseParam(int X_c, int Y_c, int A, int B)
     QPainter painter(&my_pixmap);
     setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
     painter.setPen(pen);
-    QPolygon circle;
 
-    double t = 0;
-    double step = (M_PI * 2) / ((A*B/2) * M_PI);
-    //step = 1 / (R * 1);
-    while (t <= M_PI * 2)
+    double x = 0;
+    double y = B;
+    plot4(&painter, X_c, Y_c, x, y);
+    double step = 1.0 / (A>B? A:B);
+    for (double t = 0; t <= M_PI/2; t += step)
     {
-        //plot(&painter, X_c + R*cos(t), Y_c + R*sin(t));
-        circle.append(QPoint(X_c + A*cos(t), Y_c + B*sin(t)));
-        t += step;
+        x = round(A*cos(t));
+        y = round(B*sin(t));
+        plot4(&painter, X_c, Y_c, x, y);
     }
-
-    painter.drawPolygon(circle);
 }
 
 void Canvas::DrawCircleBrezenham(int X_c, int Y_c, int R)

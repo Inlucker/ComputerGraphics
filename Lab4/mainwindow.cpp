@@ -251,10 +251,10 @@ void MainWindow::on_pushButton_2_clicked()
 {
 
     bool isXcFloat = false;
-    float Xc = ui->X_center_Edit_2->text().toFloat(&isXcFloat);
+    float Xc = ui->ellipse_spectre_X_center_Edit->text().toFloat(&isXcFloat);
 
     bool isYcFloat = false;
-    float Yc = ui->Y_center_Edit_2->text().toFloat(&isYcFloat);
+    float Yc = ui->ellipse_spectre_Y_center_Edit->text().toFloat(&isYcFloat);
 
     bool isAFloat = false;
     float A = ui->a_Edit_2->text().toFloat(&isAFloat);
