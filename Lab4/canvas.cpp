@@ -90,20 +90,21 @@ void Canvas::DrawCircleCanon(int X_c, int Y_c, int R)
     int x = 0;
     int y = 0;
 
-    while (x <= R)
+    while (x <= R/sqrt(2))
     {
         y = round(sqrt(R*R-x*x));
         plot4(&painter, X_c, Y_c, x, y);
+        plot4(&painter, X_c, Y_c, y, x);
         x++;
     }
 
-    y = 0;
+    /*y = 0;
     while (y <= R)
     {
         y++;
         x = round(sqrt(R*R-y*y));
         plot4(&painter, X_c, Y_c, x, y);
-    }
+    }*/
 }
 
 void Canvas::DrawEllipseCanon(int X_c, int Y_c, int A, int B)
@@ -150,6 +151,7 @@ void Canvas::DrawCircleParam(int X_c, int Y_c, int R)
         x = round(R*cos(t));
         y = round(R*sin(t));
         plot4(&painter, X_c, Y_c, x, y);
+        //plot4(&painter, X_c, Y_c, y, x);
     }
 }
 
@@ -313,7 +315,7 @@ void Canvas::DrawEllipseBrezenham(int X_c, int Y_c, int A, int B)
     //setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
     painter.setPen(pen);
 
-    int x = 0; // Компонента x
+    /*int x = 0; // Компонента x
     int y = B; // Компонента y
     int a_sqr = A * A; // a^2, a - большая полуось
     int b_sqr = B * B; // b^2, b - малая полуось
@@ -348,6 +350,65 @@ void Canvas::DrawEllipseBrezenham(int X_c, int Y_c, int A, int B)
             delta = delta - 8 * b_sqr * (x + 1) + 4 * a_sqr * (2 * y + 3);
             x++;
         }
+    }*/
+
+    int x = 0;
+    int y = int(B);
+    int end_y = 0;
+    int a_sqr = A*A;
+    int b_sqr = B*B;
+    int di = a_sqr + b_sqr - 2 * a_sqr * y;
+
+    while (y >= end_y)
+    {
+        plot4(&painter, X_c, Y_c, x, y);
+        if (di < 0)
+        {
+            //vnutri
+            //диагональный или горизонтальный
+            int d1 = 2 * di + 2 * a_sqr * y - 1;
+            if (d1 < 0)
+            {
+                // горизонт
+                x++;
+                di = di + 2 * b_sqr * x + b_sqr;
+            }
+            else
+            {
+                //диагональ
+                x++;
+                y--;
+                di +=  2 * b_sqr * x + b_sqr + a_sqr - 2 * a_sqr * y;
+            }
+        }
+        else if (di == 0)
+        {
+            //na
+            //выбираем диагональный
+            x++;
+            y--;
+            di +=  2 * b_sqr * x + b_sqr + a_sqr - 2 * a_sqr * y;
+        }
+        else
+        {
+            //snaruzi
+            //диагональный или вертикальный
+            int d2 = 2*di-2*b_sqr*x-1;
+            if (d2 <= 0)
+            {
+                // диагональный
+                x++;
+                y--;
+                di +=  2 * b_sqr * x + b_sqr + a_sqr - 2 * a_sqr * y;
+
+            }
+            else
+            {
+                // вертикальный
+                y--;
+                di = di - 2 * a_sqr * y + a_sqr;
+            }
+        }
     }
 }
 
@@ -379,6 +440,46 @@ void Canvas::DrawCircleMidpoint(int X_c, int Y_c, int R)
         plot4(&painter, X_c, Y_c, x, y);
         plot4(&painter, X_c, Y_c, y, x);
     }
+
+    /*int r_sqr = R*R;
+    int x = 0;
+    int y = R;
+    int rd2 = round(R/sqrt(2));
+
+    int f = (r_sqr-r_sqr*y + 0.25*r_sqr + 0.5);
+    int df = 0;
+    int delta = -2*r_sqr * y;
+
+    // идем по окружности до центра чатверти
+    while(x <= rd2)
+    {
+        plot4(&painter, X_c, Y_c, x, y);
+        x++;
+        if (f >= 0)
+        {
+            y--;
+            delta += 2*r_sqr;
+            f += delta;
+        }
+        df +=2*r_sqr;
+        f += df +r_sqr;
+    }
+    delta = 2*r_sqr*x;
+    f+= -r_sqr *(x+y);
+    df = -2*r_sqr*y;
+    while(y>= 0)
+    {
+        plot4(&painter, X_c, Y_c, x, y);
+        y--;
+        if (f < 0)
+        {
+            x++;
+            delta += 2*r_sqr;
+            f += delta;
+        }
+        df += 2*r_sqr;
+        f += df +r_sqr;
+    }*/
 }
 
 void Canvas::DrawEllipseMidpoint(int X_c, int Y_c, int A, int B)
@@ -386,139 +487,48 @@ void Canvas::DrawEllipseMidpoint(int X_c, int Y_c, int A, int B)
     QPainter painter(&my_pixmap);
     //setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
     painter.setPen(pen);
-    /*
-    Вход: a, b, xc, yc
 
-    b2 = b * b
-    bd = 2 * b2
-    a2 = a * a
-    ad = 2 * a2
-
-    x = 0, y = b, f = b2 - a2 * b + 0,25 * a2
-
-    while b2 * x > a2 * y do
-        if f > 0 then
-            x = x + 1
-            y = y - 1
-            f = f + bd * x + b2 - ad * y
-        else
-            x = x + 1
-            f = f + bd * x + b2
-
-    f = f + 3 / 4 * (a2 + b2) - (a2 * y + b2 * x)
-
-    while y >= 0 do
-        if f > 0 then
-            y = y - 1
-            x = x + 1
-            f = f + ad * y + a2 - bd * x
-        else
-            y = y - 1
-            f = f + ad * y + a2
-    */
-
-    /*int b2 = B*B;
-    int bd = 2 * b2;
-    int a2 = A * A;
-    int ad = 2 * a2;
-
-    double x = 0, y = b, f = b2 - a2 * b + 0.25 * a2;
-
-    while (b2 * x > a2 * y)
-    {
-        plot4(&painter, X_c, Y_c, x, y);
-        if (f > 0)
-        {
-            x++;
-            y--;
-            f += bd * x + b2 - ad * y;
-        }
-        else
-        {
-            x++;
-            f += bd * x + b2;
-        }
-        plot4(&painter, X_c, Y_c, x, y);
-    }
-
-    f = f + 3 / 4 * (a2 + b2) - (a2 * y + b2 * x);
-
-    while (b2 * x > a2 * y)
-    {
-        plot4(&painter, X_c, Y_c, x, y);
-        if (f > 0)
-        {
-            y--;
-            x++;
-            f += ad * y + a2 - bd * x;
-        }
-        else
-        {
-            y--;
-            f += ad * y + a2;
-        }
-    }*/
-
-    //int dx, dy, d1, d2, x, y;
-    int a_sqr = A * A; // a^2, a - большая полуось
-    int b_sqr = B * B; // b^2, b - малая полуось
+    int a_sqr = A*A;
+    int b_sqr = B*B;
     int x = 0;
     int y = B;
-    // Начальный параметр решения области 1
-    double d1 = (b_sqr) - (a_sqr * B) + (0.25 * a_sqr);
-    int dx = 2 * b_sqr * x;
-    int dy = 2 * a_sqr * y;
+    int rd2 = a_sqr/sqrt(a_sqr+b_sqr);
+    //fpr = b*b(x+1)^2 + a*a(y*y -0.5) - a*a*b*b
 
-    // Для региона 1
-    while (dx < dy)
+    int f = (b_sqr - a_sqr * y + 0.25 * a_sqr + 0.5);
+    int df = 0;
+    int delta = -2*a_sqr * y;
+
+    while(x <= rd2)
     {
-        // Печать точек на основе 4-сторонней симметрии
         plot4(&painter, X_c, Y_c, x, y);
-        // Проверка и обновление значения
-        // параметр решения на основе алгоритма
-        if (d1 < 0)
+
+        x++;
+        if (f >= 0)
         {
-            x++;
-            dx = dx + (2 * b_sqr);
-            d1 = d1 + dx + (b_sqr);
-        }
-        else
-        {
-            x++;
             y--;
-            dx = dx + (2 * b_sqr);
-            dy = dy - (2 * a_sqr);
-            d1 = d1 + dx - dy + (b_sqr);
+            delta += 2*a_sqr;
+            f += delta;
         }
+        df +=2*b_sqr;
+        f += df +b_sqr;
     }
+    delta = 2*b_sqr*x;
+    f+= -b_sqr * (x + 0.75) - a_sqr * (y - 0.75);
+    df = -2*a_sqr*y;
 
-    // Параметр решения области 2
-    double d2 = ((b_sqr) * ((x + 0.5) * (x + 0.5))) +
-                ((a_sqr) * ((y - 1) * (y - 1))) -
-                 (a_sqr * b_sqr);
-
-    // Построение точек области 2
-    while (y >= 0)
+    while(y >= 0)
     {
-        // Печать точек на основе 4-сторонней симметрии
         plot4(&painter, X_c, Y_c, x, y);
-
-        // Проверка и обновление параметра
-        // значение на основе алгоритма
-        if (d2 > 0)
+        y--;
+        if (f < 0)
         {
-            y--;
-            dy = dy - (2 * a_sqr);
-            d2 = d2 + (a_sqr) - dy;
-        }
-        else
-        {
-            y--;
             x++;
-            dx = dx + (2 * b_sqr);
-            dy = dy - (2 * a_sqr);
-            d2 = d2 + dx - dy + (a_sqr);
+            delta += 2*b_sqr;
+            f += delta;
         }
+        df += 2*a_sqr;
+        f += df +a_sqr;
     }
 }
 
