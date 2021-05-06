@@ -30,6 +30,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     canvas = new Canvas();
     ui->gridLayout->addWidget(canvas);
+
+
+    circleTimeGraphs = new CircleTimeGraphs();
 }
 
 MainWindow::~MainWindow()
@@ -328,4 +331,91 @@ void MainWindow::on_set_white_Btn_clicked()
 {
     canvas->setPenColor(Qt::white);
     ui->penColor_comboBox->setCurrentIndex(4);
+}
+
+#include <iostream>
+
+using namespace std;
+
+void MainWindow::on_show_graphs_Btn_clicked()
+{
+
+    //bool isLengthFloat = false;
+    //double Radius = ui->Len_Edit->text().toFloat(&isLengthFloat);
+
+    //if (isLengthFloat)
+    if (true)
+    {
+        int n = 10;
+        //double func[5][n];
+        double **func = new double *[5];
+        for (int i = 0; i < 5; i++)
+          func[i] = new double [n];
+
+        //double Radius = 100;
+        for (int i = 0; i < n; i++)
+        {
+            func[0][i] = canvas->getCircleTime(I_RADIUS, CANON);
+            func[1][i] = canvas->getCircleTime(I_RADIUS, PARAM);
+            func[2][i] = canvas->getCircleTime(I_RADIUS, BREZENHAM);
+            func[3][i] = canvas->getCircleTime(I_RADIUS, MIDPOINT);
+            func[4][i] = canvas->getCircleTime(I_RADIUS, STANDART);
+        }
+        for (int j = 0; j < 5; j++)
+        {
+            cout << j << endl;
+            for (int i = 0; i < n; i++)
+            {
+                cout << (i+1)*10 << "; " << func[j][i] << endl;
+            }
+        }
+
+        circleTimeGraphs->makePlot(n, func, true);
+
+        for (int i = 0; i < 5; i++)
+          delete []func[i];
+        delete []func;
+
+        circleTimeGraphs->show();
+        circleTimeGraphs->activateWindow();
+    }
+    else
+        QMessageBox::information(this, "Error", "Длина отрезка должна быть вещественным числом");
+
+    /*circleTimeGraphs->makePlot();
+    circleTimeGraphs->show();
+    circleTimeGraphs->activateWindow();*/
+}
+
+void MainWindow::on_stage_Btn_clicked()
+{
+    if (true)
+    {
+        int n = 10;
+        //double func[5][n];
+        double **func = new double *[5];
+        for (int i = 0; i < 5; i++)
+          func[i] = new double [n];
+
+        //double Radius = 100;
+        for (int i = 0; i < n; i++)
+        {
+            func[0][i] = canvas->getEllipseTime(I_RADIUS, I_RADIUS, CANON);
+            func[1][i] = canvas->getEllipseTime(I_RADIUS, I_RADIUS, PARAM);
+            func[2][i] = canvas->getEllipseTime(I_RADIUS, I_RADIUS, BREZENHAM);
+            func[3][i] = canvas->getEllipseTime(I_RADIUS, I_RADIUS, MIDPOINT);
+            func[4][i] = canvas->getEllipseTime(I_RADIUS, I_RADIUS, STANDART);
+        }
+
+        circleTimeGraphs->makePlot(n, func, false);
+
+        for (int i = 0; i < 5; i++)
+          delete []func[i];
+        delete []func;
+
+        circleTimeGraphs->show();
+        circleTimeGraphs->activateWindow();
+    }
+    else
+        QMessageBox::information(this, "Error", "Длина отрезка должна быть вещественным числом");
 }

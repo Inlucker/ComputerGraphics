@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -10,14 +10,17 @@ CONFIG += c++11
 
 SOURCES += \
     canvas.cpp \
+    circletimegraphs.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     canvas.h \
+    circletimegraphs.h \
     mainwindow.h
 
 FORMS += \
+    circletimegraphs.ui \
     mainwindow.ui
 
 # Default rules for deployment.

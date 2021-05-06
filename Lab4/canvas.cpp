@@ -712,60 +712,50 @@ void Canvas::clean()
     update();
 }
 
-
-/*
 #include <chrono>
 
 using namespace std;
 
-#define ITERATIONS 1000
+#define ITERATIONS 100
 
-double Canvas::getTime(float length, Algoritm alg)
+double Canvas::getCircleTime(int R, Algoritm alg)
 {
     //srand(time(0));
-    int X_start = 10000, X_end = 10000 + length, Y_start = 10000, Y_end = 10000;
+    int X_c = 10000, Y_c = 10000;
     auto start = chrono::high_resolution_clock::now();
     auto end = chrono::high_resolution_clock::now();
     //std::chrono::time_point<std::chrono::high_resolution_clock> start, end;
     switch (alg)
     {
-        case DIG_DIF_ANALIZ:
+        case CANON:
         {
             start = chrono::high_resolution_clock::now();
             for (int i = 0; i < ITERATIONS; i++)
-                DrawLineDGA(X_start, X_end, Y_start, Y_end);
+                DrawCircleCanon(X_c, Y_c, R);
             end = chrono::high_resolution_clock::now();
             break;
         }
-        case BREZENHAM_FLOAT:
+        case PARAM:
         {
             start = chrono::high_resolution_clock::now();
             for (int i = 0; i < ITERATIONS; i++)
-                DrawLineBrezenheimFloat(X_start, X_end, Y_start, Y_end);
+                DrawCircleParam(X_c, Y_c, R);
             end = chrono::high_resolution_clock::now();
             break;
         }
-        case BREZENHAM_INT:
+        case BREZENHAM:
         {
             start = chrono::high_resolution_clock::now();
             for (int i = 0; i < ITERATIONS; i++)
-                DrawLineBrezenheimInt(X_start, X_end, Y_start, Y_end);
+                DrawCircleBrezenham(X_c, Y_c, R);
             end = chrono::high_resolution_clock::now();
             break;
         }
-        case BREZENHAM_STEP_REM:
+        case MIDPOINT:
         {
             start = chrono::high_resolution_clock::now();
             for (int i = 0; i < ITERATIONS; i++)
-                DrawLineBrezenheimSmooth(X_start, X_end, Y_start, Y_end);
-            end = chrono::high_resolution_clock::now();
-            break;
-        }
-        case VU:
-        {
-            start = chrono::high_resolution_clock::now();
-            for (int i = 0; i < ITERATIONS; i++)
-                DrawLineVu(X_start, X_end, Y_start, Y_end);
+                DrawCircleMidpoint(X_c, Y_c, R);
             end = chrono::high_resolution_clock::now();
             break;
         }
@@ -773,7 +763,7 @@ double Canvas::getTime(float length, Algoritm alg)
         {
             start = chrono::high_resolution_clock::now();
             for (int i = 0; i < ITERATIONS; i++)
-                DrawLineQt(X_start, X_end, Y_start, Y_end);
+                DrawCircleQt(X_c, Y_c, R);
             end = chrono::high_resolution_clock::now();
             break;
         }
@@ -782,9 +772,63 @@ double Canvas::getTime(float length, Algoritm alg)
         break;
     }
     chrono::duration<double> dur = end - start;
-    //cout << "here1" << endl;
-    //cout << end << " " << start << " " << dur.count() << endl;
-    //cout << "here2" << endl;
-    //clean();
     return dur.count()/ITERATIONS;
-}*/
+}
+
+double Canvas::getEllipseTime(int A, int B, Algoritm alg)
+{
+    //srand(time(0));
+    int X_c = 10000, Y_c = 10000;
+    auto start = chrono::high_resolution_clock::now();
+    auto end = chrono::high_resolution_clock::now();
+    //std::chrono::time_point<std::chrono::high_resolution_clock> start, end;
+    switch (alg)
+    {
+        case CANON:
+        {
+            start = chrono::high_resolution_clock::now();
+            for (int i = 0; i < ITERATIONS; i++)
+                DrawEllipseCanon(X_c, Y_c, A, B);
+            end = chrono::high_resolution_clock::now();
+            break;
+        }
+        case PARAM:
+        {
+            start = chrono::high_resolution_clock::now();
+            for (int i = 0; i < ITERATIONS; i++)
+                DrawEllipseParam(X_c, Y_c, A, B);
+            end = chrono::high_resolution_clock::now();
+            break;
+        }
+        case BREZENHAM:
+        {
+            start = chrono::high_resolution_clock::now();
+            for (int i = 0; i < ITERATIONS; i++)
+                DrawEllipseBrezenham(X_c, Y_c, A, B);
+            end = chrono::high_resolution_clock::now();
+            break;
+        }
+        case MIDPOINT:
+        {
+            start = chrono::high_resolution_clock::now();
+            for (int i = 0; i < ITERATIONS; i++)
+                DrawEllipseMidpoint(X_c, Y_c, A, B);
+            end = chrono::high_resolution_clock::now();
+            break;
+        }
+        case STANDART:
+        {
+            start = chrono::high_resolution_clock::now();
+            for (int i = 0; i < ITERATIONS; i++)
+                DrawEllipseQt(X_c, Y_c, A, B);
+            end = chrono::high_resolution_clock::now();
+            break;
+        }
+        default:
+        //???
+        break;
+    }
+    chrono::duration<double> dur = end - start;
+    return dur.count()/ITERATIONS;
+}
+

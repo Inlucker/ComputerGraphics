@@ -27,7 +27,8 @@ public:
     void setPenColor(QColor color);
     void clean();
 
-    double getTime(float length, Algoritm alg);
+    double getCircleTime(int R, Algoritm alg);
+    double getEllipseTime(int A, int B, Algoritm alg);
     //int getStages(int angle);
 
 protected:

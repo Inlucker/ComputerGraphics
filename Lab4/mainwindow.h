@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include "canvas.h"
+#include "circletimegraphs.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -38,8 +39,13 @@ private slots:
 
     void on_set_white_Btn_clicked();
 
+    void on_show_graphs_Btn_clicked();
+
+    void on_stage_Btn_clicked();
+
 private:
     Ui::MainWindow *ui;
     Canvas *canvas;
+    CircleTimeGraphs* circleTimeGraphs;
 };
 #endif // MAINWINDOW_H
