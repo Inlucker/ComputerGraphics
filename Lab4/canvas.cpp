@@ -2,6 +2,8 @@
 #include <math.h>
 #include <iostream>
 
+using namespace std;
+
 Canvas::Canvas(QWidget *parent) : QWidget(parent)
 {
     //isClean = false;
@@ -82,7 +84,7 @@ void Canvas::DrawCircleCanon(int X_c, int Y_c, int R)
     //(x - X_c)^2 + (y - Y_c)^2 = r^2;
     //x^2 + y^2 = r^2;
     QPainter painter(&my_pixmap);
-    setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
+    //setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
     painter.setPen(pen);
 
     int x = 0;
@@ -109,7 +111,7 @@ void Canvas::DrawEllipseCanon(int X_c, int Y_c, int A, int B)
     //(x - X_c)^2/a^2 + (y - Y_c)^2/b^2 = 1;
     //x^2/a^2 + y^2/b^2 = 1;
     QPainter painter(&my_pixmap);
-    setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
+    //setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
     painter.setPen(pen);
 
     double x = 0;
@@ -136,7 +138,7 @@ void Canvas::DrawCircleParam(int X_c, int Y_c, int R)
     //x = X_c + R*cos(t)
     //y = Y_c + R*sin(t)
     QPainter painter(&my_pixmap);
-    setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
+    //setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
     painter.setPen(pen);
 
     int x = 0;
@@ -156,7 +158,7 @@ void Canvas::DrawEllipseParam(int X_c, int Y_c, int A, int B)
     //x = X_c + A*cos(t)
     //y = Y_c + B*sin(t)
     QPainter painter(&my_pixmap);
-    setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
+    //setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
     painter.setPen(pen);
 
     double x = 0;
@@ -193,10 +195,10 @@ void Canvas::DrawCircleBrezenham(int X_c, int Y_c, int R)
     10. Конец.
     */
     QPainter painter(&my_pixmap);
-    setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
+    //setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
     painter.setPen(pen);
 
-    int x = 0;
+    /*int x = 0;
     int y = R;
     int er = 2*(1-R);
     int y_end = R/sqrt(2);//= 0;
@@ -246,14 +248,69 @@ void Canvas::DrawCircleBrezenham(int X_c, int Y_c, int R)
                 er += 1 - 2*y;
             }
         }
-    }
+    }*/
 
+    int x = 0;
+    int y = int(R);
+    int di = int(2*(1-R));
+
+    while (x <= R && y >= 0)
+    {
+        plot4(&painter, X_c, Y_c, x, y);
+        if (di < 0)
+        {
+            //vnutri
+            //диагональный или горизонтальный
+            int d1 = 2*di + 2*y -1;
+            if (d1 < 0)
+            {
+                // горизонт
+                x++;
+                di = di+2*x +1;
+            }
+            else
+            {
+                //диагональ
+                x++;
+                y--;
+                di += 2*(x-y+1);
+            }
+        }
+        else if (di == 0)
+        {
+            //na
+            //выбираем диагональный
+            x++;
+            y--;
+            di += 2*(x-y+1);
+        }
+        else
+        {
+            //snaruzi
+            //диагональный или вертикальный
+            int d2 = 2*di-2*x-1;
+            if (d2 < 0)
+            {
+                // диагональный
+                x++;
+                y--;
+                di += 2*(x-y+1);
+
+            }
+            else
+            {
+                // вертикальный
+                y--;
+                di = di - 2*y+1;
+            }
+        }
+    }
 }
 
 void Canvas::DrawEllipseBrezenham(int X_c, int Y_c, int A, int B)
 {
     QPainter painter(&my_pixmap);
-    setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
+    //setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
     painter.setPen(pen);
 
     int x = 0; // Компонента x
@@ -299,7 +356,7 @@ void Canvas::DrawCircleMidpoint(int X_c, int Y_c, int R)
     //DrawEllipseMidpoint(X_c, Y_c, R, R);
 
     QPainter painter(&my_pixmap);
-    setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
+    //setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
     painter.setPen(pen);
 
     int x = 0;
@@ -327,7 +384,7 @@ void Canvas::DrawCircleMidpoint(int X_c, int Y_c, int R)
 void Canvas::DrawEllipseMidpoint(int X_c, int Y_c, int A, int B)
 {
     QPainter painter(&my_pixmap);
-    setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
+    //setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
     painter.setPen(pen);
     /*
     Вход: a, b, xc, yc
@@ -468,7 +525,7 @@ void Canvas::DrawEllipseMidpoint(int X_c, int Y_c, int A, int B)
 void Canvas::DrawCircleQt(int X_c, int Y_c, int R)
 {
     QPainter painter(&my_pixmap);
-    setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
+    //setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
     painter.setPen(pen);
     painter.drawEllipse(QPointF(X_c, Y_c), R, R);
 }
@@ -476,7 +533,7 @@ void Canvas::DrawCircleQt(int X_c, int Y_c, int R)
 void Canvas::DrawEllipseQt(int X_c, int Y_c, int A, int B)
 {
     QPainter painter(&my_pixmap);
-    setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
+    //setPenColor(QColor(pen.color().red(), pen.color().green(), pen.color().blue()));
     painter.setPen(pen);
     painter.drawEllipse(QPointF(X_c, Y_c), A, B);
 }
@@ -497,8 +554,8 @@ void Canvas::drawCircle()
         }
         case BREZENHAM:
         {
-            //DrawCircleBrezenham(X_center, Y_center, Radius);
-            DrawEllipseBrezenham(X_center, Y_center, Radius, Radius);
+            DrawCircleBrezenham(X_center, Y_center, Radius);
+            //DrawEllipseBrezenham(X_center, Y_center, Radius, Radius);
             break;
         }
         case MIDPOINT:
