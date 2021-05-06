@@ -34,6 +34,10 @@ private slots:
 
     void on_pushButton_2_clicked();
 
+    void on_set_balck_Btn_clicked();
+
+    void on_set_white_Btn_clicked();
+
 private:
     Ui::MainWindow *ui;
     Canvas *canvas;

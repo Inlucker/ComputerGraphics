@@ -317,3 +317,15 @@ void MainWindow::on_pushButton_2_clicked()
         canvas->update();
     }
 }
+
+void MainWindow::on_set_balck_Btn_clicked()
+{
+    canvas->setPenColor(Qt::black);
+    ui->penColor_comboBox->setCurrentIndex(0);
+}
+
+void MainWindow::on_set_white_Btn_clicked()
+{
+    canvas->setPenColor(Qt::white);
+    ui->penColor_comboBox->setCurrentIndex(4);
+}

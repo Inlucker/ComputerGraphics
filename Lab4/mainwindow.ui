@@ -185,7 +185,7 @@
      <rect>
       <x>750</x>
       <y>200</y>
-      <width>471</width>
+      <width>231</width>
       <height>71</height>
      </rect>
     </property>
@@ -197,7 +197,7 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>451</width>
+       <width>211</width>
        <height>41</height>
       </rect>
      </property>
@@ -838,6 +838,34 @@
       <string>a = </string>
      </property>
     </widget>
+   </widget>
+   <widget class="QPushButton" name="set_balck_Btn">
+    <property name="geometry">
+     <rect>
+      <x>990</x>
+      <y>220</y>
+      <width>111</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Установить
+чёрны йцвет</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="set_white_Btn">
+    <property name="geometry">
+     <rect>
+      <x>1110</x>
+      <y>220</y>
+      <width>111</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Установить
+белый цвет</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
