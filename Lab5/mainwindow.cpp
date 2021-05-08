@@ -103,18 +103,23 @@ void MainWindow::on_backgroundColor_comboBox_activated(int index)
     {
         case 0:
             canvas->setStyleSheet("background-color:white;");
+            canvas->setBackgroundColor(Qt::white);
             break;
         case 1:
             canvas->setStyleSheet("background-color:red;");
+            canvas->setBackgroundColor(Qt::red);
             break;
         case 2:
             canvas->setStyleSheet("background-color:green;");
+            canvas->setBackgroundColor(Qt::green);
             break;
         case 3:
             canvas->setStyleSheet("background-color:blue;");
+            canvas->setBackgroundColor(Qt::blue);
             break;
         case 4:
             canvas->setStyleSheet("background-color:black;");
+            canvas->setBackgroundColor(Qt::black);
             break;
         default:
             //???
@@ -141,4 +146,21 @@ void MainWindow::on_Delay_off_radioButton_clicked()
 void MainWindow::on_clean_Btn_clicked()
 {
     canvas->clean();
+}
+
+void MainWindow::on_fill_Btn_clicked()
+{
+    if (!canvas->locked())
+    {
+        QMessageBox::information(this, "Error", "Фигура не замкнута. Пожалуйста, замкните фигуру.");
+        return;
+    }
+
+    if (canvas->getEdgesNumber() <= 2)
+    {
+        QMessageBox::information(this, "Error", "Недостаточно ребер.");
+        return;
+    }
+
+    canvas->fill();
 }

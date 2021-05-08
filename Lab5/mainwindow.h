@@ -38,6 +38,8 @@ private slots:
 
     void on_Delay_off_radioButton_clicked();
 
+    void on_fill_Btn_clicked();
+
 private:
     Ui::MainWindow *ui;
     Canvas *canvas;
