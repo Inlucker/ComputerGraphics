@@ -127,6 +127,24 @@ void MainWindow::on_backgroundColor_comboBox_activated(int index)
     }
 }
 
+void MainWindow::on_add_point_Btn_clicked()
+{
+    bool isXFloat = false;
+    float X = ui->X_Edit->text().toFloat(&isXFloat);
+
+    bool isYFloat = false;
+    float Y = ui->Y_Edit->text().toFloat(&isYFloat);
+
+    if (!isXFloat)
+        QMessageBox::information(this, "Error", "X должен быть вещественным числом");
+
+    if (!isYFloat)
+        QMessageBox::information(this, "Error", "Y должен быть вещественным числом");
+
+    if (isXFloat && isYFloat)
+        canvas->addPoint(round(X), round(Y));
+}
+
 void MainWindow::on_lock_Btn_clicked()
 {
     canvas->lock();

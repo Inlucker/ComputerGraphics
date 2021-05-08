@@ -30,7 +30,7 @@ private slots:
 
     void on_backgroundColor_comboBox_activated(int index);
 
-    void on_clean_Btn_clicked();
+    void on_add_point_Btn_clicked();
 
     void on_lock_Btn_clicked();
 
@@ -39,6 +39,8 @@ private slots:
     void on_Delay_off_radioButton_clicked();
 
     void on_fill_Btn_clicked();
+
+    void on_clean_Btn_clicked();
 
 private:
     Ui::MainWindow *ui;

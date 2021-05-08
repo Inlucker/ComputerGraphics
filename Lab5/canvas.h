@@ -51,7 +51,6 @@ private:
     QPen mainPen;
     QPen semiPen;
 
-
     QColor color_border;
     QColor color_shading;
     QColor color_background;
