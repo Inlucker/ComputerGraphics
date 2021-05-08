@@ -70,6 +70,7 @@ void MainWindow::on_MainPenColor_comboBox_activated(int index)
             //???
             break;
     }
+    canvas->clean();
 }
 
 void MainWindow::on_SemiPenColor_comboBox_activated(int index)
@@ -95,6 +96,7 @@ void MainWindow::on_SemiPenColor_comboBox_activated(int index)
             //???
             break;
     }
+    canvas->clean();
 }
 
 void MainWindow::on_backgroundColor_comboBox_activated(int index)
@@ -111,7 +113,7 @@ void MainWindow::on_backgroundColor_comboBox_activated(int index)
             break;
         case 2:
             canvas->setStyleSheet("background-color:green;");
-            canvas->setBackgroundColor(Qt::green);
+            canvas->setBackgroundColor(Qt::darkGreen);
             break;
         case 3:
             canvas->setStyleSheet("background-color:blue;");
@@ -125,6 +127,7 @@ void MainWindow::on_backgroundColor_comboBox_activated(int index)
             //???
             break;
     }
+    canvas->clean();
 }
 
 void MainWindow::on_add_point_Btn_clicked()

@@ -52,6 +52,7 @@ private:
     QPixmap *my_pixmap = nullptr;
     QPen mainPen;
     QPen semiPen;
+    QPen bgPen;
 
     QColor color_border;
     QColor color_shading;

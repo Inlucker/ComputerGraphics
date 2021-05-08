@@ -4,6 +4,7 @@ Canvas::Canvas(QWidget *parent) : QWidget(parent)
 {
     semiPen = QPen(Qt::black);
     mainPen = QPen(Qt::red);
+    bgPen = QPen(Qt::white);
     setStyleSheet("background-color:white;");
     isDelay = true;
 
@@ -35,6 +36,7 @@ void Canvas::setSemiPenColor(QColor color)
 void Canvas::setBackgroundColor(QColor color)
 {
     color_background = color;
+    bgPen.setColor(color);
 }
 
 void Canvas::setDelay(bool val)
@@ -112,7 +114,7 @@ void Canvas::fill(int del)
 
         double dx = (x2 - x1)/(double)(y2-y1);
         double xstart = x1;
-        painter->setPen(color_shading);
+        //painter->setPen(color_shading);
         for (int y = y1; y < y2; y++)
         {
             for (int x = round(xstart); x <= x_max; x++)
@@ -123,22 +125,27 @@ void Canvas::fill(int del)
                 if (color == color_background)
                 {
                     painter->setPen(color_shading);
+                    //painter->setPen(mainPen);
                 }
                 else if (color == color_shading)
                 {
                     painter->setPen(color_background);
+                    //painter->setPen(bgPen);
                 }
                 else
                 {
                     painter->setPen(color_border);
+                    //painter->setPen(semiPen);
                 }
                 painter->drawPoint(x,y);
             }
             xstart += dx;
 
             if (isDelay)
+            {
                 Sleep(delay);
                 repaint();
+            }
 
             this->update();
             //ui->draw_label->setPixmap(*scene);
