@@ -5,7 +5,7 @@ Canvas::Canvas(QWidget *parent) : QWidget(parent)
     semiPen = QPen(Qt::black);
     mainPen = QPen(Qt::red);
     setStyleSheet("background-color:white;");
-    delay = true;
+    isDelay = true;
 
     color_border = QColor(Qt::black);
     color_shading = QColor(Qt::red);
@@ -39,7 +39,7 @@ void Canvas::setBackgroundColor(QColor color)
 
 void Canvas::setDelay(bool val)
 {
-    delay = val;
+    isDelay = val;
 }
 
 void Canvas::addPoint(double x, double y)
@@ -77,8 +77,10 @@ QColor Canvas::getPixelAt(int x, int y)
     return grab(QRect(x, y, 1, 1)).toImage().pixelColor(0,0);
 }
 
-void Canvas::fill()
+void Canvas::fill(int del)
 {
+    if (isDelay)
+        delay = del;
     int x_max = edges[0].x1;
 
     for (size_t i = 0; i < edges.size(); i++)
@@ -134,7 +136,8 @@ void Canvas::fill()
             }
             xstart += dx;
 
-            if (delay)
+            if (isDelay)
+                Sleep(delay);
                 repaint();
 
             this->update();

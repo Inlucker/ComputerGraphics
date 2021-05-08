@@ -180,5 +180,14 @@ void MainWindow::on_fill_Btn_clicked()
         return;
     }
 
-    canvas->fill();
+    bool isDelayFloat = false;
+    float delay = ui->delay_Edit->text().toFloat(&isDelayFloat);
+
+    delay = round(delay);
+
+    if (!isDelayFloat || delay > 50 || delay < 0)
+        QMessageBox::information(this, "Error", "Задержка должна быть неотрицательным вещественным числом не больше 50");
+
+    if (isDelayFloat && delay <= 50 && delay >= 0)
+        canvas->fill(delay);
 }

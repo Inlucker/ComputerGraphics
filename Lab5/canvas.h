@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QPainter>
 #include <vector>
+#include "windows.h"
+#include <cmath>
 
 class Edge
 {
@@ -33,7 +35,7 @@ public:
     void setDelay(bool val);
     void addPoint(double x, double y);
     void lock();
-    void fill();
+    void fill(int del);
     bool locked();
     int getEdgesNumber();
     void clean();
@@ -55,7 +57,9 @@ private:
     QColor color_shading;
     QColor color_background;
 
-    bool delay;
+    bool isDelay;
+    int delay;
+
     bool isFirstPoint;
     bool isLocked;
 
