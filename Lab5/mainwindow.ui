@@ -18,7 +18,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>0</y>
+      <y>10</y>
       <width>731</width>
       <height>671</height>
      </rect>
@@ -83,7 +83,7 @@
     <property name="title">
      <string>Цвет фона</string>
     </property>
-    <widget class="QComboBox" name="backgroundColor_comboBox_4">
+    <widget class="QComboBox" name="backgroundColor_comboBox">
      <property name="geometry">
       <rect>
        <x>10</x>
