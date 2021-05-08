@@ -79,10 +79,12 @@ QColor Canvas::getPixelAt(int x, int y)
     return grab(QRect(x, y, 1, 1)).toImage().pixelColor(0,0);
 }
 
-void Canvas::fill(int del)
+//old fill
+/*void Canvas::fill(int del)
 {
     if (isDelay)
         delay = del;
+
     int x_max = edges[0].x1;
 
     for (size_t i = 0; i < edges.size(); i++)
@@ -93,7 +95,7 @@ void Canvas::fill(int del)
 
     for (size_t i = 0; i < edges.size(); i++)
     {
-        QImage image = my_pixmap->toImage();
+        //QImage image = my_pixmap->toImage();
 
         int x1 = edges[i].x1;
         int x2 = edges[i].x2;
@@ -109,8 +111,8 @@ void Canvas::fill(int del)
             x2 = x1;
             x1 = tmp;
         }
-        else if (y1 == y2)
-            continue;
+        //else if (y1 == y2)
+            //continue;
 
         double dx = (x2 - x1)/(double)(y2-y1);
         double xstart = x1;
@@ -147,10 +149,83 @@ void Canvas::fill(int del)
                 repaint();
             }
 
-            this->update();
             //ui->draw_label->setPixmap(*scene);
         }
     }
+    this->update();
+}*/
+
+//new fill
+void Canvas::fill(int del)
+{
+    //Обрисовка
+    /*clean();
+
+    for (size_t i = 0; i < edges.size(); i++)
+    {
+        int x1 = edges[i].x1;
+        int x2 = edges[i].x2;
+        int y1 = edges[i].y1;
+        int y2 = edges[i].y2;
+
+
+    }*/
+
+
+    if (isDelay)
+        delay = del;
+
+    int x_max = edges[0].x1;
+    int x_min = edges[0].x1;
+
+    int y_max = edges[0].y1;
+    int y_min = edges[0].y1;
+
+    for (size_t i = 0; i < edges.size(); i++)
+    {
+        if (edges[i].x1 > x_max)
+            x_max = edges[i].x1;
+        if (edges[i].x1 < x_min)
+            x_min = edges[i].x1;
+
+        if (edges[i].y1 > y_max)
+            y_max = edges[i].y1;
+        if (edges[i].y1 < y_min)
+            y_min = edges[i].y1;
+    }
+
+    painter->setPen(color_shading);
+    for (int y = y_min; y <= y_max; y++)
+    {
+        bool flag = false;
+        for (int x = x_min; x <= x_max; x++)
+        {
+            //QColor color = image.pixelColor(x, y);
+            QColor color = getPixelAt(x, y);
+
+            if (color == color_border)
+                flag = !flag;
+
+            if (flag)
+            {
+                painter->setPen(color_shading);
+            }
+            else
+            {
+                painter->setPen(color_background);
+            }
+            painter->drawPoint(x,y);
+        }
+
+        if (isDelay)
+        {
+            Sleep(delay);
+            repaint();
+        }
+
+        //ui->draw_label->setPixmap(*scene);
+    }
+    this->update();
 }
 
 bool Canvas::locked()
