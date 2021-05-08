@@ -6,12 +6,14 @@ Canvas::Canvas(QWidget *parent) : QWidget(parent)
     mainPen = QPen(Qt::red);
     setStyleSheet("background-color:white;");
     delay = true;
+
     clean();
 }
 
 Canvas::~Canvas()
 {
-
+    delete painter;
+    delete my_pixmap;
 }
 
 void Canvas::setMainPenColor(QColor color)
@@ -33,9 +35,9 @@ void Canvas::addPoint(double x, double y)
 {
     int int_x = round(x);
     int int_y = round(y);
-    QPainter painter(&my_pixmap);
-    painter.setPen(semiPen);
-    plot(&painter, int_x, int_y);
+    //QPainter painter(my_pixmap);
+    painter->setPen(semiPen);
+    plot(int_x, int_y);
     if (isFirstPoint)
     {
         x0 = int_x;
@@ -44,7 +46,7 @@ void Canvas::addPoint(double x, double y)
     }
     else
     {
-        painter.drawLine(prev_x, prev_y, int_x, int_y);
+        painter->drawLine(prev_x, prev_y, int_x, int_y);
     }
     prev_x = int_x;
     prev_y = int_y;
@@ -57,16 +59,21 @@ void Canvas::lock()
     isLocked = true;
 }
 
+void Canvas::fill()
+{
+
+}
+
 void Canvas::paintEvent(QPaintEvent *event)
 {
     QPainter pixmap_painter(this);
-    pixmap_painter.drawPixmap(0, 0, my_pixmap);
+    pixmap_painter.drawPixmap(0, 0, *my_pixmap);
 }
 
-void Canvas::plot(QPainter *p, int x, int y)
+void Canvas::plot(int x, int y)
 {
     //p->setPen(semiPen);
-    p->drawPoint(x, y);
+    painter->drawPoint(x, y);
 }
 
 void Canvas::clean()
@@ -74,7 +81,17 @@ void Canvas::clean()
     x0 = 0, y0 = 0;
     isFirstPoint = true;
     isLocked = false;
-    my_pixmap = QPixmap(2000, 2000);
-    my_pixmap.fill(QColor(0,0,0,0));
+
+    if (painter)
+        delete painter;
+
+    if (my_pixmap)
+        delete my_pixmap;
+    my_pixmap = new QPixmap(2000, 2000);
+    my_pixmap->fill(QColor(0,0,0,0));
+
+    painter = new QPainter(my_pixmap);
+    painter->setPen(semiPen);
+
     update();
 }

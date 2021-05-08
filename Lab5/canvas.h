@@ -3,6 +3,16 @@
 
 #include <QWidget>
 #include <QPainter>
+#include <vector>
+
+class Edge
+{
+public:
+    int x1;
+    int y1;
+    int x2;
+    int y2;
+};
 
 class Canvas : public QWidget
 {
@@ -15,6 +25,7 @@ public:
     void setDelay(bool val);
     void addPoint(double x, double y);
     void lock();
+    void fill();
     void clean();
 
 protected:
@@ -25,16 +36,18 @@ public:
     int prev_x, prev_y;
 
 private:
-    //QPainter painter;
+    QPainter *painter = nullptr;
+    QPixmap *my_pixmap = nullptr;
     QPen mainPen;
     QPen semiPen;
-    QPixmap my_pixmap;
     bool delay;
     bool isFirstPoint;
     bool isLocked;
 
+    std::vector<Edge> edges;
+
 private:
-    void plot(QPainter *p, int x, int y);
+    void plot(int x, int y);
 
 };
 
