@@ -186,6 +186,7 @@ void Canvas::fill(int del)
     {
         int count = 0;
         bool isPrevBorder = false;
+        int preLast_x = -2;
         int last_x = -1;
         for (int x = x_min; x <= x_max; x++)
         {
@@ -201,6 +202,7 @@ void Canvas::fill(int del)
 
             if (getPixelAt(x, y) == color_border)
             {
+                preLast_x = last_x;
                 last_x = x;
                 count++;
             }
@@ -208,10 +210,17 @@ void Canvas::fill(int del)
             //Kostil'
             if (x == x_max && count % 2 == 1)
             {
-                painter->setPen(color_border);
-                painter->drawPoint(last_x-1,y);
-                painter->drawPoint(last_x,y);
-                painter->setPen(color_background);
+                if (count == 1)
+                {
+                    painter->drawPoint(last_x,y);
+                }
+                else
+                {
+                    painter->setPen(color_border);
+                    painter->drawPoint(preLast_x,y);
+                    painter->drawPoint(preLast_x+1,y);
+                    painter->setPen(color_background);
+                }
             }
         }
 
