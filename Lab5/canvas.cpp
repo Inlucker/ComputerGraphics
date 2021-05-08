@@ -158,20 +158,6 @@ QColor Canvas::getPixelAt(int x, int y)
 //new fill
 void Canvas::fill(int del)
 {
-    //Обрисовка
-    /*clean();
-
-    for (size_t i = 0; i < edges.size(); i++)
-    {
-        int x1 = edges[i].x1;
-        int x2 = edges[i].x2;
-        int y1 = edges[i].y1;
-        int y2 = edges[i].y2;
-
-
-    }*/
-
-
     if (isDelay)
         delay = del;
 
@@ -194,7 +180,50 @@ void Canvas::fill(int del)
             y_min = edges[i].y1;
     }
 
-    painter->setPen(color_shading);
+    //Обрисовка
+    painter->setPen(color_background);
+    for (int y = y_min; y <= y_max; y++)
+    {
+        int count = 0;
+        bool isPrevBorder = false;
+        int last_x = -1;
+        for (int x = x_min; x <= x_max; x++)
+        {
+            QColor color = getPixelAt(x, y);
+
+            if (color == color_border && isPrevBorder)
+                painter->drawPoint(x,y);
+
+            if (color == color_border)
+                isPrevBorder = true;
+            else
+                isPrevBorder = false;
+
+            if (getPixelAt(x, y) == color_border)
+            {
+                last_x = x;
+                count++;
+            }
+
+            //Kostil'
+            if (x == x_max && count % 2 == 1)
+            {
+                painter->setPen(color_border);
+                painter->drawPoint(last_x-1,y);
+                painter->drawPoint(last_x,y);
+                painter->setPen(color_background);
+            }
+        }
+
+        if (isDelay)
+        {
+            Sleep(delay);
+            repaint();
+        }
+    }
+
+    //Зарисовка
+    //painter->setPen(color_shading);
     for (int y = y_min; y <= y_max; y++)
     {
         bool flag = false;
@@ -223,7 +252,6 @@ void Canvas::fill(int del)
             repaint();
         }
 
-        //ui->draw_label->setPixmap(*scene);
     }
     this->update();
 }
