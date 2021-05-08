@@ -182,5 +182,7 @@ void Canvas::clean()
     painter = new QPainter(my_pixmap);
     painter->setPen(semiPen);
 
+    edges.clear();
+
     update();
 }
