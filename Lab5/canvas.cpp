@@ -263,6 +263,7 @@ void Canvas::fill(int del)
             swapFlag = true;
         }
 
+        //если ребро не горизонтальное - обрисовка
         if (double(y2-y1) != 0)
         {
             double dx = (x2 - x1)/double(y2-y1);
@@ -304,6 +305,7 @@ void Canvas::fill(int del)
                     Sleep(delay);
                     repaint();
                 }
+                //Попробовать упростить без этого
             }
 
             //for (double y = y1 + 1; y < y2 - 1; y++)
@@ -381,7 +383,7 @@ void Canvas::fill(int del)
     }
     //cout << endl;
 
-    //Обрисовка норм?
+    //Обрисовка старая
     /*my_pixmap->fill(QColor(0,0,0,0));
     painter->setPen(color_border);
     for (size_t i = 0; i < edges.size(); i++)
