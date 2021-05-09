@@ -169,6 +169,7 @@ void Canvas::fill(int del)
 
     for (size_t i = 0; i < edges.size(); i++)
     {
+
         if (edges[i].x1 > x_max)
             x_max = edges[i].x1;
         if (edges[i].x1 < x_min)
@@ -181,7 +182,42 @@ void Canvas::fill(int del)
     }
 
     //Обрисовка
-    painter->setPen(color_background);
+    my_pixmap->fill(QColor(0,0,0,0));
+    painter->setPen(color_border);
+    for (size_t i = 0; i < edges.size(); i++)
+    {
+        int x1 = edges[i].x1;
+        int x2 = edges[i].x2;
+        int y1 = edges[i].y1;
+        int y2 = edges[i].y2;
+
+        if (y1 > y2)
+        {
+            int tmp = y2;
+            y2 = y1;
+            y1 = tmp;
+            tmp = x2;
+            x2 = x1;
+            x1 = tmp;
+        }
+
+        double dx = (x2 - x1)/double(y2-y1);
+        double x = x1 + (dx/2);
+        for (double y = y1+0.5; y < y2; y++)
+        {
+            painter->drawPoint(round(x+0.5), int(y));
+            x += dx;
+            if (isDelay)
+            {
+                Sleep(delay);
+                repaint();
+            }
+        }
+
+    }
+
+    //Обрисовка (костыльная)
+    /*painter->setPen(color_background);
     for (int y = y_min; y <= y_max; y++)
     {
         int count = 0;
@@ -229,7 +265,7 @@ void Canvas::fill(int del)
             Sleep(delay);
             repaint();
         }
-    }
+    }*/
 
     //Зарисовка
     //painter->setPen(color_shading);
