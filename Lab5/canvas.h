@@ -26,6 +26,18 @@ public:
     int y1;
     int x2;
     int y2;
+
+    bool isExtremum(Edge edge2)
+    {
+        bool rez = false;
+        //local min
+        if (this->y1 <= this->y2 && this->y1 <= edge2.y1)
+            rez = true;
+        //local max
+        if (this->y1 >= this->y2 && this->y1 >= edge2.y1)
+            rez = true;
+        return rez;
+    }
 };
 
 class Canvas : public QWidget

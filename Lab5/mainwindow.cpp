@@ -218,9 +218,14 @@ void MainWindow::on_fill_Btn_clicked()
         canvas->fill(delay);
 }
 
-#define X_START 50
+/*#define X_START 50
 #define Y_START 50
-#define FIG_WIDTH 20
+#define FIG_WIDTH 100
+#define FIG_HEIGHT 200*/
+
+#define X_START 10
+#define Y_START 10
+#define FIG_WIDTH 300
 #define FIG_HEIGHT 300
 
 void MainWindow::on_pushButton_clicked()
