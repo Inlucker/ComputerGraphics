@@ -202,6 +202,24 @@ void Canvas::fill(int del)
         }
 
         double dx = (x2 - x1)/double(y2-y1);
+        double x = x1;
+        for (double y = y1; y < y2; y++)
+        {
+            QColor color = getPixelAt(round(x), y);
+            if (color == color_border)
+                painter->drawPoint(x + 1, y);
+            else
+                painter->drawPoint(round(x), y);
+
+            x += dx;
+            if (isDelay)
+            {
+                Sleep(delay);
+                repaint();
+            }
+        }
+
+        /*double dx = (x2 - x1)/double(y2-y1);
         double x = x1 + (dx/2);
         for (double y = y1+0.5; y < y2; y++)
         {
@@ -212,7 +230,7 @@ void Canvas::fill(int del)
                 Sleep(delay);
                 repaint();
             }
-        }
+        }*/
 
     }
 
@@ -290,6 +308,9 @@ void Canvas::fill(int del)
             }
             painter->drawPoint(x,y);
         }
+        painter->setPen(color_background);
+        painter->drawPoint(x_max + 1, y);
+
 
         if (isDelay)
         {
