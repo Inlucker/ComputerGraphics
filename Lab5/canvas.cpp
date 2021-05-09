@@ -23,7 +23,6 @@ Canvas::~Canvas()
 
 void Canvas::mousePressEvent(QMouseEvent *event)
 {
-    cout << geometry().x() << endl;
     if (event->button() == Qt::LeftButton && rect().contains(event->pos()))
     {
         double x = prev_x;
@@ -35,7 +34,6 @@ void Canvas::mousePressEvent(QMouseEvent *event)
                 y = y - (x - prev_x);
             else
                 y = y + (x - prev_x);
-            cout << "HERE" << endl;
         }
         else if (event->modifiers() == Qt::CTRL && !firstPointCheck())
         {
@@ -190,6 +188,16 @@ QColor Canvas::getPixelAt(int x, int y)
     this->update();
 }*/
 
+int sign(double val)
+{
+  if (val > 0)
+      return 1;
+  if (val < 0)
+      return -1;
+  else
+      return 0;
+}
+
 //new fill
 void Canvas::fill(int del)
 {
@@ -225,7 +233,22 @@ void Canvas::fill(int del)
         int x2 = edges[i].x2;
         int y1 = edges[i].y1;
         int y2 = edges[i].y2;
-        cout << x1 << x2 << y1 << y2 << endl;
+
+        int prevId = i - 1;
+        if (prevId < 0)
+        {
+            prevId = edges.size() - 1;
+        }
+        Edge prevEdge = edges[prevId];
+
+        int nextId = i + 1;
+        if (nextId > edges.size() - 1)
+        {
+            nextId = 0;
+        }
+        Edge nextEdge = edges[nextId];
+
+        bool swapFlag = false;
         if (y1 > y2)
         {
             int tmp = y2;
@@ -234,6 +257,10 @@ void Canvas::fill(int del)
             tmp = x2;
             x2 = x1;
             x1 = tmp;
+            Edge tmp_edge = nextEdge;
+            nextEdge = prevEdge;
+            prevEdge = tmp_edge;
+            swapFlag = true;
         }
 
         if (double(y2-y1) != 0)
@@ -241,25 +268,36 @@ void Canvas::fill(int del)
             double dx = (x2 - x1)/double(y2-y1);
             double x = x1 + (dx/2);
 
-            cout << "next edge\n";
+            //cout << "next edge\n";
             int y = y1;
             //(с проверкой на локальный экстремум)
-            int secId = i - 1;
-            if (secId < 0)
-            {
-                secId = edges.size() - 1;
-            }
-            Edge secondEdge = edges[secId];
-            if (edges[i].isExtremum(secondEdge))
+            if (edges[i].isExtremum(prevEdge))
             {
                 double tmp_x = x;
                 while (getPixelAt(int(tmp_x + 0.5), y) == color_border)
                 //if (getPixelAt(int(tmp_x + 0.5), y1) == color_border)
                 {
-                        tmp_x++;
+                    if (!swapFlag)
+                    {
+                        if (prevEdge.x1 < int(tmp_x + 0.5))
+                            tmp_x--;
+                        else if (prevEdge.x1 > int(tmp_x + 0.5))
+                            tmp_x++;
+                        else
+                            tmp_x += sign(dx);
+                    }
+                    else
+                    {
+                        if (prevEdge.x2 < int(tmp_x + 0.5))
+                            tmp_x--;
+                        else if (prevEdge.x2 > int(tmp_x + 0.5))
+                            tmp_x++;
+                        else
+                            tmp_x += sign(dx);
+                    }
                 }
                 painter->drawPoint(int(tmp_x + 0.5), y);
-                cout << "start(" << int(tmp_x + 0.5) << "; " << y << ")" << endl;
+                //cout << "start(" << int(tmp_x + 0.5) << "; " << y << ")" << endl;
                 x += dx; y++;
                 if (isDelay)
                 {
@@ -269,15 +307,15 @@ void Canvas::fill(int del)
             }
 
             //for (double y = y1 + 1; y < y2 - 1; y++)
-            for (y; y < y2; y++)
+            for (y; y < y2 - 1; y++)
             {
                 double tmp_x = x;
                 while (getPixelAt(int(tmp_x + 0.5), y) == color_border)
                 {
-                        tmp_x++;
+                    tmp_x++;
                 }
                 painter->drawPoint(int(tmp_x + 0.5), y);
-                cout << "(" << int(tmp_x + 0.5) << "; " << int(y) << ")" << endl;
+                //cout << "(" << int(tmp_x + 0.5) << "; " << int(y) << ")" << endl;
                 x += dx;
                 if (isDelay)
                 {
@@ -285,10 +323,42 @@ void Canvas::fill(int del)
                     repaint();
                 }
             }
+
+            double tmp_x = x;
+            while (getPixelAt(int(tmp_x + 0.5), y) == color_border)
+            //if (getPixelAt(int(tmp_x + 0.5), y1) == color_border)
+            {
+                if (!swapFlag)
+                {
+                    if (nextEdge.x2 < int(tmp_x + 0.5)) //!=
+                        tmp_x--;
+                    else if (nextEdge.x2 > int(tmp_x + 0.5))
+                        tmp_x++;
+                    else
+                        tmp_x += -sign(dx);
+                }
+                else
+                {
+                    if (nextEdge.x1 < int(tmp_x + 0.5))
+                        tmp_x--;
+                    else if (nextEdge.x1 > int(tmp_x + 0.5))
+                        tmp_x++;
+                    else
+                        tmp_x += -sign(dx);
+                }
+            }
+            painter->drawPoint(int(tmp_x + 0.5), y);
+            //cout << "end(" << int(tmp_x + 0.5) << "; " << y << ")" << endl;
+            x += dx; y++;
+            if (isDelay)
+            {
+                Sleep(delay);
+                repaint();
+            }
         }
 
     }
-    cout << endl;
+    //cout << endl;
 
     //Обрисовка норм?
     /*my_pixmap->fill(QColor(0,0,0,0));
@@ -350,7 +420,7 @@ void Canvas::fill(int del)
             if (flag)
             {
                 painter->setPen(color_shading);
-                cout << "(" << x << "; " << y << ")" << endl;
+                //cout << "(" << x << "; " << y << ")" << endl;
             }
             else
             {
@@ -359,7 +429,7 @@ void Canvas::fill(int del)
             painter->drawPoint(x,y);
         }
         painter->setPen(color_background);
-        painter->drawPoint(x_max, y);
+        //painter->drawPoint(x_max, y);
         painter->drawPoint(x_max + 1, y);
 
         if (isDelay)
