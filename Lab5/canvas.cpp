@@ -243,8 +243,8 @@ void Canvas::fill(int del)
         {
             double tmp_x = x;
             //cout << "(" << x << "; " << y << ") - ";
-            while (getPixelAt(int(tmp_x+1), y) == color_border)
-            //if (getPixelAt(int(tmp_x+1), int(y)) == color_border)
+            //while (getPixelAt(int(tmp_x+1), y) == color_border)
+            if (getPixelAt(int(tmp_x+1), int(y)) == color_border)
             {
                 tmp_x++;
             }
