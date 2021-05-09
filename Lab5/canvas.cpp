@@ -181,7 +181,7 @@ void Canvas::fill(int del)
             y_min = edges[i].y1;
     }
 
-    //Обрисовка
+    //Обрисовка норм?
     my_pixmap->fill(QColor(0,0,0,0));
     painter->setPen(color_border);
     for (size_t i = 0; i < edges.size(); i++)
@@ -205,11 +205,12 @@ void Canvas::fill(int del)
         double x = x1;
         for (double y = y1; y < y2; y++)
         {
-            QColor color = getPixelAt(round(x), y);
-            if (color == color_border)
-                painter->drawPoint(x + 1, y);
-            else
-                painter->drawPoint(round(x), y);
+            double tmp_x = x;
+            while (getPixelAt(round(tmp_x), y) == color_border)
+            {
+                tmp_x++;
+            }
+            painter->drawPoint(round(tmp_x), y);
 
             x += dx;
             if (isDelay)
@@ -219,6 +220,7 @@ void Canvas::fill(int del)
             }
         }
 
+        //обрисовка ?X + 1/2 > Xпересечения?
         /*double dx = (x2 - x1)/double(y2-y1);
         double x = x1 + (dx/2);
         for (double y = y1+0.5; y < y2; y++)
@@ -308,8 +310,8 @@ void Canvas::fill(int del)
             }
             painter->drawPoint(x,y);
         }
-        painter->setPen(color_background);
-        painter->drawPoint(x_max + 1, y);
+        /*painter->setPen(color_background);
+        painter->drawPoint(x_max + 1, y);*/
 
 
         if (isDelay)
