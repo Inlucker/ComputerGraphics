@@ -301,6 +301,11 @@ void Canvas::fill(int del)
     this->update();
 }
 
+bool Canvas::firstPointCheck()
+{
+    return isFirstPoint;
+}
+
 bool Canvas::locked()
 {
     return isLocked;

@@ -39,9 +39,31 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton && this->canvas->rect().contains(event->pos()))
     {
-        //cout << "Set" << endl;
-        double x = event->position().x();
-        double y = event->position().y();
+        double x = canvas->prev_x;
+        double y = canvas->prev_y;
+        if (event->modifiers() == Qt::ALT && !canvas->firstPointCheck())
+        {
+            x = event->position().x();
+            if (event->position().y() < y)
+                y = y - (x - canvas->prev_x);
+            else
+                y = y + (x - canvas->prev_x);
+            cout << "HERE" << endl;
+        }
+        else if (event->modifiers() == Qt::CTRL && !canvas->firstPointCheck())
+        {
+            x = event->position().x();
+        }
+        else if (event->modifiers() == Qt::SHIFT && !canvas->firstPointCheck())
+        {
+            y = event->position().y();
+        }
+        else
+        {
+            x = event->position().x();
+            y = event->position().y();
+        }
+
         canvas->addPoint(x, y);
     }
 }

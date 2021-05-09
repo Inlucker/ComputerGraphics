@@ -7,6 +7,10 @@
 #include "windows.h"
 #include <cmath>
 
+#include <iostream>
+
+using namespace std;
+
 class Edge
 {
 public:
@@ -36,6 +40,7 @@ public:
     void addPoint(double x, double y);
     void lock();
     void fill(int del);
+    bool firstPointCheck();
     bool locked();
     int getEdgesNumber();
     void clean();
