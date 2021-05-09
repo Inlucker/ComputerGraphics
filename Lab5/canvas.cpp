@@ -90,6 +90,7 @@ void Canvas::addPoint(double x, double y)
         x0 = int_x;
         y0 = int_y;
         isFirstPoint = false;
+        isLocked = false;
     }
     else
     {
@@ -344,8 +345,8 @@ void Canvas::fill(int del)
             }
             painter->drawPoint(x,y);
         }
-        /*painter->setPen(color_background);
-        painter->drawPoint(x_max + 1, y);*/
+        painter->setPen(color_background);
+        painter->drawPoint(x_max + 1, y);
 
 
         if (isDelay)
