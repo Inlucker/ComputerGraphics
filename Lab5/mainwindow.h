@@ -19,9 +19,7 @@ public:
     ~MainWindow();
 
 protected:
-   //virtual void mouseReleaseEvent(QMouseEvent *event);
-   virtual void mousePressEvent(QMouseEvent *event);
-   //virtual void mouseMoveEvent(QMouseEvent *event);
+   //virtual void mousePressEvent(QMouseEvent *event);
 
 private slots:
     void on_MainPenColor_comboBox_activated(int index);

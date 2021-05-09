@@ -35,38 +35,39 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::mousePressEvent(QMouseEvent *event)
+/*void MainWindow::mousePressEvent(QMouseEvent *event)
 {
+    cout << canvas->geometry().x() << endl;
     if (event->button() == Qt::LeftButton && this->canvas->rect().contains(event->pos()))
     {
         double x = canvas->prev_x;
         double y = canvas->prev_y;
         if (event->modifiers() == Qt::ALT && !canvas->firstPointCheck())
         {
-            x = event->position().x();
+            x = event->position().x() - canvas->x();
             if (event->position().y() < y)
-                y = y - (x - canvas->prev_x);
+                y = y - (x - canvas->prev_x) - canvas->y();
             else
                 y = y + (x - canvas->prev_x);
             cout << "HERE" << endl;
         }
         else if (event->modifiers() == Qt::CTRL && !canvas->firstPointCheck())
         {
-            x = event->position().x();
+            x = event->position().x() - canvas->x();
         }
         else if (event->modifiers() == Qt::SHIFT && !canvas->firstPointCheck())
         {
-            y = event->position().y();
+            y = event->position().y() - canvas->y();
         }
         else
         {
-            x = event->position().x();
-            y = event->position().y();
+            x = event->position().x() - canvas->x();
+            y = event->position().y() - canvas->y();
         }
 
         canvas->addPoint(x, y);
     }
-}
+}*/
 
 
 void MainWindow::on_MainPenColor_comboBox_activated(int index)

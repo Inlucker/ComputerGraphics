@@ -6,6 +6,7 @@
 #include <vector>
 #include "windows.h"
 #include <cmath>
+#include <QKeyEvent>
 
 #include <iostream>
 
@@ -46,6 +47,7 @@ public:
     void clean();
 
 protected:
+   virtual void mousePressEvent(QMouseEvent *event);
     void paintEvent(QPaintEvent *);
 
 public:

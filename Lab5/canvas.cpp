@@ -21,6 +21,40 @@ Canvas::~Canvas()
     delete my_pixmap;
 }
 
+void Canvas::mousePressEvent(QMouseEvent *event)
+{
+    cout << geometry().x() << endl;
+    if (event->button() == Qt::LeftButton && rect().contains(event->pos()))
+    {
+        double x = prev_x;
+        double y = prev_y;
+        if (event->modifiers() == Qt::ALT && !firstPointCheck())
+        {
+            x = event->position().x();
+            if (event->position().y() < y)
+                y = y - (x - prev_x);
+            else
+                y = y + (x - prev_x);
+            cout << "HERE" << endl;
+        }
+        else if (event->modifiers() == Qt::CTRL && !firstPointCheck())
+        {
+            x = event->position().x();
+        }
+        else if (event->modifiers() == Qt::SHIFT && !firstPointCheck())
+        {
+            y = event->position().y();
+        }
+        else
+        {
+            x = event->position().x();
+            y = event->position().y();
+        }
+
+        addPoint(x, y);
+    }
+}
+
 void Canvas::setMainPenColor(QColor color)
 {
     color_shading = color;
