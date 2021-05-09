@@ -236,91 +236,29 @@ void Canvas::fill(int del)
             x1 = tmp;
         }
 
-        double dx = (x2 - x1)/double(y2-y1);
-        double x = x1;
-        for (double y = y1; y < y2; y++)
-        {
-            double tmp_x = x;
-            while (getPixelAt(round(tmp_x), y) == color_border)
-            {
-                tmp_x++;
-            }
-            painter->drawPoint(round(tmp_x), y);
-
-            x += dx;
-            if (isDelay)
-            {
-                Sleep(delay);
-                repaint();
-            }
-        }
-
         //обрисовка ?X + 1/2 > Xпересечения?
-        /*double dx = (x2 - x1)/double(y2-y1);
+        double dx = (x2 - x1)/double(y2-y1);
         double x = x1 + (dx/2);
         for (double y = y1+0.5; y < y2; y++)
         {
-            painter->drawPoint(round(x+0.5), int(y));
+            double tmp_x = x;
+            //cout << "(" << x << "; " << y << ") - ";
+            while (getPixelAt(int(tmp_x+1), y) == color_border)
+            //if (getPixelAt(int(tmp_x+1), int(y)) == color_border)
+            {
+                tmp_x++;
+            }
+            painter->drawPoint(int(tmp_x+1), y);
+            //cout << "(" << int(tmp_x+1) << "; " << int(y) << ")" << endl;
             x += dx;
             if (isDelay)
             {
                 Sleep(delay);
                 repaint();
             }
-        }*/
-
+        }
     }
-
-    //Обрисовка (костыльная)
-    /*painter->setPen(color_background);
-    for (int y = y_min; y <= y_max; y++)
-    {
-        int count = 0;
-        bool isPrevBorder = false;
-        int preLast_x = -2;
-        int last_x = -1;
-        for (int x = x_min; x <= x_max; x++)
-        {
-            QColor color = getPixelAt(x, y);
-
-            if (color == color_border && isPrevBorder)
-                painter->drawPoint(x,y);
-
-            if (color == color_border)
-                isPrevBorder = true;
-            else
-                isPrevBorder = false;
-
-            if (getPixelAt(x, y) == color_border)
-            {
-                preLast_x = last_x;
-                last_x = x;
-                count++;
-            }
-
-            //Kostil'
-            if (x == x_max && count % 2 == 1)
-            {
-                if (count == 1)
-                {
-                    painter->drawPoint(last_x,y);
-                }
-                else
-                {
-                    painter->setPen(color_border);
-                    painter->drawPoint(preLast_x,y);
-                    painter->drawPoint(preLast_x+1,y);
-                    painter->setPen(color_background);
-                }
-            }
-        }
-
-        if (isDelay)
-        {
-            Sleep(delay);
-            repaint();
-        }
-    }*/
+    cout << endl;
 
     //Зарисовка
     //painter->setPen(color_shading);
@@ -338,6 +276,7 @@ void Canvas::fill(int del)
             if (flag)
             {
                 painter->setPen(color_shading);
+                //cout << "(" << x << "; " << y << ")" << endl;
             }
             else
             {
@@ -348,13 +287,11 @@ void Canvas::fill(int del)
         painter->setPen(color_background);
         painter->drawPoint(x_max + 1, y);
 
-
         if (isDelay)
         {
             Sleep(delay);
             repaint();
         }
-
     }
     this->update();
 }

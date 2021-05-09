@@ -217,3 +217,18 @@ void MainWindow::on_fill_Btn_clicked()
     if (isDelayFloat && delay <= 50 && delay >= 0)
         canvas->fill(delay);
 }
+
+#define X_START 50
+#define Y_START 50
+#define FIG_WIDTH 20
+#define FIG_HEIGHT 300
+
+void MainWindow::on_pushButton_clicked()
+{
+    canvas->addPoint(X_START, Y_START);
+    canvas->addPoint(X_START, Y_START + 2 * FIG_HEIGHT);
+    canvas->addPoint(X_START + FIG_WIDTH, Y_START + FIG_HEIGHT);
+    canvas->addPoint(X_START + 2 * FIG_WIDTH, Y_START + 2 * FIG_HEIGHT);
+    canvas->addPoint(X_START + 2 * FIG_WIDTH, Y_START);
+    canvas->lock();
+}

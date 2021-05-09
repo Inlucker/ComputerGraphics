@@ -40,6 +40,8 @@ private slots:
 
     void on_clean_Btn_clicked();
 
+    void on_pushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     Canvas *canvas;
