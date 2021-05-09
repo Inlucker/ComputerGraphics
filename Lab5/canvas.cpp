@@ -30,7 +30,7 @@ void Canvas::mousePressEvent(QMouseEvent *event)
         if (event->modifiers() == Qt::ALT && !firstPointCheck())
         {
             x = event->position().x();
-            if (event->position().y() < y)
+            if ((event->position().x() > prev_x && event->position().y() < prev_y) || (event->position().x() < prev_x && event->position().y() > prev_y))
                 y = y - (x - prev_x);
             else
                 y = y + (x - prev_x);
