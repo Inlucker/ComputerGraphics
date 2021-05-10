@@ -146,6 +146,8 @@ void CircleTimeGraphs::makePlot(int n, double **funcs, bool isCircle)
     //axisY->setRange(0.00, axisY->max()*1.1); // I dont know how to get real max, not paramSeries max(
 
     chart->createDefaultAxes();
+    chart->axisX()->setTitleText("Радиус");
+    chart->axisY()->setTitleText("Время (сек)");
 
     ui->gridLayout_3->removeWidget(chartView);
 
