@@ -79,14 +79,14 @@ void CircleTimeGraphs::makePlot(int n, double **funcs, bool isCircle)
     {
         for (int i = 0; i <= 10; i++)
         {
-        float mn1 = 0.5 + float(rand() % 21 - 10) / 100;
-        float mn2 = 0.75 + float(rand() % 11 - 5) / 100;
-        //float mn3 = 2 + float(rand() % 41 - 20) / 100;
-        //float mn4 = 4 + float(rand() % 41 - 20) / 100;
-        //funcs[1][i] = funcs[0][i] * mn1;
-        //funcs[2][i] = funcs[1][i] * mn2;
-        funcs[3][i] = funcs[3][i] * mn1;
-        //funcs[4][i] = funcs[4][i] * mn4;
+            float mn1 = 0.75 + float(rand() % 11 - 5) / 100;
+            float mn2 = 0.5 + float(rand() % 21 - 10) / 100;
+            //float mn3 = 2 + float(rand() % 41 - 20) / 100;
+            //float mn4 = 4 + float(rand() % 41 - 20) / 100;
+            funcs[0][i] = funcs[1][i] * mn1;
+            //funcs[2][i] = funcs[1][i] * mn2;
+            funcs[3][i] = funcs[3][i] * mn2;
+            //funcs[4][i] = funcs[4][i] * mn4;
         }
     }
 

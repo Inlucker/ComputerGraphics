@@ -118,7 +118,7 @@ void Canvas::DrawEllipseCanon(int X_c, int Y_c, int A, int B)
     double x = 0;
     double y = 0;
 
-    while (x <=A)
+    while (x <= A)
     {
         y = round(B*sqrt(1-x*x/A/A));
         plot4(&painter, X_c, Y_c, round(x), y);
