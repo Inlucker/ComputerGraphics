@@ -237,3 +237,15 @@ void MainWindow::on_pushButton_clicked()
     canvas->addPoint(X_START + 2 * FIG_WIDTH, Y_START);
     canvas->lock();
 }
+
+void MainWindow::on_get_time_Btn_clicked()
+{
+    auto start = chrono::high_resolution_clock::now();
+    canvas->setDelay(false);
+    on_fill_Btn_clicked();
+    if (ui->Delay_on_radioButton->isChecked())
+        canvas->setDelay(true);
+    auto end = chrono::high_resolution_clock::now();
+    chrono::duration<double> dur = end - start;
+    QMessageBox::information(this, "Время закраски", QString("Время закраски = %1").arg(dur.count()));
+}

@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QKeyEvent>
+#include <chrono>
+#include <QString>
 #include "canvas.h"
 
 QT_BEGIN_NAMESPACE
@@ -41,6 +43,8 @@ private slots:
     void on_clean_Btn_clicked();
 
     void on_pushButton_clicked();
+
+    void on_get_time_Btn_clicked();
 
 private:
     Ui::MainWindow *ui;
