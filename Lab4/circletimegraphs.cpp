@@ -118,7 +118,7 @@ void CircleTimeGraphs::makePlot(int n, double **funcs, bool isCircle)
     if (isCircle)
         chart->setTitle("Оценка времени построения окружностей");
     else
-        chart->setTitle("Оценка времени построения окружностей эллипсов");
+        chart->setTitle("Оценка времени построения эллипсов");
 
     //add axis to the chart
     /*QValueAxis *axisX = new QValueAxis;

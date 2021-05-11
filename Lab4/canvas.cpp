@@ -167,6 +167,7 @@ void Canvas::DrawEllipseParam(int X_c, int Y_c, int A, int B)
     double y = B;
     plot4(&painter, X_c, Y_c, x, y);
     double step = 1.0 / (A>B? A:B);
+    //double step = 1.0 / ((A+B)/2);
     for (double t = 0; t <= M_PI/2; t += step)
     {
         x = round(A*cos(t));
@@ -255,10 +256,13 @@ void Canvas::DrawCircleBrezenham(int X_c, int Y_c, int R)
     int x = 0;
     int y = int(R);
     int di = int(2*(1-R));
+    //int y_end = R/sqrt(2);
 
     while (x <= R && y >= 0)
+    //while(y >= y_end)
     {
         plot4(&painter, X_c, Y_c, x, y);
+        //plot4(&painter, X_c, Y_c, y, x);
         if (di < 0)
         {
             //vnutri
