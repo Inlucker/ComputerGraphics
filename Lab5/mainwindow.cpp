@@ -225,8 +225,8 @@ void MainWindow::on_fill_Btn_clicked()
 
 #define X_START 10
 #define Y_START 10
-#define FIG_WIDTH 300
-#define FIG_HEIGHT 300
+#define FIG_WIDTH 30
+#define FIG_HEIGHT 30
 
 void MainWindow::on_pushButton_clicked()
 {

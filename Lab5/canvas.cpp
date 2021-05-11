@@ -199,7 +199,7 @@ int sign(double val)
 }
 
 //new fill
-void Canvas::fill(int del)
+/*void Canvas::fill(int del)
 {
     if (isDelay)
         delay = del;
@@ -383,8 +383,70 @@ void Canvas::fill(int del)
     }
     //cout << endl;
 
+    //Зарисовка
+    //painter->setPen(color_shading);
+    for (int y = y_min; y <= y_max; y++)
+    {
+        bool flag = false;
+        for (int x = x_min; x <= x_max; x++)
+        {
+            //QColor color = image.pixelColor(x, y);
+            QColor color = getPixelAt(x, y);
+
+            if (color == color_border)
+                flag = !flag;
+
+            if (flag)
+            {
+                painter->setPen(color_shading);
+                //cout << "(" << x << "; " << y << ")" << endl;
+            }
+            else
+            {
+                painter->setPen(color_background);
+            }
+            painter->drawPoint(x,y);
+        }
+        //painter->setPen(color_background);
+        //painter->drawPoint(x_max + 1, y);
+
+        if (isDelay)
+        {
+            Sleep(delay);
+            repaint();
+        }
+    }
+    this->update();
+}*/
+
+//stable fill
+void Canvas::fill(int del)
+{
+    if (isDelay)
+        delay = del;
+
+    int x_max = edges[0].x1;
+    int x_min = edges[0].x1;
+
+    int y_max = edges[0].y1;
+    int y_min = edges[0].y1;
+
+    for (size_t i = 0; i < edges.size(); i++)
+    {
+
+        if (edges[i].x1 > x_max)
+            x_max = edges[i].x1;
+        if (edges[i].x1 < x_min)
+            x_min = edges[i].x1;
+
+        if (edges[i].y1 > y_max)
+            y_max = edges[i].y1;
+        if (edges[i].y1 < y_min)
+            y_min = edges[i].y1;
+    }
+
     //Обрисовка старая
-    /*my_pixmap->fill(QColor(0,0,0,0));
+    my_pixmap->fill(QColor(0,0,0,0));
     painter->setPen(color_border);
     for (size_t i = 0; i < edges.size(); i++)
     {
@@ -410,7 +472,7 @@ void Canvas::fill(int del)
         {
             double tmp_x = x;
             //cout << "(" << x << "; " << y << ") - ";
-            while (getPixelAt(int(tmp_x+1), y) == color_border)
+            while (getPixelAt(int(tmp_x + 0.5), y) == color_border)
             //if (getPixelAt(int(tmp_x + 0.5), y) == color_border)
             {
                 tmp_x++;
@@ -425,10 +487,9 @@ void Canvas::fill(int del)
             }
         }
     }
-    cout << endl;*/
+    cout << endl;
 
     //Зарисовка
-    //painter->setPen(color_shading);
     for (int y = y_min; y <= y_max; y++)
     {
         bool flag = false;
@@ -451,9 +512,8 @@ void Canvas::fill(int del)
             }
             painter->drawPoint(x,y);
         }
-        /*painter->setPen(color_background);
-        //painter->drawPoint(x_max, y);
-        painter->drawPoint(x_max + 1, y);*/
+        painter->setPen(color_background);
+        painter->drawPoint(x_max + 1, y);
 
         if (isDelay)
         {
