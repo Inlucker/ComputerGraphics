@@ -221,27 +221,14 @@ void MainWindow::on_fill_Btn_clicked()
         QMessageBox::information(this, "Error", "Задержка должна быть неотрицательным вещественным числом не больше 50");
 
     if (isDelayFloat && delay <= 50 && delay >= 0)
-        canvas->fill(delay);
-}
+    {
+        if (ui->Lines_mode_radioButton->isChecked())
+            canvas->fill_lines(delay);
+        else if (ui->Dots_mode_radioButton->isChecked())
+            canvas->fill_dots(delay);
 
-/*#define X_START 50
-#define Y_START 50
-#define FIG_WIDTH 100
-#define FIG_HEIGHT 200*/
-
-#define X_START 10
-#define Y_START 10
-#define FIG_WIDTH 30
-#define FIG_HEIGHT 30
-
-void MainWindow::on_pushButton_clicked()
-{
-    canvas->addPoint(X_START, Y_START);
-    canvas->addPoint(X_START, Y_START + 2 * FIG_HEIGHT);
-    canvas->addPoint(X_START + FIG_WIDTH, Y_START + FIG_HEIGHT);
-    canvas->addPoint(X_START + 2 * FIG_WIDTH, Y_START + 2 * FIG_HEIGHT);
-    canvas->addPoint(X_START + 2 * FIG_WIDTH, Y_START);
-    canvas->lock();
+        //canvas->fill_lines(delay);
+    }
 }
 
 void MainWindow::on_get_time_Btn_clicked()

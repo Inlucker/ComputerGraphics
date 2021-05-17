@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>993</width>
-    <height>703</height>
+    <width>997</width>
+    <height>730</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -98,7 +98,7 @@
     <property name="geometry">
      <rect>
       <x>750</x>
-      <y>640</y>
+      <y>660</y>
       <width>231</width>
       <height>41</height>
      </rect>
@@ -111,7 +111,7 @@
     <property name="geometry">
      <rect>
       <x>750</x>
-      <y>540</y>
+      <y>560</y>
       <width>231</width>
       <height>41</height>
      </rect>
@@ -137,7 +137,7 @@
     <property name="geometry">
      <rect>
       <x>750</x>
-      <y>440</y>
+      <y>460</y>
       <width>231</width>
       <height>91</height>
      </rect>
@@ -307,7 +307,7 @@
     <property name="geometry">
      <rect>
       <x>750</x>
-      <y>590</y>
+      <y>610</y>
       <width>231</width>
       <height>41</height>
      </rect>
@@ -333,17 +333,33 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QRadioButton" name="Lines_mode_radioButton">
     <property name="geometry">
      <rect>
-      <x>920</x>
-      <y>620</y>
-      <width>81</width>
-      <height>31</height>
+      <x>760</x>
+      <y>440</y>
+      <width>101</width>
+      <height>19</height>
      </rect>
     </property>
     <property name="text">
-     <string>TestFigureBtn</string>
+     <string>Lines</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="Dots_mode_radioButton">
+    <property name="geometry">
+     <rect>
+      <x>870</x>
+      <y>440</y>
+      <width>101</width>
+      <height>19</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Dots</string>
     </property>
    </widget>
   </widget>
@@ -352,7 +368,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>993</width>
+     <width>997</width>
      <height>20</height>
     </rect>
    </property>

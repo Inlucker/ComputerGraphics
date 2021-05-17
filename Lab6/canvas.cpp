@@ -126,7 +126,7 @@ QColor Canvas::getPixelAt(int x, int y)
     return grab(QRect(x, y, 1, 1)).toImage().pixelColor(0,0);
 }
 
-void Canvas::find_next(std::stack<point_t> &stack, int &x_left, int &x_right, const int &y)
+void Canvas::find_next(stack<Point> &stack, int &x_left, int &x_right, const int &y)
 {
     bool f = false;
     int x = x_left;
@@ -143,9 +143,7 @@ void Canvas::find_next(std::stack<point_t> &stack, int &x_left, int &x_right, co
         }
         if (f == true)
         {
-            point_t p;
-            p.x = x;
-            p.y = y;
+            Point p(x, y);
             if (x == x_right && getPixelAt(x,y) != color_border && getPixelAt(x,y) != color_shading)
             {
                 stack.push(p);
@@ -170,6 +168,12 @@ void Canvas::find_next(std::stack<point_t> &stack, int &x_left, int &x_right, co
     }
 }
 
+void Canvas::checkPoint(stack<Point> &stack, int x, int y)
+{
+    if (getPixelAt(x,y) != color_border && getPixelAt(x,y) != color_shading)
+        stack.push(Point(x,y));
+}
+
 int sign(double val)
 {
   if (val > 0)
@@ -180,7 +184,7 @@ int sign(double val)
       return 0;
 }
 
-void Canvas::fill(int del)
+void Canvas::fill_lines(int del)
 {
     if (isDelay)
         delay = del;
@@ -189,15 +193,13 @@ void Canvas::fill(int del)
 
     int x_left, x_right;
 
-    std::stack<point_t> mystack;
-    point_t z;
-    z.x = xz;
-    z.y = yz;
+    stack<Point> mystack;
+    Point z(xz, yz);
     mystack.push(z);
 
     while (!mystack.empty())
     {
-        point_t p = mystack.top();
+        Point p = mystack.top();
         mystack.pop();
         painter->drawPoint(p.x,p.y);
         int x = p.x + 1;
@@ -236,11 +238,43 @@ void Canvas::fill(int del)
         //ui->draw_label->setPixmap(*scene);
     }
     this->update();
+}
 
+void Canvas::fill_dots(int del)
+{
+    if (isDelay)
+        delay = del;
 
+    painter->setPen(color_shading);
 
+    stack<Point> stck;
+    Point z(xz, yz);
+    stck.push(z);
 
+    while(!stck.empty())
+    {
+        Point p = stck.top();
+        stck.pop();
+        int x = p.x;
+        int y = p.y;
+        painter->drawPoint(x,y);
 
+        checkPoint(stck, x+1, y);
+        checkPoint(stck, x-1, y);
+        checkPoint(stck, x, y+1);
+        checkPoint(stck, x, y-1);
+        /*checkPoint(stck, x+1, y);
+        checkPoint(stck, x-1, y);
+        checkPoint(stck, x, y+1);
+        checkPoint(stck, x, y-1);*/
+        if (isDelay)
+        {
+            //Sleep(delay);
+            repaint();
+        }
+    }
+
+    this->update();
 }
 
 bool Canvas::firstPointCheck()

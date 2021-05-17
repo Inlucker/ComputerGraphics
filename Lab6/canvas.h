@@ -13,11 +13,17 @@
 
 using namespace std;
 
-typedef struct point point_t;
-struct point
+//typedef struct Point point_t;
+struct Point
 {
     int x;
     int y;
+    Point() = default;
+    Point(int _x, int _y)
+    {
+        x = _x;
+        y = _y;
+    }
 };
 
 class Edge
@@ -61,7 +67,8 @@ public:
     void addPoint(double x, double y);
     void setZatravka(double x, double y);
     void lock();
-    void fill(int del);
+    void fill_lines(int del);
+    void fill_dots(int del);
     bool firstPointCheck();
     bool locked();
     bool zatravka();
@@ -101,7 +108,8 @@ private:
     void plot(int x, int y);
     QColor getPixelAt(int x, int y);
 
-    void find_next(std::stack<point_t> &stack, int &x_left, int &x_right, const int &y);
+    void find_next(stack<Point> &stack, int &x_left, int &x_right, const int &y);
+    void checkPoint(stack<Point> &stack, int x, int y);
 
 };
 

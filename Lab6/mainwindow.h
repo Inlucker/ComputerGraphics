@@ -42,8 +42,6 @@ private slots:
 
     void on_clean_Btn_clicked();
 
-    void on_pushButton_clicked();
-
     void on_get_time_Btn_clicked();
 
 private:
