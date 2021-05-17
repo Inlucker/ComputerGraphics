@@ -3,7 +3,6 @@
 
 #include <QWidget>
 #include <QPainter>
-#include <vector>
 #include "windows.h"
 #include <cmath>
 #include <QKeyEvent>
@@ -26,34 +25,6 @@ struct Point
     }
 };
 
-class Edge
-{
-public:
-    Edge(int _x1, int _y1, int _x2, int _y2)
-    {
-        x1 = _x1;
-        y1 = _y1;
-        x2 = _x2;
-        y2 = _y2;
-    }
-    int x1;
-    int y1;
-    int x2;
-    int y2;
-
-    bool isExtremum(Edge edge2)
-    {
-        bool rez = false;
-        //local min
-        if (this->y1 <= this->y2 && this->y1 <= edge2.y1)
-            rez = true;
-        //local max
-        if (this->y1 >= this->y2 && this->y1 >= edge2.y1)
-            rez = true;
-        return rez;
-    }
-};
-
 class Canvas : public QWidget
 {
 public:
@@ -72,7 +43,6 @@ public:
     bool firstPointCheck();
     bool locked();
     bool zatravka();
-    int getEdgesNumber();
     void clean();
 
 protected:
@@ -103,7 +73,7 @@ private:
     bool isLocked;
     bool isZatravka;
 
-    std::vector<Edge> edges;
+    //std::vector<Edge> edges;
 
     bool isLMBPressed;
 

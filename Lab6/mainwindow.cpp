@@ -206,12 +206,6 @@ void MainWindow::on_fill_Btn_clicked()
         return;
     }
 
-    /*if (canvas->getEdgesNumber() <= 2)
-    {
-        QMessageBox::information(this, "Error", "Недостаточно ребер.");
-        return;
-    }*/
-
     bool isDelayFloat = false;
     float delay = ui->delay_Edit->text().toFloat(&isDelayFloat);
 

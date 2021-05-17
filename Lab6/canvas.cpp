@@ -123,7 +123,6 @@ void Canvas::addPoint(double x, double y)
 {
     int int_x = round(x);
     int int_y = round(y);
-    //QPainter painter(my_pixmap);
     painter->setPen(semiPen);
     plot(int_x, int_y);
     if (isFirstPoint)
@@ -135,7 +134,6 @@ void Canvas::addPoint(double x, double y)
     }
     else
     {
-        //edges.insert(edges.end(), Edge(prev_x, prev_y, int_x, int_y));
         painter->drawLine(prev_x, prev_y, int_x, int_y);
     }
     prev_x = int_x;
@@ -334,11 +332,6 @@ bool Canvas::zatravka()
     return isZatravka;
 }
 
-int Canvas::getEdgesNumber()
-{
-    return edges.size();
-}
-
 void Canvas::paintEvent(QPaintEvent *event)
 {
     QPainter pixmap_painter(this);
@@ -369,8 +362,6 @@ void Canvas::clean()
 
     painter = new QPainter(my_pixmap);
     painter->setPen(semiPen);
-
-    edges.clear();
 
     update();
 }
