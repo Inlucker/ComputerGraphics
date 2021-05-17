@@ -468,7 +468,7 @@ void Canvas::fill(int del)
         //обрисовка ?X + 1/2 > Xпересечения?
         double dx = (x2 - x1)/double(y2-y1);
         double x = x1;
-        for (double y = y1; y < y2; y++)
+        for (double y = y1; y < y2; y++) //y = y2 не обрисовывается?
         {
             double tmp_x = x;
             //cout << "(" << x << "; " << y << ") - ";
