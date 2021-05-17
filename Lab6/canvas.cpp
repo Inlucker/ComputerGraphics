@@ -53,7 +53,7 @@ void Canvas::mousePressEvent(QMouseEvent *event)
     }
     else if (event->button() == Qt::RightButton && rect().contains(event->pos()))
     {
-
+        setZatravka(event->position().x(), event->position().y());
     }
 }
 
@@ -104,6 +104,16 @@ void Canvas::addPoint(double x, double y)
     update();
 }
 
+void Canvas::setZatravka(double x, double y)
+{
+    xz = x;
+    yz = y;
+    isZatravka = true;
+    painter->setPen(mainPen);
+    painter->drawPoint(x, y);
+    update();
+}
+
 void Canvas::lock()
 {
     addPoint(x0, y0);
@@ -114,6 +124,50 @@ void Canvas::lock()
 QColor Canvas::getPixelAt(int x, int y)
 {
     return grab(QRect(x, y, 1, 1)).toImage().pixelColor(0,0);
+}
+
+void Canvas::find_next(std::stack<point_t> &stack, int &x_left, int &x_right, const int &y)
+{
+    bool f = false;
+    int x = x_left;
+    int xn;
+    while (x <= x_right)
+    {
+        f = false;
+        QColor color = getPixelAt(x,y);
+        while (color != color_border && color != color_shading && x <= x_right)
+        {
+            f = true;
+            x++;
+            color = getPixelAt(x,y);
+        }
+        if (f == true)
+        {
+            point_t p;
+            p.x = x;
+            p.y = y;
+            if (x == x_right && getPixelAt(x,y) != color_border && getPixelAt(x,y) != color_shading)
+            {
+                stack.push(p);
+            }
+            else
+            {
+                p.x--;
+                stack.push(p);
+            }
+        }
+
+        xn = x;
+        color = getPixelAt(x,y);
+        while ((color == color_border || color == color_shading) && x < x_right)
+        {
+            x++;
+            color = getPixelAt(x,y);
+        }
+        if (x == xn)
+            x++;
+
+    }
 }
 
 int sign(double val)
@@ -131,13 +185,62 @@ void Canvas::fill(int del)
     if (isDelay)
         delay = del;
 
-    if (isDelay)
-    {
-        Sleep(delay);
-        repaint();
-    }
+    painter->setPen(color_shading);
 
+    int x_left, x_right;
+
+    std::stack<point_t> mystack;
+    point_t z;
+    z.x = xz;
+    z.y = yz;
+    mystack.push(z);
+
+    while (!mystack.empty())
+    {
+        point_t p = mystack.top();
+        mystack.pop();
+        painter->drawPoint(p.x,p.y);
+        int x = p.x + 1;
+        int y = p.y;
+        while(getPixelAt(x,y) != color_border && x < 700)
+        {
+            painter->drawPoint(x,y);
+            x++;
+        }
+        x_right = x-1;
+        x = p.x-1;
+        while(getPixelAt(x,y) != color_border && x > 0)
+        {
+            painter->drawPoint(x,y);
+            x--;
+        }
+        x_left = x+1;
+        x = p.x;
+
+        if (p.y < 700)
+        {
+            y = p.y+1;
+            find_next(mystack, x_left, x_right, y);
+        }
+        if (p.y > 0)
+        {
+            y = p.y - 1;
+            find_next(mystack, x_left, x_right, y);
+        }
+
+        if (isDelay)
+        {
+            Sleep(delay);
+            repaint();
+        }
+        //ui->draw_label->setPixmap(*scene);
+    }
     this->update();
+
+
+
+
+
 }
 
 bool Canvas::firstPointCheck()
@@ -148,6 +251,11 @@ bool Canvas::firstPointCheck()
 bool Canvas::locked()
 {
     return isLocked;
+}
+
+bool Canvas::zatravka()
+{
+    return isZatravka;
 }
 
 int Canvas::getEdgesNumber()
@@ -170,8 +278,10 @@ void Canvas::plot(int x, int y)
 void Canvas::clean()
 {
     x0 = 0, y0 = 0;
+    xz = 0, yz = 0;
     isFirstPoint = true;
     isLocked = false;
+    isZatravka = false;
 
     if (painter)
         delete painter;

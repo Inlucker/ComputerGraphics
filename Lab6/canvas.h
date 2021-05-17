@@ -7,10 +7,18 @@
 #include "windows.h"
 #include <cmath>
 #include <QKeyEvent>
+#include <stack>
 
 #include <iostream>
 
 using namespace std;
+
+typedef struct point point_t;
+struct point
+{
+    int x;
+    int y;
+};
 
 class Edge
 {
@@ -51,10 +59,12 @@ public:
     void setBackgroundColor(QColor color);
     void setDelay(bool val);
     void addPoint(double x, double y);
+    void setZatravka(double x, double y);
     void lock();
     void fill(int del);
     bool firstPointCheck();
     bool locked();
+    bool zatravka();
     int getEdgesNumber();
     void clean();
 
@@ -65,6 +75,7 @@ protected:
 public:
     int x0, y0;
     int prev_x, prev_y;
+    int xz, yz;
 
 private:
     QPainter *painter = nullptr;
@@ -82,12 +93,15 @@ private:
 
     bool isFirstPoint;
     bool isLocked;
+    bool isZatravka;
 
     std::vector<Edge> edges;
 
 private:
     void plot(int x, int y);
     QColor getPixelAt(int x, int y);
+
+    void find_next(std::stack<point_t> &stack, int &x_left, int &x_right, const int &y);
 
 };
 

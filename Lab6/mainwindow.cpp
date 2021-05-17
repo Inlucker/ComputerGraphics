@@ -200,6 +200,12 @@ void MainWindow::on_fill_Btn_clicked()
         return;
     }
 
+    if (!canvas->zatravka())
+    {
+        QMessageBox::information(this, "Error", "Нету затравочного пиксела. Пожалуйста, введите затравочный пиксел.");
+        return;
+    }
+
     if (canvas->getEdgesNumber() <= 2)
     {
         QMessageBox::information(this, "Error", "Недостаточно ребер.");
