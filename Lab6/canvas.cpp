@@ -12,6 +12,8 @@ Canvas::Canvas(QWidget *parent) : QWidget(parent)
     color_shading = QColor(Qt::red);
     color_background = QColor(Qt::white);
 
+    isLMBPressed = false;
+
     clean();
 }
 
@@ -25,6 +27,7 @@ void Canvas::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton && rect().contains(event->pos()))
     {
+        isLMBPressed = true;
         double x = prev_x;
         double y = prev_y;
         if (event->modifiers() == Qt::ALT && !firstPointCheck())
@@ -51,9 +54,45 @@ void Canvas::mousePressEvent(QMouseEvent *event)
 
         addPoint(x, y);
     }
-    else if (event->button() == Qt::RightButton && rect().contains(event->pos()))
+    else
     {
-        setZatravka(event->position().x(), event->position().y());
+        isLMBPressed = false;
+        if (event->button() == Qt::RightButton && rect().contains(event->pos()))
+        {
+            setZatravka(event->position().x(), event->position().y());
+        }
+    }
+}
+
+void Canvas::mouseMoveEvent(QMouseEvent *event)
+{
+    if (isLMBPressed && rect().contains(event->pos()))
+    {
+        double x = prev_x;
+        double y = prev_y;
+        if (event->modifiers() == Qt::ALT && !firstPointCheck())
+        {
+            x = event->position().x();
+            if ((event->position().x() > prev_x && event->position().y() < prev_y) || (event->position().x() < prev_x && event->position().y() > prev_y))
+                y = y - (x - prev_x);
+            else
+                y = y + (x - prev_x);
+        }
+        else if (event->modifiers() == Qt::CTRL && !firstPointCheck())
+        {
+            x = event->position().x();
+        }
+        else if (event->modifiers() == Qt::SHIFT && !firstPointCheck())
+        {
+            y = event->position().y();
+        }
+        else
+        {
+            x = event->position().x();
+            y = event->position().y();
+        }
+
+        addPoint(x, y);
     }
 }
 
@@ -96,7 +135,7 @@ void Canvas::addPoint(double x, double y)
     }
     else
     {
-        edges.insert(edges.end(), Edge(prev_x, prev_y, int_x, int_y));
+        //edges.insert(edges.end(), Edge(prev_x, prev_y, int_x, int_y));
         painter->drawLine(prev_x, prev_y, int_x, int_y);
     }
     prev_x = int_x;
@@ -197,6 +236,9 @@ void Canvas::fill_lines(int del)
     Point z(xz, yz);
     mystack.push(z);
 
+    int x_max = this->geometry().width();
+    int y_max = this->geometry().height();
+
     while (!mystack.empty())
     {
         Point p = mystack.top();
@@ -204,7 +246,7 @@ void Canvas::fill_lines(int del)
         painter->drawPoint(p.x,p.y);
         int x = p.x + 1;
         int y = p.y;
-        while(getPixelAt(x,y) != color_border && x < 700)
+        while(getPixelAt(x,y) != color_border && x < x_max)
         {
             painter->drawPoint(x,y);
             x++;
@@ -219,7 +261,7 @@ void Canvas::fill_lines(int del)
         x_left = x+1;
         x = p.x;
 
-        if (p.y < 700)
+        if (p.y < y_max)
         {
             y = p.y+1;
             find_next(mystack, x_left, x_right, y);

@@ -194,11 +194,11 @@ void MainWindow::on_clean_Btn_clicked()
 
 void MainWindow::on_fill_Btn_clicked()
 {
-    if (!canvas->locked())
+    /*if (!canvas->locked())
     {
         QMessageBox::information(this, "Error", "Фигура не замкнута. Пожалуйста, замкните фигуру.");
         return;
-    }
+    }*/
 
     if (!canvas->zatravka())
     {
@@ -206,11 +206,11 @@ void MainWindow::on_fill_Btn_clicked()
         return;
     }
 
-    if (canvas->getEdgesNumber() <= 2)
+    /*if (canvas->getEdgesNumber() <= 2)
     {
         QMessageBox::information(this, "Error", "Недостаточно ребер.");
         return;
-    }
+    }*/
 
     bool isDelayFloat = false;
     float delay = ui->delay_Edit->text().toFloat(&isDelayFloat);

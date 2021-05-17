@@ -76,7 +76,8 @@ public:
     void clean();
 
 protected:
-   virtual void mousePressEvent(QMouseEvent *event);
+    virtual void mousePressEvent(QMouseEvent *event);
+    virtual void mouseMoveEvent(QMouseEvent *event);
     void paintEvent(QPaintEvent *);
 
 public:
@@ -103,6 +104,8 @@ private:
     bool isZatravka;
 
     std::vector<Edge> edges;
+
+    bool isLMBPressed;
 
 private:
     void plot(int x, int y);
