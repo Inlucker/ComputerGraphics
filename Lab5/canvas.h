@@ -27,14 +27,26 @@ public:
     int x2;
     int y2;
 
-    bool isExtremum(Edge edge2)
+    bool isExtremum1(Edge edge2)
     {
         bool rez = false;
         //local min
-        if (this->y1 <= this->y2 && this->y1 <= edge2.y1)
+        if (this->y1 < this->y2 && this->y1 < edge2.y1)
             rez = true;
         //local max
-        if (this->y1 >= this->y2 && this->y1 >= edge2.y1)
+        if (this->y1 > this->y2 && this->y1 > edge2.y1)
+            rez = true;
+        return rez;
+    }
+
+    bool isExtremum2(Edge edge2)
+    {
+        bool rez = false;
+        //local min
+        if (this->y2 < this->y1 && this->y2 < edge2.y2)
+            rez = true;
+        //local max
+        if (this->y2 > this->y1 && this->y2 > edge2.y2)
             rez = true;
         return rez;
     }

@@ -128,7 +128,16 @@ int sign(double val)
 
 void Canvas::fill(int del)
 {
+    if (isDelay)
+        delay = del;
 
+    if (isDelay)
+    {
+        Sleep(delay);
+        repaint();
+    }
+
+    this->update();
 }
 
 bool Canvas::firstPointCheck()
