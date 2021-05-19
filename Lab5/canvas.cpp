@@ -499,7 +499,7 @@ void Canvas::fill(int del)
                 repaint();
             }
         }
-        if ((!swapFlag && edges[i].isExtremum2(nextEdge)) || (swapFlag && edges[i].isExtremum1(prevEdge)))
+        /*if ((!swapFlag && edges[i].isExtremum2(nextEdge)) || (swapFlag && edges[i].isExtremum1(prevEdge)))
         {
             double tmp_x = x;
             while (getPixelAt(int(tmp_x + 0.5), y2) == color_border)
@@ -514,7 +514,7 @@ void Canvas::fill(int del)
                 Sleep(delay);
                 repaint();
             }
-        }
+        }*/
     }
     cout << endl;
 
