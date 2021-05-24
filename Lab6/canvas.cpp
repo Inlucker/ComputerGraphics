@@ -134,7 +134,7 @@ void Canvas::addPoint(double x, double y)
     }
     else
     {
-        painter->drawLine(prev_x, prev_y, int_x, int_y);
+        DrawLineBrezenheimFloat(prev_x, prev_y, int_x, int_y);
     }
     prev_x = int_x;
     prev_y = int_y;
@@ -364,4 +364,55 @@ void Canvas::clean()
     painter->setPen(semiPen);
 
     update();
+}
+
+void Canvas::DrawLineBrezenheimFloat(int X_start, int Y_start, int X_end, int Y_end)
+{
+    int X = X_start, Y = Y_start;
+    int dX = X_end - X_start, dY = Y_end - Y_start;
+    int SX = sign(dX), SY = sign(dY);
+    dX = abs(dX), dY = abs(dY);
+
+    int steep;
+    if (dY >= dX)
+    {
+        //dX, dY = dY, dX;
+        int tmp = dX;
+        dX = dY;
+        dY = tmp;
+        steep = 1; // шагаем по y
+    }
+    else
+        steep = 0;
+
+    double tg = double(dY) / double(dX) ; // tангенс угла наклона
+    double er = tg - 0.5; // начальное значение ошибки
+
+    //QPainter painter(&my_pixmap);
+    //painter.setPen(pen);
+
+    painter->drawPoint(X, Y);
+    while (X != X_end || Y != Y_end)
+    {
+        if (er >= 0)
+        {
+            if (steep == 1) // dy >= dx
+                X += SX;
+            else // dy < dx
+                Y += SY;
+            er -= 1; // отличие от целого
+            //stairs.append(st)
+            //st = 0
+        }
+        if (er <= 0)
+        {
+            if (steep == 0) // dy < dx
+                X += SX;
+            else // dy >= dx
+                Y += SY;
+            //st += 1
+            er += tg; // отличие от целого
+        }
+        painter->drawPoint(X, Y);
+    }
 }
