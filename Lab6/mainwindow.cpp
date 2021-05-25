@@ -104,10 +104,10 @@ void MainWindow::on_SemiPenColor_comboBox_activated(int index)
     switch (index)
     {
         case 0:
-            canvas->setSemiPenColor(Qt::red);
+            canvas->setSemiPenColor(Qt::black);
             break;
         case 1:
-            canvas->setSemiPenColor(Qt::black);
+            canvas->setSemiPenColor(Qt::red);
             break;
         case 2:
             canvas->setSemiPenColor(Qt::darkGreen);
