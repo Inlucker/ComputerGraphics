@@ -84,6 +84,7 @@ private:
     QColor getPixelAt(int x, int y);
 
     void find_next(stack<Point> &stack, int &x_left, int &x_right, const int &y);
+    void findNext(stack<Point> &stack, int x_left, int x_right, int y);
     void checkPoint(stack<Point> &stack, int x, int y);
 
     void DrawLineBrezenheimFloat(int X_start, int X_end, int Y_start, int Y_end);

@@ -176,25 +176,26 @@ QColor Canvas::getPixelAt(int x, int y)
 
 void Canvas::find_next(stack<Point> &stack, int &x_left, int &x_right, const int &y)
 {
-    bool f = false;
+    bool flag = false;
     int x = x_left;
     int xn;
     while (x <= x_right)
     {
-        f = false;
+        flag = false;
         QColor color = getPixelAt(x,y);
         while (color != color_border && color != color_shading && x <= x_right)
         {
-            f = true;
+            flag = true;
             x++;
             color = getPixelAt(x,y);
         }
-        if (f == true)
+        if (flag == true)
         {
             Point p(x, y);
             if (x == x_right && getPixelAt(x,y) != color_border && getPixelAt(x,y) != color_shading)
             {
                 stack.push(p);
+                cout << "HERE~@4124" << endl;
             }
             else
             {
@@ -213,6 +214,31 @@ void Canvas::find_next(stack<Point> &stack, int &x_left, int &x_right, const int
         if (x == xn)
             x++;
 
+    }
+}
+
+void Canvas::findNext(stack<Point> &stack, int x_left, int x_right, int y)
+{
+    bool pushFlag = false;
+    int x = x_left;
+    while (x <= x_right)
+    {
+        pushFlag = false;
+        while (getPixelAt(x,y) != color_border && getPixelAt(x,y) != color_shading && x <= x_right)
+        {
+            pushFlag = true;
+            x++;
+        }
+        if (pushFlag)
+        {
+            stack.push(Point(x-1, y));
+        }
+
+        x++;
+        while ((getPixelAt(x,y) == color_border || getPixelAt(x,y) == color_shading) && x < x_right)
+        {
+            x++;
+        }
     }
 }
 
@@ -241,44 +267,43 @@ void Canvas::fill_lines(int del)
 
     int x_left, x_right;
 
-    stack<Point> mystack;
+    stack<Point> myStack;
     Point z(xz, yz);
-    mystack.push(z);
+    myStack.push(z);
 
     int x_max = this->geometry().width();
-    int y_max = this->geometry().height();
+    int y_max = this->geometry().height()-1;
 
-    while (!mystack.empty())
+    while (!myStack.empty())
     {
-        Point p = mystack.top();
-        mystack.pop();
-        painter->drawPoint(p.x,p.y);
+        Point p = myStack.top();
+        myStack.pop();
+        painter->drawPoint(p.x, p.y);
         int x = p.x + 1;
         int y = p.y;
-        while(getPixelAt(x,y) != color_border && x < x_max)
+        while (getPixelAt(x,y) != color_border && x < x_max)
         {
             painter->drawPoint(x,y);
             x++;
         }
         x_right = x-1;
+
         x = p.x-1;
-        while(getPixelAt(x,y) != color_border && x > 0)
+        //y = p.y
+        while (getPixelAt(x,y) != color_border && x >= 0)
         {
             painter->drawPoint(x,y);
             x--;
         }
         x_left = x+1;
-        x = p.x;
 
-        if (p.y < y_max)
+        if (y < y_max)
         {
-            y = p.y+1;
-            find_next(mystack, x_left, x_right, y);
+            findNext(myStack, x_left, x_right, y + 1);
         }
-        if (p.y > 0)
+        if (y > 0)
         {
-            y = p.y - 1;
-            find_next(mystack, x_left, x_right, y);
+            findNext(myStack, x_left, x_right, y - 1);
         }
 
         if (isDelay)
@@ -286,9 +311,49 @@ void Canvas::fill_lines(int del)
             Sleep(delay);
             repaint();
         }
-        //ui->draw_label->setPixmap(*scene);
     }
     this->update();
+
+    /*while (!myStack.empty())
+    {
+        Point p = myStack.top();
+        myStack.pop();
+        painter->drawPoint(p.x,p.y);
+        int x = p.x + 1;
+        int y = p.y;
+        while (getPixelAt(x,y) != color_border && x < x_max)
+        {
+            painter->drawPoint(x,y);
+            x++;
+        }
+        x_right = x-1;
+        x = p.x-1;
+        while (getPixelAt(x,y) != color_border && x > 0)
+        {
+            painter->drawPoint(x,y);
+            x--;
+        }
+        x_left = x+1;
+        x = p.x;
+
+        if (p.y < y_max-1)
+        {
+            y = p.y+1;
+            find_next(myStack, x_left, x_right, y);
+        }
+        if (p.y > 1)
+        {
+            y = p.y - 1;
+            find_next(myStack, x_left, x_right, y);
+        }
+
+        if (isDelay)
+        {
+            Sleep(delay);
+            repaint();
+        }
+    }
+    this->update();*/
 }
 
 void Canvas::fill_dots(int del)
