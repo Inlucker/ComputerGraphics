@@ -7,6 +7,9 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    setFixedHeight(height());
+    setFixedWidth(width());
+
 
     ui->MainPenColor_comboBox->addItem("Красный");
     ui->MainPenColor_comboBox->addItem("Чёрный");
@@ -168,7 +171,12 @@ void MainWindow::on_add_point_Btn_clicked()
         QMessageBox::information(this, "Error", "Y должен быть вещественным числом");
 
     if (isXFloat && isYFloat)
-        canvas->addPoint(round(X), round(Y));
+    {
+        if (ui->Edge_mode_radioButton->isChecked())
+            canvas->addPoint(round(X), round(Y));
+        else if (ui->Fill_mode_radioButton->isChecked())
+            canvas->setZatravka(round(X), round(Y));
+    }
 }
 
 void MainWindow::on_lock_Btn_clicked()
@@ -216,12 +224,12 @@ void MainWindow::on_fill_Btn_clicked()
 
     if (isDelayFloat && delay <= 50 && delay >= 0)
     {
-        if (ui->Lines_mode_radioButton->isChecked())
+        /*if (ui->Lines_mode_radioButton->isChecked())
             canvas->fill_lines(delay);
         else if (ui->Dots_mode_radioButton->isChecked())
-            canvas->fill_dots(delay);
+            canvas->fill_dots(delay);*/
 
-        //canvas->fill_lines(delay);
+        canvas->fill_lines(delay);
     }
 }
 
@@ -235,4 +243,14 @@ void MainWindow::on_get_time_Btn_clicked()
     auto end = chrono::high_resolution_clock::now();
     chrono::duration<double> dur = end - start;
     QMessageBox::information(this, "Время закраски", QString("Время закраски = %1").arg(dur.count()));
+}
+
+void MainWindow::on_Edge_mode_radioButton_clicked()
+{
+    canvas->edgeFlag = true;
+}
+
+void MainWindow::on_Fill_mode_radioButton_clicked()
+{
+    canvas->edgeFlag = false;
 }

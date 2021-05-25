@@ -44,6 +44,10 @@ private slots:
 
     void on_get_time_Btn_clicked();
 
+    void on_Edge_mode_radioButton_clicked();
+
+    void on_Fill_mode_radioButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     Canvas *canvas;

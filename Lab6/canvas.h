@@ -55,6 +55,8 @@ public:
     int prev_x, prev_y;
     int xz, yz;
 
+    bool edgeFlag;
+
 private:
     QPainter *painter = nullptr;
     QPixmap *my_pixmap = nullptr;

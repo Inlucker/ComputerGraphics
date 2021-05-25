@@ -14,6 +14,8 @@ Canvas::Canvas(QWidget *parent) : QWidget(parent)
 
     isLMBPressed = false;
 
+    edgeFlag = true;
+
     clean();
 }
 
@@ -52,14 +54,21 @@ void Canvas::mousePressEvent(QMouseEvent *event)
             y = event->position().y();
         }
 
-        addPoint(x, y);
+        if (edgeFlag)
+            addPoint(x, y);
+        else
+            setZatravka(x, y);
+        //addPoint(x, y);
     }
     else
     {
         isLMBPressed = false;
         if (event->button() == Qt::RightButton && rect().contains(event->pos()))
         {
-            setZatravka(event->position().x(), event->position().y());
+            if (edgeFlag)
+                setZatravka(event->position().x(), event->position().y());
+            else
+                addPoint(event->position().x(), event->position().y());
         }
     }
 }
@@ -92,7 +101,9 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
             y = event->position().y();
         }
 
-        addPoint(x, y);
+        if (edgeFlag)
+            addPoint(x, y);
+        //addPoint(x, y);
     }
 }
 
