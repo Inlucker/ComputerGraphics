@@ -545,23 +545,23 @@ void Canvas::cut()
         cout << "S1 = "; printBits(S1);
         cout << "S2 = "; printBits(S2);*/
 
-        if (!S1 && !S2) //полностью видим
+        if (!S1 && !S2) // Полностью видим
         {
             DrawLineBrezenheimFloat(line);
             continue;
         }
 
         char PL = T1 & T2;
-        cout << "PL = "; printBits(PL);
-        if (PL) //тривиально невидим
+        //cout << "PL = "; printBits(PL);
+        if (PL) // Тривиально невидим
             continue;
 
         if (x2 != x1)
         {
             m = double(y2 - y1)/double(x2-x1);
-            if (!S1)
+            if (!S1) // Первая точка внутри
             {
-                if (x2 <= x_l)
+                if (x2 <= x_l) // Пересечение с левой границей
                 {
                     int y_p = round(m*double(x_l-x2)+double(y2));
                     if (y_p >= y_b && y_p <= y_t)
@@ -573,7 +573,7 @@ void Canvas::cut()
                     }
                 }
 
-                if (x2 >= x_r)
+                if (x2 >= x_r) // Пересечение с правой границей
                 {
                     int y_p = round(m*double(x_r-x2)+double(y2));
                     if (y_p >= y_b && y_p <= y_t)
@@ -583,9 +583,9 @@ void Canvas::cut()
                     }
                 }
 
-                if (m != 0)
+                if (m != 0) //Отрезок не горизонтальный
                 {
-                    if (y2 >= y_t)
+                    if (y2 >= y_t) // Пересечение с верхней границей
                     {
                         int x_p = double(y_t-y2)/m+x2;
                         if (x_p >= x_l && x_p <= x_r)
@@ -595,7 +595,7 @@ void Canvas::cut()
                         }
                     }
 
-                    if (y2 <= y_b)
+                    if (y2 <= y_b) // Пересечение с нижней границей
                     {
                         int x_p = double(y_b-y2)/m+x2;
                         if (x_p >= x_l && x_p <= x_r)
@@ -607,9 +607,9 @@ void Canvas::cut()
                 }
             }
 
-            if (!S2)
+            if (!S2) // Вторая точка внутри
             {
-                if (x1 <= x_l)
+                if (x1 <= x_l) // Пересечение с левой границей
                 {
                     int y_p = round(m*double(x_l-x1)+double(y1));
                     if (y_p >= y_b && y_p <= y_t)
@@ -619,7 +619,7 @@ void Canvas::cut()
                     }
                 }
 
-                if (x1 >= x_r)
+                if (x1 >= x_r) // Пересечение с правой границей
                 {
                     int y_p = round(m*double(x_r-x1)+double(y1));
                     if (y_p >= y_b && y_p <= y_t)
@@ -631,7 +631,7 @@ void Canvas::cut()
 
                 if (m != 0)
                 {
-                    if (y1 >= y_t)
+                    if (y1 >= y_t) // Пересечение с верхней границей
                     {
                         int x_p = double(y_t-y1)/m+x1;
                         if (x_p >= x_l && x_p <= x_r)
@@ -641,7 +641,7 @@ void Canvas::cut()
                         }
                     }
 
-                    if (y1 <= y_b)
+                    if (y1 <= y_b) // Пересечение с нижней границей
                     {
                         int x_p = double(y_b-y1)/m+x1;
                         if (x_p >= x_l && x_p <= x_r)
@@ -653,12 +653,12 @@ void Canvas::cut()
                 }
             }
         }
-        else // vertical
+        else // Вертикальный отрезок
         {
             int x_p = x2;
-            if (!S1)
+            if (!S1) // Первая точка внутри
             {
-                if (y2 >= y_t)
+                if (y2 >= y_t) // Пересечение с верхней границей
                 {
                     //if (x_p >= x_l && x_p <= x_r)
                     //Проверка не нужна
@@ -666,7 +666,7 @@ void Canvas::cut()
                     continue;
                 }
 
-                if (y2 <= y_b)
+                if (y2 <= y_b) // Пересечение с нижней границей
                 {
                     //if (x_p >= x_l && x_p <= x_r)
                     //Проверка не нужна
@@ -675,16 +675,16 @@ void Canvas::cut()
                 }
             }
 
-            if (!S2)
+            if (!S2) // Вторая точка внутри
             {
-                if (y1 >= y_t)
+                if (y1 >= y_t) // Пересечение с верхней границей
                 {
                     //Проверка не нужна
                     DrawLineBrezenheimFloat(x2, y2, x_p, y_t);
                     continue;
                 }
 
-                if (y1 <= y_b)
+                if (y1 <= y_b) // Пересечение с нижней границей
                 {
                     //Проверка не нужна
                     DrawLineBrezenheimFloat(x2, y2, x_p, y_b);
@@ -703,7 +703,8 @@ void Canvas::cut()
             //cout << x1 << " " << y1 << " " << x2 << " " << y2 << endl;
             //cout << R1.x << " " << R1.y << " " << R2.x << " " << R2.y << endl;
 
-            if (R1.x >= x_l && R1.x <= x_r && R2.x >= x_l && R2.x <= x_r && R1.y >= y_b && R1.y <= y_t && R2.y >= y_b && R2.y <= y_t)
+            // На всякий случай :)
+            if ((R1.x >= x_l && R1.x <= x_r) && (R2.x >= x_l && R2.x <= x_r) && (R1.y >= y_b && R1.y <= y_t) && (R2.y >= y_b && R2.y <= y_t))
             {
                 DrawLineBrezenheimFloat(R1.x, R1.y, R2.x, R2.y);
                 continue;
