@@ -68,11 +68,15 @@ public:
     void setRezColor(QColor color);
     //void setDelay(bool val);
     void addPoint(double x, double y);
-    void setCuttuer(double x, double y);
+    void setCutter(double x, double y);
+
+    void setupUpdate();
+
     bool firstPointCheck();
     bool firstPointCutterCheck();
     int linesSize();
     int cuttersSize();
+    void cut2();
     void cut();
     void clean();
 
@@ -109,8 +113,8 @@ private:
 
     //std::vector<Edge> edges;
     vector<Line> lines;
-    vector<Cutter> cutters;
-    //Cutter cutter;
+    //vector<Cutter> cutters;
+    Cutter *cutter;
 
     bool isLMBPressed;
 
@@ -122,7 +126,9 @@ private:
     void findNext(stack<Point> &stack, int x_left, int x_right, int y);
     void checkPoint(stack<Point> &stack, int x, int y);
 
-    void DrawLineBrezenheimFloat(int X_start, int X_end, int Y_start, int Y_end);
+
+    void DrawLineBrezenheimFloat(Line l);
+    void DrawLineBrezenheimFloat(int X_start, int Y_start, int X_end, int Y_end);
 
 };
 

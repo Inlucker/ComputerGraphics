@@ -23,6 +23,7 @@ Canvas::~Canvas()
 {
     delete painter;
     delete my_pixmap;
+    delete cutter;
 }
 
 void Canvas::mousePressEvent(QMouseEvent *event)
@@ -57,7 +58,7 @@ void Canvas::mousePressEvent(QMouseEvent *event)
         if (edgeFlag)
             addPoint(x, y);
         else
-            setCuttuer(x, y);
+            setCutter(x, y);
         //addPoint(x, y);
     }
     else
@@ -66,7 +67,7 @@ void Canvas::mousePressEvent(QMouseEvent *event)
         if (event->button() == Qt::RightButton && rect().contains(event->pos()))
         {
             if (edgeFlag)
-                setCuttuer(event->x(), event->y());
+                setCutter(event->x(), event->y());
             else
                 addPoint(event->x(), event->y());
         }
@@ -100,8 +101,8 @@ void Canvas::addPoint(double x, double y)
 {
     int int_x = round(x);
     int int_y = round(y);
-    painter->setPen(linePen);
-    plot(int_x, int_y);
+    //painter->setPen(linePen);
+    //plot(int_x, int_y);
     if (isFirstPointLine)
     {
         prev_x_line = int_x;
@@ -110,22 +111,23 @@ void Canvas::addPoint(double x, double y)
     }
     else
     {
-        DrawLineBrezenheimFloat(prev_x_line, prev_y_line, int_x, int_y);
+        //DrawLineBrezenheimFloat(prev_x_line, prev_y_line, int_x, int_y);
         lines.push_back(Line(Point(prev_x_line, prev_y_line), Point(int_x, int_y)));
 
         isFirstPointLine = true;
     }
     //prev_x_line = int_x;
     //prev_y_line = int_y;
-    update();
+    setupUpdate();
+    //update();
 }
 
-void Canvas::setCuttuer(double x, double y)
+void Canvas::setCutter(double x, double y)
 {
     int int_x = round(x);
     int int_y = round(y);
-    painter->setPen(cutterPen);
-    plot(int_x, int_y);
+    //painter->setPen(cutterPen);
+    //plot(int_x, int_y);
     if (isFirstPointCutter)
     {
         prev_x_cutter = int_x;
@@ -134,18 +136,39 @@ void Canvas::setCuttuer(double x, double y)
     }
     else
     {
-        DrawLineBrezenheimFloat(prev_x_cutter, prev_y_cutter, int_x, prev_y_cutter);
+        /*DrawLineBrezenheimFloat(prev_x_cutter, prev_y_cutter, int_x, prev_y_cutter);
         DrawLineBrezenheimFloat(int_x, prev_y_cutter, int_x, int_y);
         DrawLineBrezenheimFloat(int_x, int_y, prev_x_cutter, int_y);
-        DrawLineBrezenheimFloat(prev_x_cutter, int_y, prev_x_cutter, prev_y_cutter);
-        //cutter = Cutter(min(int_y, prev_y_cutter), min(int_x, prev_x_cutter), max(int_y, prev_y_cutter), max(int_x, prev_x_cutter));
-        cutters.push_back(Cutter(min(int_y, prev_y_cutter), min(int_x, prev_x_cutter), max(int_y, prev_y_cutter), max(int_x, prev_x_cutter)));
+        DrawLineBrezenheimFloat(prev_x_cutter, int_y, prev_x_cutter, prev_y_cutter);*/
+
+        //cutters.push_back(Cutter(min(int_y, prev_y_cutter), min(int_x, prev_x_cutter), max(int_x, prev_x_cutter), max(int_y, prev_y_cutter)));
+        //cutters.push_back(Cutter(max(int_y, prev_y_cutter), min(int_x, prev_x_cutter), max(int_x, prev_x_cutter), min(int_y, prev_y_cutter)));
+        cutter = new Cutter(max(int_y, prev_y_cutter), min(int_x, prev_x_cutter), max(int_x, prev_x_cutter), min(int_y, prev_y_cutter));
         //painter->drawRect(QRect(prev_x_cutter, prev_y_cutter, int_x, int_y));
 
         isFirstPointCutter = true;
     }
     //prev_x_cutter = int_x;
     //prev_y_cutter = int_y;
+    setupUpdate();
+    //update();
+}
+
+void Canvas::setupUpdate()
+{
+    painter->setPen(linePen);
+    my_pixmap->fill(QColor(0, 0, 0, 0));
+    for (auto line : lines)
+        DrawLineBrezenheimFloat(line);
+
+    if (cutter->isExist)
+    {
+        painter->setPen(cutterPen);
+        DrawLineBrezenheimFloat(cutter->left, cutter->top, cutter->right, cutter->top);
+        DrawLineBrezenheimFloat(cutter->right, cutter->top, cutter->right, cutter->bottom);
+        DrawLineBrezenheimFloat(cutter->right, cutter->bottom, cutter->left, cutter->bottom);
+        DrawLineBrezenheimFloat(cutter->left, cutter->bottom, cutter->left, cutter->top);
+    }
     update();
 }
 
@@ -255,17 +278,246 @@ int Canvas::linesSize()
 
 int Canvas::cuttersSize()
 {
-    return cutters.size();
+    if (cutter)
+        return 1;
+    else
+        return 0;
+}
+
+//not mine
+void set_bits(int xmax, int xmin, int ymax, int ymin, int x, int y, int *arr)
+{
+    arr[3] = x < xmin ? 1:0;
+    arr[2] = x > xmax ? 1:0;
+    arr[1] = y < ymin ? 1:0;
+    arr[0] = y > ymax ? 1:0;
+}
+
+int get_sum(int *arr, int n)
+{
+    int sum = 0;
+    for(int i = 0;i < n; i++)
+    {
+        sum += arr[i];
+    }
+    return sum;
+}
+
+int get_p(int *arr1, int *arr2, int n)
+{
+    int sum = 0;
+    for(int i = 0;i < n; i++)
+    {
+        sum += arr1[i]*arr2[i];
+    }
+    return sum;
+}
+
+void Canvas::cut2()
+{
+    painter->setPen(rezPen);
+
+    /*int xmax = x_up>x_down?x_up:x_down;
+    int xmin = x_up>x_down?x_down:x_up;
+    int ymax = y_up>y_down?y_up:y_down;
+    int ymin = y_up>y_down?y_down:y_up;*/
+
+    int xmax = cutter->right;
+    int xmin = cutter->left;
+    //int ymax = cutters[0].top;
+    //int ymin = cutters[0].bottom;
+    int ymax = cutter->bottom;
+    int ymin = cutter->top;
+
+    qDebug() << xmin << xmax << ymax << ymin;
+    for (size_t j = 0; j < lines.size(); j++)
+    {
+        int x1 = lines[j].p1.x;
+        int x2 = lines[j].p2.x;
+        int y1 = lines[j].p1.y;
+        int y2 = lines[j].p2.y;
+        Point p1(x1,y1);
+        Point p2(x2,y2);
+        //qDebug() << p1 << p2;
+        int i = 1;
+        double eps = sqrt(2);
+        int T1[4], T2[4];
+        int s1,s2;
+        while(1)
+        {
+            set_bits(xmax,xmin,ymax,ymin,p1.x,p1.y,T1);
+            set_bits(xmax,xmin,ymax,ymin,p2.x,p2.y,T2);
+            s1 = get_sum(T1, 4);
+            s2 = get_sum(T2, 4);
+
+            if (s1 == 0 && s2 == 0)
+            {
+                qDebug() <<"полностью видим";
+                cout << "полностью видим" << endl;
+                //draw_line(p1.x,p1.y,p2.x,p2.y);
+                DrawLineBrezenheimFloat(p1.x, p2.x, p1.y, p2.y);
+                break;
+            }
+            int p = get_p(T1,T2, 4);
+            if (p)
+            {
+                qDebug() <<"тривиально невидим";
+                break;
+            }
+
+            Point r = p1;
+            if (i > 2)
+            {
+                 int pr = get_p(T1,T2, 4);
+                 if (pr)
+                     break;
+                 //qDebug() << p1 << p2;
+                 //draw_line(p1.x(),p1.y(),p2.x(),p2.y());
+                 DrawLineBrezenheimFloat(p1.x, p2.x, p1.y, p2.y);
+                 break;
+            }
+            if (s2 == 0)
+            {
+                p1 = p2;
+                p2 = r;
+                i++;
+                continue;
+            }
+
+
+            while (fabs(p1.x - p2.x) > eps || fabs(p1.y - p2.y) > eps)
+            {
+
+                Point pm;
+                pm.x = ((p1.x+p2.x)/2);
+                pm.y =((p1.y+p2.y)/2);
+
+                Point tmp = p1;
+                p1 = pm;
+                set_bits(xmax,xmin,ymax,ymin,p1.x,p1.y,T1);
+                int pr = get_p(T1,T2, 4);
+                if (pr != 0)
+                {
+                    p1 = tmp;
+                    p2 = pm;
+                }
+            }
+            p1 = p2;
+            p2 = r;
+            i++;
+        }
+    }
+    painter->setPen(linePen);
+    update();
+}
+
+void printBits (char T)
+{
+    string out = "";
+    for (int i = 0; i < 8; i++)
+    {
+        //Проверяем старший бит)
+        if (T & 0x80)
+            out += "1";
+        else
+            out += "0";
+        //Сдвигаем влево на 1 бит
+        T = T << 1;
+
+        if (i == 3)
+            out += " ";
+    }
+    cout << out << endl;
+}
+
+char setBits(Cutter c, Point p)
+{
+    //cout << c.bottom << " " << c.top << endl;
+    char T = 0b0000;
+
+    if (p.x < c.left)
+        T |= (1 << 3);
+    if (p.x > c.right)
+        T |= (1 << 2);
+    if (p.y < c.bottom)
+        T |= (1 << 1);
+    if (p.y > c.top)
+        T |= (1 << 0);
+
+    return T;
+}
+
+char sumButs(char T)
+{
+    char S = 0b0;
+    for (int i = 0; i < 8; i++)
+    {
+        if (T & 0x80)
+        {
+            S += 0b1;
+            //S %= 0b10;
+        }
+
+        T = T << 1;
+    }
+    return S;
 }
 
 void Canvas::cut()
 {
-    cout << "cut" << endl;
+    painter->setPen(rezPen);
+    int x_l = cutter->left;
+    int x_r = cutter->right;
+    int y_t = cutter->top;
+    int y_b = cutter->bottom;
+    painter->fillRect(QRect(x_l+1, y_b+1, x_r-x_l-1, y_t-y_b-1), QBrush(Qt::white));
+    for (auto line : lines)
+    {
+        int x1 = line.p1.x;
+        int x2 = line.p2.x;
+        int y1 = line.p1.y;
+        int y2 = line.p2.y;
+
+        double m = 1e30;
+
+        char T1 = setBits(*cutter, line.p1);
+        char T2 = setBits(*cutter, line.p2);
+        char S1 = sumButs(T1);
+        char S2 = sumButs(T2);
+        cout << "T1 = "; printBits(T1);
+        cout << "T2 = "; printBits(T2);
+        cout << "S1 = "; printBits(S1);
+        cout << "S2 = "; printBits(S2);
+        if (!S1 && !S2)
+        {
+            DrawLineBrezenheimFloat(line);
+            continue;
+        }
+
+        char PL = T1 & T2;
+        cout << "PL = "; printBits(PL);
+        if (PL)
+            continue;
+
+        if (!S1)
+        {
+            m = double(y2 - y1)/double(x2-x1);
+            if (x2 <= x_l)
+            {
+                DrawLineBrezenheimFloat(x1, y1, x_l, m*(x_l-x2)+y2);
+                //painter->drawLine(x1, y1, x_l, m*(x_l-x2)+y2);
+                continue;
+            }
+        }
+    }
+
+    update();
 }
 
 void Canvas::paintEvent(QPaintEvent *event)
 {
     QPainter pixmap_painter(this);
+
     pixmap_painter.drawPixmap(0, 0, *my_pixmap);
 }
 
@@ -297,9 +549,15 @@ void Canvas::clean()
     painter->setPen(linePen);
 
     lines.clear();
-    cutters.clear();
+    cutter->isExist = 0;
 
     update();
+}
+
+
+void Canvas::DrawLineBrezenheimFloat(Line l)
+{
+    DrawLineBrezenheimFloat(l.p1.x, l.p1.y, l.p2.x, l.p2.y);
 }
 
 void Canvas::DrawLineBrezenheimFloat(int X_start, int Y_start, int X_end, int Y_end)

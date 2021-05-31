@@ -162,7 +162,7 @@ void MainWindow::on_add_point_Btn_clicked()
         if (ui->Edge_mode_radioButton->isChecked())
             canvas->addPoint(round(X), round(Y));
         else if (ui->Cut_mode_radioButton->isChecked())
-            canvas->setCuttuer(round(X), round(Y));
+            canvas->setCutter(round(X), round(Y));
     }
 }
 
