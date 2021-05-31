@@ -463,6 +463,71 @@ char sumButs(char T)
     return S;
 }
 
+void Canvas::find_p(Point second_p, Point &R)
+{
+    int x_l = cutter->left;
+    int x_r = cutter->right;
+    int y_t = cutter->top;
+    int y_b = cutter->bottom;
+
+    int x1 = R.x;
+    int y1 = R.y;
+    int x2 = second_p.x;
+    int y2 = second_p.y;
+
+    //Point R1 = line.p1;
+    int m = double(y2 - y1)/double(x2-x1);
+    if (x1 <= x_l)
+    {
+        int y_p = round(m*double(x_l-x1)+double(y1));
+        if (y_p >= y_b && y_p <= y_t)
+        {
+            R.x = x_l;
+            R.y = y_p;
+        }
+        //DrawLineBrezenheimFloat(x2, y2, x_l, round(m*double(x_l-x1)+double(y1)));
+        //continue;
+    }
+    else if (x1 >= x_r)
+    {
+        int y_p = round(m*double(x_r-x1)+double(y1));
+        if (y_p >= y_b && y_p <= y_t)
+        {
+            R.x = x_r;
+            R.y = y_p;
+        }
+        //DrawLineBrezenheimFloat(x2, y2, x_r, round(m*double(x_r-x1)+double(y1)));
+        //continue;
+    }
+
+    if (m != 0)
+    {
+        if (y1 >= y_t)
+        {
+            int x_p = double(y_t-y1)/m+x1;
+            if (x_p >= x_l && x_p <= x_r)
+            {
+                R.x = x_p;
+                R.y = y_t;
+            }
+            //DrawLineBrezenheimFloat(x2, y2, x_p, y_t);
+            //continue;
+        }
+
+        if (y1 <= y_b)
+        {
+            int x_p = double(y_b-y1)/m+x1;
+            if (x_p >= x_l && x_p <= x_r)
+            {
+                R.x = x_p;
+                R.y = y_b;
+            }
+            //DrawLineBrezenheimFloat(x2, y2, x_p, y_b);
+            //continue;
+        }
+    }
+}
+
 void Canvas::cut()
 {
     painter->setPen(rezPen);
@@ -510,17 +575,25 @@ void Canvas::cut()
                 //i = 2;
                 if (x2 <= x_l)
                 {
-                    DrawLineBrezenheimFloat(x1, y1, x_l, round(m*double(x_l-x2)+double(y2)));
-                    //DrawLineBrezenheimFloat(x1, y1, x_l, (m*(x_l-x2)+(y2)));
-                    //painter->drawLine(x1, y1, x_l, m*(x_l-x2)+y2);
-                    continue;
+                    int y_p = round(m*double(x_l-x2)+double(y2));
+                    if (y_p >= y_b && y_p <= y_t)
+                    {
+                        DrawLineBrezenheimFloat(x1, y1, x_l, y_p);
+                        //DrawLineBrezenheimFloat(x1, y1, x_l, (m*(x_l-x2)+(y2)));
+                        //painter->drawLine(x1, y1, x_l, m*(x_l-x2)+y2);
+                        continue;
+                    }
                 }
 
                 //if (m = 0)
                 if (x2 >= x_r)
                 {
-                    DrawLineBrezenheimFloat(x1, y1, x_r, round(m*double(x_r-x2)+double(y2)));
-                    continue;
+                    int y_p = round(m*double(x_r-x2)+double(y2));
+                    if (y_p >= y_b && y_p <= y_t)
+                    {
+                        DrawLineBrezenheimFloat(x1, y1, x_r, y_p);
+                        continue;
+                    }
                 }
 
                 if (m != 0)
@@ -528,15 +601,21 @@ void Canvas::cut()
                     if (y2 >= y_t)
                     {
                         int x_p = double(y_t-y2)/m+x2;
-                        DrawLineBrezenheimFloat(x1, y1, x_p, y_t);
-                        continue;
+                        if (x_p >= x_l && x_p <= x_r)
+                        {
+                            DrawLineBrezenheimFloat(x1, y1, x_p, y_t);
+                            continue;
+                        }
                     }
 
                     if (y2 <= y_b)
                     {
                         int x_p = double(y_b-y2)/m+x2;
-                        DrawLineBrezenheimFloat(x1, y1, x_p, y_b);
-                        continue;
+                        if (x_p >= x_l && x_p <= x_r)
+                            {
+                            DrawLineBrezenheimFloat(x1, y1, x_p, y_b);
+                            continue;
+                        }
                     }
                 }
             }
@@ -617,6 +696,75 @@ void Canvas::cut()
         /*i++;
         if (i > 2)
             continue;*/
+
+        //нетривиальный случай
+        if (x2 != x1)
+        {
+            Point R1 = line.p1;
+            Point R2 = line.p2;
+            find_p(line.p2, R1);
+            find_p(line.p1, R2);
+            cout << x1 << " " << y1 << " " << x2 << " " << y2 << endl;
+            cout << R1.x << " " << R1.y << " " << R2.x << " " << R2.y << endl;
+
+            if (R1.x >= x_l && R1.x <= x_r && R2.x >= x_l && R2.x <= x_r && R1.y >= y_b && R1.y <= y_t && R2.y >= y_b && R2.y <= y_t)
+            {
+                DrawLineBrezenheimFloat(R1.x, R1.y, R2.x, R2.y);
+                continue;
+            }
+            /*Point R1 = line.p1;
+            Point R2 = line.p2;
+            m = double(y2 - y1)/double(x2-x1);
+            if (x1 <= x_l)
+            {
+                int y_p = round(m*double(x_l-x1)+double(y1));
+                if (y_p >= y_b && y_p <= y_t)
+                {
+                    R1.x = x_l;
+                    R1.y = y_p;
+                }
+                //DrawLineBrezenheimFloat(x2, y2, x_l, round(m*double(x_l-x1)+double(y1)));
+                //continue;
+            }
+            else if (x1 >= x_r)
+            {
+                int y_p = round(m*double(x_r-x1)+double(y1));
+                if (y_p >= y_b && y_p <= y_t)
+                {
+                    R1.x = x_r;
+                    R1.y = y_p;
+                }
+                //DrawLineBrezenheimFloat(x2, y2, x_r, round(m*double(x_r-x1)+double(y1)));
+                //continue;
+            }
+
+            if (m != 0)
+            {
+                if (y1 >= y_t)
+                {
+                    int x_p = double(y_t-y1)/m+x1;
+                    if (x_p >= x_l && x_p <= x_r)
+                    {
+                        R1.x = x_p;
+                        R1.y = y_t;
+                    }
+                    //DrawLineBrezenheimFloat(x2, y2, x_p, y_t);
+                    //continue;
+                }
+
+                if (y1 <= y_b)
+                {
+                    int x_p = double(y_b-y1)/m+x1;
+                    if (x_p >= x_l && x_p <= x_r)
+                    {
+                        R1.x = x_p;
+                        R1.y = y_b;
+                    }
+                    //DrawLineBrezenheimFloat(x2, y2, x_p, y_b);
+                    //continue;
+                }
+            }*/
+        }
 
 
     }

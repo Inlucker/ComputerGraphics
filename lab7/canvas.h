@@ -77,6 +77,9 @@ public:
     int linesSize();
     int cuttersSize();
     void cut2();
+
+    void find_p(Point second_p, Point &R1);
+
     void cut();
     void clean();
 
