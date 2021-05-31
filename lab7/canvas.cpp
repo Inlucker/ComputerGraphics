@@ -276,12 +276,9 @@ int Canvas::linesSize()
     return lines.size();
 }
 
-int Canvas::cuttersSize()
+int Canvas::cutterIsExist()
 {
-    if (cutter)
-        return 1;
-    else
-        return 0;
+    return cutter->isExist;
 }
 
 //not mine

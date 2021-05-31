@@ -185,9 +185,9 @@ void MainWindow::on_fill_Btn_clicked()
         return;
     }
 
-    if (canvas->cuttersSize() <= 0)
+    if (!canvas->cutterIsExist())
     {
-        QMessageBox::information(this, "Error", "Нету отсекателей. Пожалуйста, введите хотя бы один.");
+        QMessageBox::information(this, "Error", "Нет отсекателя. Пожалуйста, введите отсекатель.");
         return;
     }
 
@@ -202,16 +202,16 @@ void MainWindow::on_get_time_Btn_clicked()
         return;
     }
 
-    if (canvas->cuttersSize() <= 0)
+    if (!canvas->cutterIsExist())
     {
-        QMessageBox::information(this, "Error", "Нету отсекателей. Пожалуйста, введите хотя бы один.");
+        QMessageBox::information(this, "Error", "Нет отсекателя. Пожалуйста, введите отсекатель.");
         return;
     }
     auto start = chrono::high_resolution_clock::now();
     canvas->cut();
     auto end = chrono::high_resolution_clock::now();
     chrono::duration<double> dur = end - start;
-    QMessageBox::information(this, "Время закраски", QString("Время закраски = %1").arg(dur.count()));
+    QMessageBox::information(this, "Время отсечения", QString("Время отсечения = %1").arg(dur.count()));
 }
 
 void MainWindow::on_Edge_mode_radioButton_clicked()

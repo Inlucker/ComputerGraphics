@@ -75,7 +75,7 @@ public:
     bool firstPointCheck();
     bool firstPointCutterCheck();
     int linesSize();
-    int cuttersSize();
+    int cutterIsExist();
     void cut2();
 
     void find_p(Point second_p, Point &R1);
