@@ -752,7 +752,10 @@ void Canvas::clean()
     painter->setPen(linePen);
 
     lines.clear();
-    cutter->isExist = 0;
+    if (cutter)
+        cutter->isExist = 0;
+    else
+        cutter = new Cutter;
 
     update();
 }
