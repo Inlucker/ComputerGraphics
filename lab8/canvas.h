@@ -85,7 +85,6 @@ public:
     void setCutterPenColor(QColor color);
     void setLinePenColor(QColor color);
     void setRezColor(QColor color);
-    //void setDelay(bool val);
     void addPoint(double x, double y);
     void lock();
     void setCutter(double x, double y);
@@ -94,6 +93,7 @@ public:
     void setupUpdate();
 
     bool firstPointCheck();
+    bool firstPointLineCheck();
     bool firstPointCutterCheck();
     int linesSize();
     int cutterSize();
@@ -138,8 +138,6 @@ private:
     vector<Line> lines;
     //vector<Point> cutter;
     vector<Line> cutter;
-
-    bool isLMBPressed;
 
 private:
     void plot(int x, int y);

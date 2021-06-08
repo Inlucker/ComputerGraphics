@@ -16,8 +16,6 @@ Canvas::Canvas(QWidget *parent) : QWidget(parent)
     color_cutter = QColor(Qt::black);
     color_rez = QColor(Qt::blue);
 
-    isLMBPressed = false;
-
     edgeFlag = true;
 
     clean();
@@ -33,40 +31,67 @@ void Canvas::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton && rect().contains(event->pos()))
     {
-        isLMBPressed = true;
-        double x = prev_x_line;
-        double y = prev_y_line;
-        if (event->modifiers() == Qt::ALT && !firstPointCheck())
-        {
-            x = event->x();
-            if ((event->x() > prev_x_line && event->y() < prev_y_line) || (event->x() < prev_x_line && event->y() > prev_y_line))
-                y = y - (x - prev_x_line);
-            else
-                y = y + (x - prev_x_line);
-        }
-        else if (event->modifiers() == Qt::CTRL && !firstPointCheck())
-        {
-            x = event->x();
-        }
-        else if (event->modifiers() == Qt::SHIFT && !firstPointCheck())
-        {
-            y = event->y();
-        }
-        else
-        {
-            x = event->x();
-            y = event->y();
-        }
+        /*double x = prev_x_line;
+        double y = prev_y_line;*/
 
         if (edgeFlag)
+        {
+            double x = prev_x_line;
+            double y = prev_y_line;
+            if (event->modifiers() == Qt::ALT && !firstPointLineCheck())
+            {
+                x = event->x();
+                if ((event->x() > prev_x_line && event->y() < prev_y_line) || (event->x() < prev_x_line && event->y() > prev_y_line))
+                    y = y - (x - prev_x_line);
+                else
+                    y = y + (x - prev_x_line);
+            }
+            else if (event->modifiers() == Qt::CTRL && !firstPointLineCheck())
+            {
+                x = event->x();
+            }
+            else if (event->modifiers() == Qt::SHIFT && !firstPointLineCheck())
+            {
+                y = event->y();
+            }
+            else
+            {
+                x = event->x();
+                y = event->y();
+            }
+
             addPoint(x, y);
+        }
         else
+        {
+            double x = prev_x_cutter;
+            double y = prev_y_cutter;
+            if (event->modifiers() == Qt::ALT && !firstPointCutterCheck())
+            {
+                x = event->x();
+                if ((event->x() > prev_x_cutter && event->y() < prev_y_cutter) || (event->x() < prev_x_cutter && event->y() > prev_y_cutter))
+                    y = y - (x - prev_x_cutter);
+                else
+                    y = y + (x - prev_x_cutter);
+            }
+            else if (event->modifiers() == Qt::CTRL && !firstPointCutterCheck())
+            {
+                x = event->x();
+            }
+            else if (event->modifiers() == Qt::SHIFT && !firstPointCutterCheck())
+            {
+                y = event->y();
+            }
+            else
+            {
+                x = event->x();
+                y = event->y();
+            }
             setCutter(x, y);
-        //addPoint(x, y);
+        }
     }
     else
     {
-        isLMBPressed = false;
         if (event->button() == Qt::RightButton && rect().contains(event->pos()))
         {
             if (edgeFlag)
@@ -199,6 +224,11 @@ int sign(double val)
 bool Canvas::firstPointCheck()
 {
     return isFirstPointLine && isFirstPointCutter;
+}
+
+bool Canvas::firstPointLineCheck()
+{
+    return isFirstPointLine;
 }
 
 bool Canvas::firstPointCutterCheck()
