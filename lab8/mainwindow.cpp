@@ -26,10 +26,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->backgroundColor_comboBox->addItem("Зелёный");
     ui->backgroundColor_comboBox->addItem("Чёрный");
 
-    cout << "test" << endl;
     canvas = new Canvas();
     ui->gridLayout_2->addWidget(canvas);
-    cout << "test2" << endl;
 }
 
 MainWindow::~MainWindow()

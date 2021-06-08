@@ -12,7 +12,7 @@
 
 using namespace std;
 
-struct Point
+/*struct Point
 {
     int x;
     int y;
@@ -22,6 +22,11 @@ struct Point
         x = _x;
         y = _y;
     }
+
+    double get_x() const {return this->x;}
+    double get_y() const {return this->y;}
+    void setY(double _y){this->y = _y;}
+    void setX(double _x){this->x = _x;}
 };
 
 struct Line
@@ -29,31 +34,46 @@ struct Line
     Point p1;
     Point p2;
     Line() = default;
+    Line(int x1, int x2, int y1, int y2)
+    {
+        p1 = Point(x1, y1);
+        p2 = Point(x2, y2);
+    }
     Line(Point _p1, Point _p2)
     {
         p1 = _p1;
         p2 = _p2;
     }
+};*/
+
+struct Line
+{
+    Line(): x1(0), x2(0), y1(0), y2(0) {};
+    Line(int x1, int x2, int y1, int y2): x1(x1), x2(x2), y1(y1), y2(y2){}
+    int x1;
+    int x2;
+    int y1;
+    int y2;
 };
 
-struct Cutter
+typedef struct Point point_t;
+struct Point
 {
-    int top;
-    int left;
-    int right;
-    int bottom;
-    bool isExist;
-    Cutter()
+    Point():X(0),Y(0){}
+    Point(double x, double y):X(x),Y(y){}
+    double X;
+    double Y;
+
+    double x() const {return this->X;}
+    double y() const {return this->Y;}
+    void setY(double y){this->Y = y;}
+    void setX(double x){this->X = x;}
+
+    point_t& operator =(const point_t &p)
     {
-        isExist = false;
-    }
-    Cutter(int _top, int _left, int _right, int _bottom)
-    {
-        top = _top;
-        left = _left;
-        right = _right;
-        bottom = _bottom;
-        isExist = true;
+        this->X = p.x();
+        this->Y = p.y();
+        return *this;
     }
 };
 
@@ -78,10 +98,9 @@ public:
     int linesSize();
     int cutterSize();
     bool locked();
-    void cut2();
 
-    void find_p(Point second_p, Point &R1);
-
+    bool isConvex(int &obhod);
+    void alg(Point p1, Point p2, int obhod);
     void cut();
     void clean();
 
@@ -116,21 +135,14 @@ private:
     bool isLocked;
     bool isZatravka;
 
-    //std::vector<Edge> edges;
     vector<Line> lines;
-    //vector<Cutter> cutters;
-    vector<Point> cutter;
+    //vector<Point> cutter;
+    vector<Line> cutter;
 
     bool isLMBPressed;
 
 private:
     void plot(int x, int y);
-    QColor getPixelAt(int x, int y);
-
-    void find_next(stack<Point> &stack, int &x_left, int &x_right, const int &y);
-    void findNext(stack<Point> &stack, int x_left, int x_right, int y);
-    void checkPoint(stack<Point> &stack, int x, int y);
-
 
     void DrawLineBrezenheimFloat(Line l);
     void DrawLineBrezenheimFloat(int X_start, int Y_start, int X_end, int Y_end);

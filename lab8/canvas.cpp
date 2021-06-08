@@ -111,7 +111,8 @@ void Canvas::addPoint(double x, double y)
     else
     {
         DrawLineBrezenheimFloat(prev_x_line, prev_y_line, int_x, int_y);
-        lines.push_back(Line(Point(prev_x_line, prev_y_line), Point(int_x, int_y)));
+        //lines.push_back(Line(Point(prev_x_line, prev_y_line), Point(int_x, int_y)));
+        lines.push_back(Line(prev_x_line, int_x, prev_y_line, int_y));
 
         isFirstPointLine = true;
     }
@@ -126,6 +127,7 @@ void Canvas::lock()
     if (!isLocked)
     {
         setCutter(x0, y0);
+        //painter->drawLine(prev_x_cutter, prev_y_cutter, round(x0), round(y0));
         isLocked = true;
         isFirstPointCutter = true;
     }
@@ -146,11 +148,13 @@ void Canvas::setCutter(double x, double y)
             y0 = int_y;
             isFirstPointCutter = false;
             isLocked = false;
-            cutter.insert(cutter.end(), Point(int_x, int_y));
+            //cutter.insert(cutter.end(), Point(int_x, int_y));
         }
         else
         {
-            cutter.insert(cutter.end(), Point(int_x, int_y));
+            //cutter.insert(cutter.end(), Point(int_x, int_y));
+            //egles.push_back(Line(prev_x_cutter, prev_y_cutter, int_x, int_y));
+            cutter.push_back(Line(prev_x_cutter, int_x, prev_y_cutter, int_y));
             painter->drawLine(prev_x_cutter, prev_y_cutter, int_x, int_y);
         }
         prev_x_cutter = int_x;
@@ -176,85 +180,6 @@ void Canvas::setCutter(double x, double y)
     }
     update();
 }*/
-
-QColor Canvas::getPixelAt(int x, int y)
-{
-    return grab(QRect(x, y, 1, 1)).toImage().pixelColor(0,0);
-}
-
-void Canvas::find_next(stack<Point> &stack, int &x_left, int &x_right, const int &y)
-{
-    bool flag = false;
-    int x = x_left;
-    int xn;
-    while (x <= x_right)
-    {
-        flag = false;
-        QColor color = getPixelAt(x,y);
-        while (color != color_line && color != color_cutter && x <= x_right)
-        {
-            flag = true;
-            x++;
-            color = getPixelAt(x,y);
-        }
-        if (flag == true)
-        {
-            Point p(x, y);
-            if (x == x_right && getPixelAt(x,y) != color_line && getPixelAt(x,y) != color_cutter)
-            {
-                stack.push(p);
-                cout << "HERE~@4124" << endl;
-            }
-            else
-            {
-                p.x--;
-                stack.push(p);
-            }
-        }
-
-        xn = x;
-        color = getPixelAt(x,y);
-        while ((color == color_line || color == color_cutter) && x < x_right)
-        {
-            x++;
-            color = getPixelAt(x,y);
-        }
-        if (x == xn)
-            x++;
-
-    }
-}
-
-void Canvas::findNext(stack<Point> &stack, int x_left, int x_right, int y)
-{
-    bool pushFlag = false;
-    int x = x_left;
-    while (x <= x_right)
-    {
-        pushFlag = false;
-        while (getPixelAt(x,y) != color_line && getPixelAt(x,y) != color_cutter && x <= x_right)
-        {
-            pushFlag = true;
-            x++;
-        }
-        if (pushFlag)
-        {
-            stack.push(Point(x-1, y));
-        }
-
-        x++;
-        while ((getPixelAt(x,y) == color_line || getPixelAt(x,y) == color_cutter) && x < x_right)
-        {
-            x++;
-        }
-    }
-}
-
-void Canvas::checkPoint(stack<Point> &stack, int x, int y)
-{
-    if (getPixelAt(x,y) != color_line && getPixelAt(x,y) != color_cutter)
-        stack.push(Point(x,y));
-}
 
 int sign(double val)
 {
@@ -291,310 +216,298 @@ bool Canvas::locked()
     return isLocked;
 }
 
-/*void printBits (char T)
+//not mine
+/*long Canvas::is_convex()
 {
-    string out = "";
-    for (int i = 0; i < 8; i++)
+    Point p1, p2, p3;
+    long x1, y1, x2, y2, r, prev = 0, curr;
+    for (size_t i = 0; i < cutter.size() - 2; i++)
     {
-        //Проверяем старший бит)
-        if (T & 0x80)
-            out += "1";
-        else
-            out += "0";
-        //Сдвигаем влево на 1 бит
-        T = T << 1;
+        p1 = cutter[i];
+        p2 = cutter[i + 1];
+        p3 = cutter[i + 2];
 
-        if (i == 3)
-            out += " ";
+        x1 = p2.x - p1.x;
+        y1 = p2.y - p1.y;
+
+        x2 = p3.x - p2.x;
+        y2 = p3.y - p2.y;
+
+        r = x1 * y2 - x2 * y1;
+        curr = sign(r);
+
+        if (!prev)
+            prev = curr;
+        if (curr && curr != prev)
+            return 0;
     }
-    cout << out << endl;
+
+    p1 = cutter[cutter.size() - 2];
+    p2 = cutter[cutter.size() - 1];
+    p3 = cutter[0];
+
+    x1 = p2.x - p1.x;
+    y1 = p2.y - p1.y;
+
+    x2 = p3.x - p2.x;
+    y2 = p3.y - p2.y;
+
+    r = x1 * y2 - x2 * y1;
+    curr = sign(r);
+    if (curr && curr != prev)
+        return 0;
+
+    p1 = cutter[cutter.size() - 1];
+    p2 = cutter[0];
+    p3 = cutter[1];
+
+    x1 = p2.x - p1.x;
+    y1 = p2.y - p1.y;
+
+    x2 = p3.x - p2.x;
+    y2 = p3.y - p2.y;
+
+    r = x1 * y2 - x2 * y1;
+    curr = sign(r);
+    if (curr && curr != prev)
+        return 0;
+
+    return prev;
 }
 
-char setBits(Cutter c, Point p)
+long scalar_prod(Point v1, Point v2)
 {
-    //cout << c.bottom << " " << c.top << endl;
-    char T = 0b0000;
-
-    if (p.x < c.left)
-        T |= (1 << 3);
-    if (p.x > c.right)
-        T |= (1 << 2);
-    if (p.y < c.bottom)
-        T |= (1 << 1);
-    if (p.y > c.top)
-        T |= (1 << 0);
-
-    return T;
-}
-
-char sumButs(char T)
-{
-    char S = 0b0;
-    for (int i = 0; i < 8; i++)
-    {
-        if (T & 0x80)
-        {
-            S += 0b1;
-            //S %= 0b10;
-        }
-
-        T = T << 1;
-    }
-    return S;
-}
-
-void Canvas::find_p(Point second_p, Point &R)
-{
-    int x_l = cutter->left;
-    int x_r = cutter->right;
-    int y_t = cutter->top;
-    int y_b = cutter->bottom;
-
-    int x1 = R.x;
-    int y1 = R.y;
-    int x2 = second_p.x;
-    int y2 = second_p.y;
-
-    double m = double(y2 - y1)/double(x2-x1);
-    if (x1 <= x_l)
-    {
-        int y_p = round(m*double(x_l-x1)+double(y1));
-        if (y_p >= y_b && y_p <= y_t)
-        {
-            R.x = x_l;
-            R.y = y_p;
-        }
-    }
-    else if (x1 >= x_r)
-    {
-        int y_p = round(m*double(x_r-x1)+double(y1));
-        if (y_p >= y_b && y_p <= y_t)
-        {
-            R.x = x_r;
-            R.y = y_p;
-        }
-    }
-
-    if (m != 0)
-    {
-        if (y1 >= y_t)
-        {
-            int x_p = double(y_t-y1)/m+x1;
-            if (x_p >= x_l && x_p <= x_r)
-            {
-                R.x = x_p;
-                R.y = y_t;
-            }
-        }
-
-        if (y1 <= y_b)
-        {
-            int x_p = double(y_b-y1)/m+x1;
-            if (x_p >= x_l && x_p <= x_r)
-            {
-                R.x = x_p;
-                R.y = y_b;
-            }
-        }
-    }
+    return v1.x * v2.x + v1.y * v2.y;
 }*/
+
+//Mine
+bool CheckSigns(QVector<int> signs, int &obhod)
+{
+    int count_plus = 0;
+    int count_minus = 0;
+    for (int i = 0; i < signs.size(); i++)
+    {
+        if (signs[i] > 0)
+        {
+            count_plus++;
+        }
+        if (signs[i] < 0)
+        {
+            count_minus++;
+        }
+    }
+    if ((count_minus == 0 && count_plus == 0) || (count_minus&&count_plus))
+        return false;
+    if (count_minus == 0)
+        obhod = 1;
+    else
+        obhod = -1;
+    return true;
+
+}
+
+int sign(int n)
+{
+    if (n > 0)
+        return 1;
+    else if (n == 0)
+        return 0;
+    return -1;
+}
+
+int VectorMult(Line l1, Line l2)
+{
+    int Vx1 = l1.x2-l1.x1;
+    int Vy1 = l1.y2-l1.y1;
+    int Vx2 = l2.x2-l2.x1;
+    int Vy2 = l2.y2-l2.y1;
+    return Vx1*Vy2-Vx2*Vy1;
+}
+
+double scalMult(Point p1, Point p2)
+{
+    return p1.x()*p2.x() + p2.y()*p1.y();
+}
+
+bool Canvas::isConvex(int &obhod)
+{
+    if (cutter.size() < 2)
+        return false;
+    QVector<int> signs;
+    for (size_t i =0; i < cutter.size() - 1; i++)
+    {
+        int Mult = VectorMult(cutter[i],cutter[i+1]);
+        int msign = sign(Mult);
+        signs.append(msign);
+    }
+    int Mult = VectorMult(cutter[cutter.size() - 1],cutter[0]);
+    int msign = sign(Mult);
+    signs.append(msign);
+    return CheckSigns(signs, obhod);
+}
+
+void Canvas::alg(Point p1, Point p2, int obhod)
+{
+   double tn = 0; //нижняя
+   double tv = 1; //верхняя
+   double t = 0; //параметр
+   Point D; // вектор ориентации
+   D.setX(p2.x() - p1.x());
+   D.setY(p2.y() - p1.y());
+   int size = cutter.size();
+   for (int i = 0; i < size; i++)
+   {
+       Point nVector; //вектор нормали
+       if (i  == size - 1)
+       {
+           if (obhod == -1)
+           {
+               nVector.setX((cutter[0].y1 - cutter[i].y1));
+               nVector.setY(-(cutter[0].x1 - cutter[i].x1));
+           }
+           else
+           {
+               nVector.setX(-(cutter[0].y1 - cutter[i].y1));
+               nVector.setY((cutter[0].x1 - cutter[i].x1));
+           }
+
+       }
+       else
+       {
+           if (obhod == -1)
+           {
+               nVector.setX((cutter[i + 1].y1 - cutter[i].y1));
+               nVector.setY(-(cutter[i + 1].x1 - cutter[i].x1));
+           }
+           else
+           {
+               nVector.setX(-(cutter[i + 1].y1 - cutter[i].y1));
+               nVector.setY((cutter[i + 1].x1 - cutter[i].x1));
+           }
+       }
+       Point W; // нек коэфицент(для определения знака)
+       W.setX(p1.x() - cutter[i].x1);
+       W.setY(p1.y() - cutter[i].y1);
+
+       int Wsk = scalMult(W,nVector);
+       int Dsk = scalMult(D,nVector);
+       if (Dsk == 0) // отрезок вырождается в точку или параллелен
+       {
+           if (Wsk < 0)
+               return;
+           else
+               continue;
+
+       }
+       t = -(double)Wsk/Dsk;
+       if (Dsk > 0)
+       {
+           if (t>1)
+               return;
+           else
+           {
+               tn = t>tn?t:tn;
+           }
+       }
+       if (Dsk < 0)
+       {
+           if (t<0)
+               return;
+           else
+           {
+               tv = t<tv?t:tv;
+           }
+       }
+   }
+   if (tn <= tv)
+   {
+       DrawLineBrezenheimFloat(p1.x() + (p2.x()-p1.x())*tv,
+                               p1.y() + (p2.y()-p1.y())*tv,
+                               p1.x() + (p2.x()-p1.x())*tn,
+                               p1.y() + (p2.y()-p1.y())*tn);
+   }
+   return;
+}
 
 void Canvas::cut()
 {
-    // lab7 cut
-    /*painter->setPen(rezPen);
-    int x_l = cutter->left;
-    int x_r = cutter->right;
-    int y_t = cutter->top;
-    int y_b = cutter->bottom;
-
-    painter->fillRect(QRect(x_l+1, y_b+1, x_r-x_l-1, y_t-y_b-1), QBrush(Qt::white));
-    for (auto line : lines)
+    int obhod;
+    if(!isConvex(obhod))
     {
-        //int i = 0;
+        cout << "Невыпуклый многоугольник." << endl;;
+        return;
+    }
+    painter->setPen(rezPen);
+    for (int i = 0 ; i < lines.size(); i++)
+    {
+        Point p1(lines[i].x1,lines[i].y1);
+        Point p2(lines[i].x2,lines[i].y2);
+        alg(p2, p1, obhod);
+        update();
+    }
 
-        int x1 = line.p1.x;
-        int x2 = line.p2.x;
-        int y1 = line.p1.y;
-        int y2 = line.p2.y;
-
-        double m = 1e30;
-
-        char T1 = setBits(*cutter, line.p1);
-        char T2 = setBits(*cutter, line.p2);
-        char S1 = sumButs(T1);
-        char S2 = sumButs(T2);
-
-        if (!S1 && !S2) // Полностью видим
+    //not Mine
+    /*long conv = is_convex();
+    if (conv)
+    {
+        for (auto &line : lines)
         {
-            DrawLineBrezenheimFloat(line);
-            continue;
-        }
-
-        char PL = T1 & T2;
-        //cout << "PL = "; printBits(PL);
-        if (PL) // Тривиально невидим
-            continue;
-
-        if (x2 != x1)
-        {
-            m = double(y2 - y1)/double(x2-x1);
-            if (!S1) // Первая точка внутри
+            long m = cutter.size()-1; //fig.edges_count();
+            Point D = Point(line.p2.x - line.p1.x, line.p2.y - line.p1.y);
+            double t_low = 0, t_high = 1;
+            for (long i = 0; i < m; i++)
             {
-                if (x2 <= x_l) // Пересечение с левой границей
-                {
-                    int y_p = round(m*double(x_l-x2)+double(y2));
-                    if (y_p >= y_b && y_p <= y_t)
-                    {
-                        DrawLineBrezenheimFloat(x1, y1, x_l, y_p);
-                        //DrawLineBrezenheimFloat(x1, y1, x_l, (m*(x_l-x2)+(y2)));
-                        //painter->drawLine(x1, y1, x_l, m*(x_l-x2)+y2);
-                        continue;
-                    }
-                }
+                Point f = cutter.at(i); //fig.get_edge(i).get_p1();
+                Point p2 = cutter.at(i+1); //fig.get_edge(i).get_p2();
+                Point n_in = Point(conv * (p2.y - f.y), -conv * (p2.x - f.x));
+                Point W = Point(line.p1.x - f.x, line.p1.y - f.y); //src.get_p1() - f;
+                double Wsc = scalar_prod(W, n_in);
+                double Dsc = scalar_prod(D, n_in);
 
-                if (x2 >= x_r) // Пересечение с правой границей
+                if (Dsc)
                 {
-                    int y_p = round(m*double(x_r-x2)+double(y2));
-                    if (y_p >= y_b && y_p <= y_t)
+                    double t = - Wsc / Dsc;
+                    if (Dsc > 0)
                     {
-                        DrawLineBrezenheimFloat(x1, y1, x_r, y_p);
-                        continue;
-                    }
-                }
-
-                if (m != 0) //Отрезок не горизонтальный
-                {
-                    if (y2 >= y_t) // Пересечение с верхней границей
-                    {
-                        int x_p = double(y_t-y2)/m+x2;
-                        if (x_p >= x_l && x_p <= x_r)
-                        {
-                            DrawLineBrezenheimFloat(x1, y1, x_p, y_t);
+                        if (t > 1)
                             continue;
+                            //return false;
+                        else if (t > t_low)
+                        {
+                            t_low = t;
                         }
                     }
-
-                    if (y2 <= y_b) // Пересечение с нижней границей
+                    else
                     {
-                        int x_p = double(y_b-y2)/m+x2;
-                        if (x_p >= x_l && x_p <= x_r)
-                        {
-                            DrawLineBrezenheimFloat(x1, y1, x_p, y_b);
+                        if (t < 0)
                             continue;
+                            //return false;
+                        else if (t < t_high)
+                        {
+                            t_high = t;
                         }
                     }
                 }
-            }
-
-            if (!S2) // Вторая точка внутри
-            {
-                if (x1 <= x_l) // Пересечение с левой границей
-                {
-                    int y_p = round(m*double(x_l-x1)+double(y1));
-                    if (y_p >= y_b && y_p <= y_t)
-                    {
-                        DrawLineBrezenheimFloat(x2, y2, x_l, y_p);
-                        continue;
-                    }
-                }
-
-                if (x1 >= x_r) // Пересечение с правой границей
-                {
-                    int y_p = round(m*double(x_r-x1)+double(y1));
-                    if (y_p >= y_b && y_p <= y_t)
-                    {
-                        DrawLineBrezenheimFloat(x2, y2, x_r, y_p);
-                        continue;
-                    }
-                }
-
-                if (m != 0)
-                {
-                    if (y1 >= y_t) // Пересечение с верхней границей
-                    {
-                        int x_p = double(y_t-y1)/m+x1;
-                        if (x_p >= x_l && x_p <= x_r)
-                        {
-                            DrawLineBrezenheimFloat(x2, y2, x_p, y_t);
-                            continue;
-                        }
-                    }
-
-                    if (y1 <= y_b) // Пересечение с нижней границей
-                    {
-                        int x_p = double(y_b-y1)/m+x1;
-                        if (x_p >= x_l && x_p <= x_r)
-                        {
-                            DrawLineBrezenheimFloat(x2, y2, x_p, y_b);
-                            continue;
-                        }
-                    }
-                }
-            }
-        }
-        else // Вертикальный отрезок
-        {
-            int x_p = x2;
-            if (!S1) // Первая точка внутри
-            {
-                if (y2 >= y_t) // Пересечение с верхней границей
-                {
-                    //if (x_p >= x_l && x_p <= x_r)
-                    //Проверка не нужна
-                    DrawLineBrezenheimFloat(x1, y1, x_p, y_t);
+                else if (Wsc < 0)
                     continue;
-                }
-
-                if (y2 <= y_b) // Пересечение с нижней границей
-                {
-                    //if (x_p >= x_l && x_p <= x_r)
-                    //Проверка не нужна
-                    DrawLineBrezenheimFloat(x1, y1, x_p, y_b);
-                    continue;
-                }
+                    //return false;
             }
-
-            if (!S2) // Вторая точка внутри
-            {
-                if (y1 >= y_t) // Пересечение с верхней границей
-                {
-                    //Проверка не нужна
-                    DrawLineBrezenheimFloat(x2, y2, x_p, y_t);
-                    continue;
-                }
-
-                if (y1 <= y_b) // Пересечение с нижней границей
-                {
-                    //Проверка не нужна
-                    DrawLineBrezenheimFloat(x2, y2, x_p, y_b);
-                    continue;
-                }
-            }
-        }
-
-        //нетривиальный случай
-        if (x2 != x1)
-        {
-            Point R1 = line.p1;
-            Point R2 = line.p2;
-            find_p(line.p2, R1);
-            find_p(line.p1, R2);
-            //cout << x1 << " " << y1 << " " << x2 << " " << y2 << endl;
-            //cout << R1.x << " " << R1.y << " " << R2.x << " " << R2.y << endl;
-
-            // На всякий случай :)
-            if ((R1.x >= x_l && R1.x <= x_r) && (R2.x >= x_l && R2.x <= x_r) && (R1.y >= y_b && R1.y <= y_t) && (R2.y >= y_b && R2.y <= y_t))
-            {
-                DrawLineBrezenheimFloat(R1.x, R1.y, R2.x, R2.y);
+            if (t_low > t_high)
                 continue;
-            }
+                //return false;
+            cout << "ok";
+            Point res1 = Point(line.p1.x + (line.p2.x - line.p1.x) * t_low, line.p1.y + (line.p2.y - line.p1.y) * t_low); //(line.p1 + (line.p2 - line.p1) * t_low);
+            Point res2 = Point(line.p1.x + (line.p2.x - line.p1.x) * t_high, line.p1.y + (line.p2.y - line.p1.y) * t_high); //(line.p1 + (line.p2 - line.p1) * t_high);
+            painter->setPen(rezPen);
+            DrawLineBrezenheimFloat(Line(res1, res2));
+            //return true;
         }
-
-
+        update();
+    }
+    else
+    {
+        cout << "not convex" << endl;
     }*/
-
-    update();
 }
 
 void Canvas::paintEvent(QPaintEvent *event)
@@ -640,7 +553,8 @@ void Canvas::clean()
 
 void Canvas::DrawLineBrezenheimFloat(Line l)
 {
-    DrawLineBrezenheimFloat(l.p1.x, l.p1.y, l.p2.x, l.p2.y);
+    //DrawLineBrezenheimFloat(l.p1.x, l.p1.y, l.p2.x, l.p2.y);
+    DrawLineBrezenheimFloat(l.x1, l.y1, l.x2, l.y2);
 }
 
 void Canvas::DrawLineBrezenheimFloat(int X_start, int Y_start, int X_end, int Y_end)
