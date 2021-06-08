@@ -1,5 +1,9 @@
 #include "canvas.h"
 
+#include <QMessageBox>
+#include <QPainterPath>
+#include <QPolygon>
+
 Canvas::Canvas(QWidget *parent) : QWidget(parent)
 {
     linePen = QPen(Qt::red);
@@ -100,7 +104,7 @@ void Canvas::addPoint(double x, double y)
 {
     int int_x = round(x);
     int int_y = round(y);
-    painter->setPen(linePen);
+    //painter->setPen(linePen);
     plot(int_x, int_y);
     if (isFirstPointLine)
     {
@@ -110,7 +114,7 @@ void Canvas::addPoint(double x, double y)
     }
     else
     {
-        DrawLineBrezenheimFloat(prev_x_line, prev_y_line, int_x, int_y);
+        //DrawLineBrezenheimFloat(prev_x_line, prev_y_line, int_x, int_y);
         //lines.push_back(Line(Point(prev_x_line, prev_y_line), Point(int_x, int_y)));
         lines.push_back(Line(prev_x_line, int_x, prev_y_line, int_y));
 
@@ -118,8 +122,8 @@ void Canvas::addPoint(double x, double y)
     }
     prev_x_line = int_x;
     prev_y_line = int_y;
-    //setupUpdate();
-    update();
+    setupUpdate();
+    //update();
 }
 
 void Canvas::lock()
@@ -140,7 +144,7 @@ void Canvas::setCutter(double x, double y)
         int int_x = round(x);
         int int_y = round(y);
         //QPainter painter(my_pixmap);
-        painter->setPen(cutterPen);
+        //painter->setPen(cutterPen);
         plot(int_x, int_y);
         if (isFirstPointCutter)
         {
@@ -155,31 +159,32 @@ void Canvas::setCutter(double x, double y)
             //cutter.insert(cutter.end(), Point(int_x, int_y));
             //egles.push_back(Line(prev_x_cutter, prev_y_cutter, int_x, int_y));
             cutter.push_back(Line(prev_x_cutter, int_x, prev_y_cutter, int_y));
-            painter->drawLine(prev_x_cutter, prev_y_cutter, int_x, int_y);
+            //painter->drawLine(prev_x_cutter, prev_y_cutter, int_x, int_y);
         }
         prev_x_cutter = int_x;
         prev_y_cutter = int_y;
-        update();
+        setupUpdate();
+        //update();
     }
 }
 
-/*void Canvas::setupUpdate()
+void Canvas::cutterUpdate()
+{
+    painter->setPen(cutterPen);
+    for (auto cutter_line : cutter)
+        DrawLineBrezenheimFloat(cutter_line);
+}
+
+void Canvas::setupUpdate()
 {
     painter->setPen(linePen);
     my_pixmap->fill(QColor(0, 0, 0, 0));
     for (auto line : lines)
         DrawLineBrezenheimFloat(line);
 
-    if (canvas->locked())
-    {
-        painter->setPen(cutterPen);
-        DrawLineBrezenheimFloat(cutter->left, cutter->top, cutter->right, cutter->top);
-        DrawLineBrezenheimFloat(cutter->right, cutter->top, cutter->right, cutter->bottom);
-        DrawLineBrezenheimFloat(cutter->right, cutter->bottom, cutter->left, cutter->bottom);
-        DrawLineBrezenheimFloat(cutter->left, cutter->bottom, cutter->left, cutter->top);
-    }
+    cutterUpdate();
     update();
-}*/
+}
 
 int sign(double val)
 {
@@ -421,10 +426,10 @@ void Canvas::alg(Point p1, Point p2, int obhod)
    }
    if (tn <= tv)
    {
-       DrawLineBrezenheimFloat(p1.x() + (p2.x()-p1.x())*tv,
-                               p1.y() + (p2.y()-p1.y())*tv,
-                               p1.x() + (p2.x()-p1.x())*tn,
-                               p1.y() + (p2.y()-p1.y())*tn);
+       DrawLineBrezenheimFloat(round(p1.x() + (p2.x()-p1.x())*tv),
+                               round(p1.y() + (p2.y()-p1.y())*tv),
+                               round(p1.x() + (p2.x()-p1.x())*tn),
+                               round(p1.y() + (p2.y()-p1.y())*tn));
    }
    return;
 }
@@ -434,9 +439,19 @@ void Canvas::cut()
     int obhod;
     if(!isConvex(obhod))
     {
-        cout << "Невыпуклый многоугольник." << endl;;
+        QMessageBox::information(this, "Error", "Невыпуклый многоугольник.");
         return;
     }
+    QPainterPath path /*= QPainterPath(QPointF(cutter[0].x1, cutter[0].y1))*/;
+    QPolygon polygon;
+    for (auto &line : cutter)
+    {
+        polygon.append(QPoint(line.x1, line.y1));
+    }
+    path.addPolygon(polygon);
+    painter->fillPath(path, QBrush(Qt::white));
+    cutterUpdate();
+
     painter->setPen(rezPen);
     for (int i = 0 ; i < lines.size(); i++)
     {

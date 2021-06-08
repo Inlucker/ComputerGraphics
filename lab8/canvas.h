@@ -56,7 +56,6 @@ struct Line
     int y2;
 };
 
-typedef struct Point point_t;
 struct Point
 {
     Point():X(0),Y(0){}
@@ -69,7 +68,7 @@ struct Point
     void setY(double y){this->Y = y;}
     void setX(double x){this->X = x;}
 
-    point_t& operator =(const point_t &p)
+    Point& operator =(const Point &p)
     {
         this->X = p.x();
         this->Y = p.y();
@@ -91,7 +90,8 @@ public:
     void lock();
     void setCutter(double x, double y);
 
-    //void setupUpdate();
+    void cutterUpdate();
+    void setupUpdate();
 
     bool firstPointCheck();
     bool firstPointCutterCheck();

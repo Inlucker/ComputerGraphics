@@ -191,6 +191,12 @@ void MainWindow::on_fill_Btn_clicked()
         return;
     }
 
+    if (!canvas->locked())
+    {
+        QMessageBox::information(this, "Error", "Отсекатель не замкнут. Пожалуйста, замкните отсекатель.");
+        return;
+    }
+
     canvas->cut();
 }
 
