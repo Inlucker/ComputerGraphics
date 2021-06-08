@@ -46,34 +46,53 @@ struct Line
     }
 };*/
 
+struct Point
+{
+    Point() = default;
+    Point(double _x, double _y)
+    {
+        X = _x;
+        Y = _y;
+    }
+    double X;
+    double Y;
+
+    Point& operator =(const Point &p)
+    {
+        this->X = p.X;
+        this->Y = p.Y;
+        return *this;
+    }
+};
+
+
 struct Line
 {
     Line(): x1(0), x2(0), y1(0), y2(0) {};
-    Line(int x1, int x2, int y1, int y2): x1(x1), x2(x2), y1(y1), y2(y2){}
+    Line(int _x1, int _y1, int _x2, int _y2)
+    {
+        x1 = _x1;
+        y1 = _y1;
+        x2 = _x2;
+        y2 = _y2;
+        p1 = Point(x1, y1);
+        p2 = Point(x2, y2);
+    }
+    Line(Point _p1, Point _p2)
+    {
+        p1 = _p1;
+        p2 = _p2;
+        x1 = p1.X;
+        y1 = p1.Y;
+        x2 = p2.X;
+        y2 = p2.Y;
+    }
+    Point p1;
+    Point p2;
     int x1;
     int x2;
     int y1;
     int y2;
-};
-
-struct Point
-{
-    Point():X(0),Y(0){}
-    Point(double x, double y):X(x),Y(y){}
-    double X;
-    double Y;
-
-    double x() const {return this->X;}
-    double y() const {return this->Y;}
-    void setY(double y){this->Y = y;}
-    void setX(double x){this->X = x;}
-
-    Point& operator =(const Point &p)
-    {
-        this->X = p.x();
-        this->Y = p.y();
-        return *this;
-    }
 };
 
 class Canvas : public QWidget
@@ -100,7 +119,7 @@ public:
     bool locked();
 
     bool isConvex(int &obhod);
-    void alg(Point p1, Point p2, int obhod);
+    void alg(Line line, int obhod);
     void cut();
     void clean();
 

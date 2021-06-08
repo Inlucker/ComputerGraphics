@@ -140,8 +140,8 @@ void Canvas::addPoint(double x, double y)
     else
     {
         //DrawLineBrezenheimFloat(prev_x_line, prev_y_line, int_x, int_y);
-        //lines.push_back(Line(Point(prev_x_line, prev_y_line), Point(int_x, int_y)));
-        lines.push_back(Line(prev_x_line, int_x, prev_y_line, int_y));
+        lines.push_back(Line(Point(prev_x_line, prev_y_line), Point(int_x, int_y)));
+        //lines.push_back(Line(prev_x_line, int_x, prev_y_line, int_y));
 
         isFirstPointLine = true;
     }
@@ -182,8 +182,8 @@ void Canvas::setCutter(double x, double y)
         else
         {
             //cutter.insert(cutter.end(), Point(int_x, int_y));
-            //egles.push_back(Line(prev_x_cutter, prev_y_cutter, int_x, int_y));
-            cutter.push_back(Line(prev_x_cutter, int_x, prev_y_cutter, int_y));
+            cutter.push_back(Line(prev_x_cutter, prev_y_cutter, int_x, int_y));
+            //cutter.push_back(Line(prev_x_cutter, int_x, prev_y_cutter, int_y));
             //painter->drawLine(prev_x_cutter, prev_y_cutter, int_x, int_y);
         }
         prev_x_cutter = int_x;
@@ -361,7 +361,7 @@ int VectorMult(Line l1, Line l2)
 
 double scalMult(Point p1, Point p2)
 {
-    return p1.x()*p2.x() + p2.y()*p1.y();
+    return p1.X*p2.X + p2.Y*p1.Y;
 }
 
 bool Canvas::isConvex(int &obhod)
@@ -381,14 +381,14 @@ bool Canvas::isConvex(int &obhod)
     return CheckSigns(signs, obhod);
 }
 
-void Canvas::alg(Point p1, Point p2, int obhod)
+void Canvas::alg(Line line, int obhod)
 {
    double tn = 0; //нижняя
    double tv = 1; //верхняя
    double t = 0; //параметр
    Point D; // вектор ориентации
-   D.setX(p2.x() - p1.x());
-   D.setY(p2.y() - p1.y());
+   D.X = (line.p2.X - line.p1.X);
+   D.Y = (line.p2.Y - line.p1.Y);
    int size = cutter.size();
    for (int i = 0; i < size; i++)
    {
@@ -397,13 +397,13 @@ void Canvas::alg(Point p1, Point p2, int obhod)
        {
            if (obhod == -1)
            {
-               nVector.setX((cutter[0].y1 - cutter[i].y1));
-               nVector.setY(-(cutter[0].x1 - cutter[i].x1));
+               nVector.X = ((cutter[0].y1 - cutter[i].y1));
+               nVector.Y = (-(cutter[0].x1 - cutter[i].x1));
            }
            else
            {
-               nVector.setX(-(cutter[0].y1 - cutter[i].y1));
-               nVector.setY((cutter[0].x1 - cutter[i].x1));
+               nVector.X = (-(cutter[0].y1 - cutter[i].y1));
+               nVector.Y = ((cutter[0].x1 - cutter[i].x1));
            }
 
        }
@@ -411,18 +411,18 @@ void Canvas::alg(Point p1, Point p2, int obhod)
        {
            if (obhod == -1)
            {
-               nVector.setX((cutter[i + 1].y1 - cutter[i].y1));
-               nVector.setY(-(cutter[i + 1].x1 - cutter[i].x1));
+               nVector.X = ((cutter[i + 1].y1 - cutter[i].y1));
+               nVector.Y = (-(cutter[i + 1].x1 - cutter[i].x1));
            }
            else
            {
-               nVector.setX(-(cutter[i + 1].y1 - cutter[i].y1));
-               nVector.setY((cutter[i + 1].x1 - cutter[i].x1));
+               nVector.X = (-(cutter[i + 1].y1 - cutter[i].y1));
+               nVector.Y = ((cutter[i + 1].x1 - cutter[i].x1));
            }
        }
        Point W; // нек коэфицент(для определения знака)
-       W.setX(p1.x() - cutter[i].x1);
-       W.setY(p1.y() - cutter[i].y1);
+       W.X = (line.p1.X - cutter[i].x1);
+       W.Y = (line.p1.Y - cutter[i].y1);
 
        int Wsk = scalMult(W,nVector);
        int Dsk = scalMult(D,nVector);
@@ -456,10 +456,10 @@ void Canvas::alg(Point p1, Point p2, int obhod)
    }
    if (tn <= tv)
    {
-       DrawLineBrezenheimFloat(round(p1.x() + (p2.x()-p1.x())*tv),
-                               round(p1.y() + (p2.y()-p1.y())*tv),
-                               round(p1.x() + (p2.x()-p1.x())*tn),
-                               round(p1.y() + (p2.y()-p1.y())*tn));
+       DrawLineBrezenheimFloat(round(line.p1.X + (line.p2.X-line.p1.X)*tv),
+                               round(line.p1.Y + (line.p2.Y-line.p1.Y)*tv),
+                               round(line.p1.X + (line.p2.X-line.p1.X)*tn),
+                               round(line.p1.Y + (line.p2.Y-line.p1.Y)*tn));
    }
    return;
 }
@@ -472,7 +472,7 @@ void Canvas::cut()
         QMessageBox::information(this, "Error", "Невыпуклый многоугольник.");
         return;
     }
-    QPainterPath path /*= QPainterPath(QPointF(cutter[0].x1, cutter[0].y1))*/;
+    QPainterPath path;
     QPolygon polygon;
     for (auto &line : cutter)
     {
@@ -483,11 +483,11 @@ void Canvas::cut()
     cutterUpdate();
 
     painter->setPen(rezPen);
-    for (int i = 0 ; i < lines.size(); i++)
+    for (auto &line : lines)
     {
-        Point p1(lines[i].x1,lines[i].y1);
-        Point p2(lines[i].x2,lines[i].y2);
-        alg(p2, p1, obhod);
+        Point p1(line.x1,line.y1);
+        Point p2(line.x2,line.y2);
+        alg(line, obhod);
         update();
     }
 
