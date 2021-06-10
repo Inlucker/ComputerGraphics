@@ -36,8 +36,6 @@ private slots:
 
     void on_clean_Btn_clicked();
 
-    void on_get_time_Btn_clicked();
-
     void on_Edge_mode_radioButton_clicked();
 
     void on_Cut_mode_radioButton_clicked();
@@ -47,6 +45,8 @@ private slots:
     void on_lock_Btn_clicked();
 
     void on_clean_Btn_2_clicked();
+
+    void on_clean_Btn_3_clicked();
 
 private:
     Ui::MainWindow *ui;

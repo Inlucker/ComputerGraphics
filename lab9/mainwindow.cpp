@@ -139,45 +139,37 @@ void MainWindow::on_fill_Btn_clicked()
         return;
     }
 
-    if (!canvas->locked())
+    if (!canvas->lockedLines())
     {
         QMessageBox::information(this, "Error", "Многоугольник не замкнут. Пожалуйста, замкните многоугольник.");
         return;
     }
 
+    if (!canvas->isLinesPolygon())
+    {
+        QMessageBox::information(this, "Error", "Рёбра многоугольника не могут пересекаться.");
+        return;
+    }
+
     if (!canvas->cutterSize())
     {
         QMessageBox::information(this, "Error", "Нет отсекателя. Пожалуйста, введите отсекатель.");
         return;
     }
 
-    if (!canvas->locked())
+    if (!canvas->lockedCutter())
     {
         QMessageBox::information(this, "Error", "Отсекатель не замкнут. Пожалуйста, замкните отсекатель.");
         return;
     }
 
-    canvas->cut();
-}
-
-void MainWindow::on_get_time_Btn_clicked()
-{
-    if (canvas->linesSize() <= 0)
+    if (!canvas->isCutterPolygon())
     {
-        QMessageBox::information(this, "Error", "Нету отрезков. Пожалуйста, введите хотя бы один.");
+        QMessageBox::information(this, "Error", "Рёбра отсекателя не могут пересекаться.");
         return;
     }
 
-    if (!canvas->cutterSize())
-    {
-        QMessageBox::information(this, "Error", "Нет отсекателя. Пожалуйста, введите отсекатель.");
-        return;
-    }
-    auto start = chrono::high_resolution_clock::now();
     canvas->cut();
-    auto end = chrono::high_resolution_clock::now();
-    chrono::duration<double> dur = end - start;
-    QMessageBox::information(this, "Время отсечения", QString("Время отсечения = %1").arg(dur.count()));
 }
 
 void MainWindow::on_Edge_mode_radioButton_clicked()
@@ -208,5 +200,11 @@ void MainWindow::on_clean_Btn_clicked()
 
 void MainWindow::on_clean_Btn_2_clicked()
 {
+    canvas->resetCutter();
+}
+
+void MainWindow::on_clean_Btn_3_clicked()
+{
+    canvas->resetLines();
     canvas->resetCutter();
 }

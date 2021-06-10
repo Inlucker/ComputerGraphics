@@ -84,7 +84,8 @@ public:
     bool firstPointCutterCheck();
     int linesSize();
     int cutterSize();
-    bool locked();
+    bool lockedLines();
+    bool lockedCutter();
 
     bool isConvex(int &obhod);
     void alg(Line line, int obhod);
@@ -92,6 +93,9 @@ public:
     void clean();
     void resetLines();
     void resetCutter();
+
+    bool isLinesPolygon();
+    bool isCutterPolygon();
 
 protected:
     virtual void mousePressEvent(QMouseEvent *event);
@@ -127,6 +131,8 @@ private:
     vector<Line> lines;
     vector<Line> cutter;
 
+    double linesAngleSum;
+    double cutterAngleSum;
 private:
     void plot(int x, int y);
 

@@ -125,6 +125,26 @@ void Canvas::setRezColor(QColor color)
     isDelay = val;
 }*/
 
+double getAngle(Line l1, Line l2)
+{
+    //Point v1 = Point(l1.x2 - l1.x1, l1.y2 - l1.y1);
+    //Point v2 = Point(l2.x2 - l2.x1, l2.y2 - l2.y1);
+    double x1 = l1.x2 - l1.x1;
+    double y1 = l1.y2 - l1.y1;
+    double x2 = l2.x2 - l2.x1;
+    double y2 = l2.y2 - l2.y1;
+
+
+    double t = (x1*x2+y1*y2)/(sqrt((double)x1*x1+y1*y1)*sqrt((double)x2*x2+y2*y2));
+
+    if (t<-1)
+        t = -1;
+    else if(t> 1)
+        t = 1;
+
+    return acos(t)*180/M_PI;
+}
+
 void Canvas::addPoint(double x, double y)
 {
     if (!linesSize() || !isLinesLocked)
@@ -141,7 +161,12 @@ void Canvas::addPoint(double x, double y)
         }
         else
         {
-            lines.push_back(Line(prev_x_line, prev_y_line, int_x, int_y));
+            Line newLine(prev_x_line, prev_y_line, int_x, int_y);
+            if (lines.size() >= 1)
+            {
+                linesAngleSum += getAngle(lines[lines.size()-1], newLine);
+            }
+            lines.push_back(newLine);
         }
         prev_x_line = int_x;
         prev_y_line = int_y;
@@ -154,6 +179,11 @@ void Canvas::lockLines()
     if (!isLinesLocked)
     {
         addPoint(x0_l, y0_l);
+        if (lines.size() >= 1)
+        {
+            linesAngleSum += getAngle(lines[lines.size()-1], lines[0]);
+        }
+        cout << "linesAngleSum: " << linesAngleSum << endl;
         isLinesLocked = true;
         isFirstPointLine = true;
     }
@@ -164,6 +194,11 @@ void Canvas::lockCutter()
     if (!isCutterLocked)
     {
         setCutter(x0, y0);
+        if (cutter.size() >= 1)
+        {
+            cutterAngleSum += getAngle(cutter[cutter.size()-1], cutter[0]);
+        }
+        cout << "cutterAngleSum: " << cutterAngleSum << endl;
         isCutterLocked = true;
         isFirstPointCutter = true;
     }
@@ -185,7 +220,12 @@ void Canvas::setCutter(double x, double y)
         }
         else
         {
-            cutter.push_back(Line(prev_x_cutter, prev_y_cutter, int_x, int_y));
+            Line newLine(prev_x_cutter, prev_y_cutter, int_x, int_y);
+            if (cutter.size() >= 1)
+            {
+                cutterAngleSum += getAngle(cutter[cutter.size()-1], newLine);
+            }
+            cutter.push_back(newLine);
         }
         prev_x_cutter = int_x;
         prev_y_cutter = int_y;
@@ -252,7 +292,12 @@ int Canvas::cutterSize()
     return cutter.size();
 }
 
-bool Canvas::locked()
+bool Canvas::lockedLines()
+{
+    return isLinesLocked;
+}
+
+bool Canvas::lockedCutter()
 {
     return isCutterLocked;
 }
@@ -363,10 +408,7 @@ void Canvas::cut()
     int obhod1;
     if (!isConvex(obhod1))
     {
-        QMessageBox mBox;
-        mBox.setIcon(QMessageBox::Information);
-        mBox.setInformativeText("Невыпуклый отсекатель.");
-        mBox.exec();
+        QMessageBox::information(this, "Error", "Невыпуклый отсекатель.");
         return;
     }
 
@@ -390,7 +432,7 @@ void Canvas::cut()
     //p.push_back(p1);
     size_t Np = p.size(), Nq;
     Point F,S,I;
-    std::vector<Point> Q;
+    vector<Point> Q;
 
     for (int i = 0; i < Nc; i++)
     {
@@ -435,10 +477,7 @@ void Canvas::cut()
 
     if (Np == 0)
     {
-        QMessageBox mBox;
-        mBox.setIcon(QMessageBox::Information);
-        mBox.setInformativeText("Полностью невидимый многоугольник!");
-        mBox.exec();
+        QMessageBox::information(this, "Error", "Полностью невидимый многоугольник.");
         return;
     }
     painter->setPen(rezPen);
@@ -467,6 +506,8 @@ void Canvas::plot(int x, int y)
 
 void Canvas::clean()
 {
+    linesAngleSum = 0;
+    cutterAngleSum = 0;
     x0_l = 0, y0_l = 0;
     x0 = 0, y0 = 0;
     isFirstPointLine = true;
@@ -494,6 +535,7 @@ void Canvas::clean()
 
 void Canvas::resetLines()
 {
+    linesAngleSum = 0;
     x0_l = 0, y0_l = 0;
     isFirstPointLine = true;
     isLinesLocked = false;
@@ -503,11 +545,24 @@ void Canvas::resetLines()
 
 void Canvas::resetCutter()
 {
+    cutterAngleSum = 0;
     x0 = 0, y0 = 0;
     isFirstPointCutter = true;
     isCutterLocked = false;
     cutter.clear();
     setupUpdate();
+}
+
+#define EPS 1e-5
+
+bool Canvas::isLinesPolygon()
+{
+    return ((linesAngleSum - 360) < EPS);
+}
+
+bool Canvas::isCutterPolygon()
+{
+    return ((cutterAngleSum - 360) < EPS);
 }
 
 
