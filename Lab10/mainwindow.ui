@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1277</width>
-    <height>999</height>
+    <height>981</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -437,32 +437,6 @@
     <property name="title">
      <string>Поворот</string>
     </property>
-    <widget class="QPushButton" name="rotate_y">
-     <property name="geometry">
-      <rect>
-       <x>70</x>
-       <y>70</y>
-       <width>71</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Повернуть</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="rotate_z">
-     <property name="geometry">
-      <rect>
-       <x>70</x>
-       <y>110</y>
-       <width>71</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Повернуть</string>
-     </property>
-    </widget>
     <widget class="QLineEdit" name="angle_x">
      <property name="geometry">
       <rect>
@@ -507,19 +481,6 @@
       <string>10</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="end_enter">
-     <property name="geometry">
-      <rect>
-       <x>70</x>
-       <y>30</y>
-       <width>71</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Повернуть</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="label_10">
      <property name="geometry">
       <rect>
@@ -548,7 +509,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>10</string>
+      <string>0</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_2">
@@ -567,6 +528,19 @@
      </property>
      <property name="text">
       <string>Y</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="rotate">
+     <property name="geometry">
+      <rect>
+       <x>70</x>
+       <y>30</y>
+       <width>71</width>
+       <height>111</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Повернуть</string>
      </property>
     </widget>
    </widget>

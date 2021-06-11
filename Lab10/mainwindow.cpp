@@ -10,12 +10,6 @@ MainWindow::MainWindow(QWidget *parent)
     setFixedHeight(height());
     setFixedWidth(width());
 
-
-    /*ui->MainPenColor_comboBox->addItem("Чёрный");
-    ui->MainPenColor_comboBox->addItem("Красный");
-    ui->MainPenColor_comboBox->addItem("Зелёный");
-    ui->MainPenColor_comboBox->addItem("Синий");*/
-
     ui->SemiPenColor_comboBox->addItem("Чёрный");
     ui->SemiPenColor_comboBox->addItem("Красный");
     ui->SemiPenColor_comboBox->addItem("Зелёный");
@@ -34,11 +28,61 @@ MainWindow::MainWindow(QWidget *parent)
 
     canvas = new Canvas();
     ui->gridLayout_2->addWidget(canvas);
+
+    LMB_is_pressed = false;
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton)
+    {
+        LMB_is_pressed = false;
+    }
+}
+
+void MainWindow::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton && !LMB_is_pressed && this->canvas->rect().contains(event->pos()))
+    {
+        previous_x = event->position().x();
+        previous_y = event->position().y();
+        LMB_is_pressed = true;
+    }
+}
+
+#define ROTATE_SPEED 10
+
+void MainWindow::mouseMoveEvent(QMouseEvent *event)
+{
+    if (LMB_is_pressed)
+    {
+        double dx = double(previous_x - event->position().x()) / ROTATE_SPEED;
+        double dy = double(-previous_y + event->position().y()) / ROTATE_SPEED;
+
+        canvas->rotate_x(dy);
+        canvas->rotate_y(dx);
+        double (*f)(double x, double z);
+        if (ui->comboBox->currentIndex() == 0)
+            f = func3;
+        else if (ui->comboBox->currentIndex() == 1)
+            f = func4;
+        else if (ui->comboBox->currentIndex() == 2)
+            f = func2;
+        else
+            f = func1;
+        canvas->draw(f, ui->x_min->text().toDouble(), ui->x_max->text().toDouble(),
+                        ui->x_step->text().toDouble(), ui->z_min->text().toDouble(),
+                        ui->z_max->text().toDouble(), ui->z_step->text().toDouble());
+
+        //canvas->update();
+        previous_x = event->position().x();
+        previous_y = event->position().y();
+    }
 }
 
 void MainWindow::on_SemiPenColor_comboBox_activated(int index)
@@ -91,28 +135,7 @@ void MainWindow::on_backgroundColor_comboBox_activated(int index)
             //???
             break;
     }
-    //canvas->clear();
 }
-
-/*void MainWindow::on_seg_col_btn_clicked()
-{
-    QColorDialog dialog;
-    dialog.show();
-    dialog.exec();
-    ui->seg_col->set_color(dialog.selectedColor());
-
-    canvas->set_bg(dialog.selectedColor());
-}
-
-void MainWindow::on_vis_part_col_btn_clicked()
-{
-    QColorDialog dialog;
-    dialog.show();
-    dialog.exec();
-    ui->vis_part_col->set_color(dialog.selectedColor());
-
-    canvas->set_fg(dialog.selectedColor());
-}*/
 
 void MainWindow::on_cut_col_btn_clicked()
 {
@@ -157,42 +180,10 @@ void MainWindow::on_end_cutter_clicked()
                     ui->z_max->text().toDouble(), ui->z_step->text().toDouble());
 }
 
-void MainWindow::on_end_enter_clicked()
+void MainWindow::on_rotate_clicked()
 {
     canvas->rotate_x(ui->angle_x->text().toDouble());
-    double (*f)(double x, double z);
-    if (ui->comboBox->currentIndex() == 0)
-        f = func3;
-    else if (ui->comboBox->currentIndex() == 1)
-        f = func4;
-    else if (ui->comboBox->currentIndex() == 2)
-        f = func2;
-    else
-        f = func1;
-    canvas->draw(f, ui->x_min->text().toDouble(), ui->x_max->text().toDouble(),
-                    ui->x_step->text().toDouble(), ui->z_min->text().toDouble(),
-                    ui->z_max->text().toDouble(), ui->z_step->text().toDouble());
-}
-
-void MainWindow::on_rotate_y_clicked()
-{
     canvas->rotate_y(ui->angle_y->text().toDouble());
-    double (*f)(double x, double z);
-    if (ui->comboBox->currentIndex() == 0)
-        f = func3;
-    else if (ui->comboBox->currentIndex() == 1)
-        f = func4;
-    else if (ui->comboBox->currentIndex() == 2)
-        f = func2;
-    else
-        f = func1;
-    canvas->draw(f, ui->x_min->text().toDouble(), ui->x_max->text().toDouble(),
-                    ui->x_step->text().toDouble(), ui->z_min->text().toDouble(),
-                    ui->z_max->text().toDouble(), ui->z_step->text().toDouble());
-}
-
-void MainWindow::on_rotate_z_clicked()
-{
     canvas->rotate_z(ui->angle_z->text().toDouble());
     double (*f)(double x, double z);
     if (ui->comboBox->currentIndex() == 0)
@@ -207,5 +198,3 @@ void MainWindow::on_rotate_z_clicked()
                     ui->x_step->text().toDouble(), ui->z_min->text().toDouble(),
                     ui->z_max->text().toDouble(), ui->z_step->text().toDouble());
 }
-
-

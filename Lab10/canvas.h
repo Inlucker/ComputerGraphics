@@ -31,12 +31,6 @@ public:
     explicit Canvas(QWidget *parent = nullptr);
     ~Canvas();
 
-    /*void setCutterPenColor(QColor color);
-    void setLinePenColor(QColor color);
-    void setRezColor(QColor color);
-
-    void clean();*/
-
     void clear();
     void set_bg(const QColor &color);
     void set_fg(const QColor &color);
@@ -52,24 +46,10 @@ public:
     void draw_horizon(double (*func)(double x, double z), vector<double> &hh, vector<double> &lh, double fr, double to, double step, double z);
     void draw(double (*f)(double x, double z), double x_min, double x_max, double x_step, double z_min, double z_max, double z_step);
 
-
 protected:
-    virtual void mousePressEvent(QMouseEvent *event);
     void paintEvent(QPaintEvent *);
 
-public:
-
 private:
-    /*QPainter *painter = nullptr;
-    QPixmap *my_pixmap = nullptr;
-    QPen cutterPen;
-    QPen linePen;
-    QPen rezPen;
-
-    QColor color_line;
-    QColor color_cutter;
-    QColor color_rez;*/
-
     QColor bg = QColor(255, 255, 255);
     QColor fg = QColor(0, 0, 0);
     QRect field;
@@ -78,11 +58,6 @@ private:
 
     QImage image;
     QPainter painter;
-
-
-private:
-    /*void plot(int x, int y);
-    void DrawLineBrezenheimFloat(int X_start, int Y_start, int X_end, int Y_end);*/
 
 };
 

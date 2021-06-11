@@ -28,25 +28,6 @@ double func4(double x, double z)
 
 Canvas::Canvas(QWidget *parent) : QWidget(parent)
 {
-    /*linePen = QPen(Qt::red);
-    cutterPen = QPen(Qt::black);
-    rezPen = QPen(Qt::blue);
-    setStyleSheet("background-color:white;");
-
-    color_line = QColor(Qt::red);
-    color_cutter = QColor(Qt::black);
-    color_rez = QColor(Qt::blue);
-
-
-    if (painter)
-        delete painter;
-
-    if (my_pixmap)
-        delete my_pixmap;
-    my_pixmap = new QPixmap(2000, 2000);
-
-    clean();*/
-
     image = QImage(1350, 1200, QImage::Format_RGB32);
     //image = QImage(width(), height(), QImage::Format_RGB32);
     image.fill(bg);
@@ -55,14 +36,7 @@ Canvas::Canvas(QWidget *parent) : QWidget(parent)
 
 Canvas::~Canvas()
 {
-    /*delete painter;
-    delete my_pixmap;*/
     painter.end();
-}
-
-void Canvas::mousePressEvent(QMouseEvent *event)
-{
-
 }
 
 void Canvas::rotate_trans_matrix(matrix rotate_matrix)
@@ -262,97 +236,3 @@ void Canvas::clear()
     scale = 50;
     this->update();
 }
-
-/*void Canvas::setCutterPenColor(QColor color)
-{
-    color_cutter = color;
-    cutterPen.setColor(color);
-}
-
-void Canvas::setLinePenColor(QColor color)
-{
-    color_line = color;
-    linePen.setColor(color);
-}
-
-void Canvas::setRezColor(QColor color)
-{
-    color_rez = color;
-    rezPen.setColor(color);
-}
-
-void Canvas::paintEvent(QPaintEvent *event)
-{
-    QPainter pixmap_painter(this);
-
-    pixmap_painter.drawPixmap(0, 0, *my_pixmap);
-}
-
-
-void Canvas::clean()
-{
-    my_pixmap->fill(QColor(0, 0, 0, 0));
-    //my_pixmap->fill(color_rez);
-
-    painter = new QPainter(my_pixmap);
-    painter->setPen(linePen);
-
-    update();
-}
-
-void Canvas::plot(int x, int y)
-{
-    //p->setPen(semiPen);
-    painter->drawPoint(x, y);
-}
-
-void Canvas::DrawLineBrezenheimFloat(int X_start, int Y_start, int X_end, int Y_end)
-{
-    int X = X_start, Y = Y_start;
-    int dX = X_end - X_start, dY = Y_end - Y_start;
-    int SX = sign(dX), SY = sign(dY);
-    dX = abs(dX), dY = abs(dY);
-
-    int steep;
-    if (dY >= dX)
-    {
-        //dX, dY = dY, dX;
-        int tmp = dX;
-        dX = dY;
-        dY = tmp;
-        steep = 1; // шагаем по y
-    }
-    else
-        steep = 0;
-
-    double tg = double(dY) / double(dX) ; // tангенс угла наклона
-    double er = tg - 0.5; // начальное значение ошибки
-
-    //QPainter painter(&my_pixmap);
-    //painter.setPen(pen);
-
-    painter->drawPoint(X, Y);
-    while (X != X_end || Y != Y_end)
-    {
-        if (er >= 0)
-        {
-            if (steep == 1) // dy >= dx
-                X += SX;
-            else // dy < dx
-                Y += SY;
-            er -= 1; // отличие от целого
-            //stairs.append(st)
-            //st = 0
-        }
-        if (er <= 0)
-        {
-            if (steep == 0) // dy < dx
-                X += SX;
-            else // dy >= dx
-                Y += SY;
-            //st += 1
-            er += tg; // отличие от целого
-        }
-        painter->drawPoint(X, Y);
-    }
-}*/

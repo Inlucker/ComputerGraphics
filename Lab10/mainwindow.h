@@ -21,7 +21,9 @@ public:
     ~MainWindow();
 
 protected:
-   //virtual void mousePressEvent(QMouseEvent *event);
+    virtual void mouseReleaseEvent(QMouseEvent *event);
+    virtual void mousePressEvent(QMouseEvent *event);
+    virtual void mouseMoveEvent(QMouseEvent *event);
 
 private slots:
     void on_SemiPenColor_comboBox_activated(int index);
@@ -30,24 +32,19 @@ private slots:
 
     void on_clean_Btn_clicked();
 
-    /*void on_seg_col_btn_clicked();
-
-    void on_vis_part_col_btn_clicked();*/
-
     void on_cut_col_btn_clicked();
 
     void on_pushButton_clicked();
 
     void on_end_cutter_clicked();
 
-    void on_end_enter_clicked();
-
-    void on_rotate_y_clicked();
-
-    void on_rotate_z_clicked();
+    void on_rotate_clicked();
 
 private:
     Ui::MainWindow *ui;
     Canvas *canvas;
+
+    bool LMB_is_pressed;
+    int previous_x, previous_y;
 };
 #endif // MAINWINDOW_H
