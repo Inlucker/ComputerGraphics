@@ -145,11 +145,11 @@ void MainWindow::on_fill_Btn_clicked()
         return;
     }
 
-    if (!canvas->isLinesPolygon())
+    /*if (!canvas->isLinesPolygon())
     {
         QMessageBox::information(this, "Error", "Рёбра многоугольника не могут пересекаться.");
         return;
-    }
+    }*/
 
     if (!canvas->cutterSize())
     {
