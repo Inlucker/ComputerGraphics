@@ -40,24 +40,24 @@ void Canvas::mousePressEvent(QMouseEvent *event)
             double y = prev_y_line;
             if (event->modifiers() == Qt::ALT && !firstPointLineCheck())
             {
-                x = event->x();
-                if ((event->x() > prev_x_line && event->y() < prev_y_line) || (event->x() < prev_x_line && event->y() > prev_y_line))
+                x = event->position().x();
+                if ((event->position().x() > prev_x_line && event->position().y() < prev_y_line) || (event->position().x() < prev_x_line && event->position().y() > prev_y_line))
                     y = y - (x - prev_x_line);
                 else
                     y = y + (x - prev_x_line);
             }
             else if (event->modifiers() == Qt::CTRL && !firstPointLineCheck())
             {
-                x = event->x();
+                x = event->position().x();
             }
             else if (event->modifiers() == Qt::SHIFT && !firstPointLineCheck())
             {
-                y = event->y();
+                y = event->position().y();
             }
             else
             {
-                x = event->x();
-                y = event->y();
+                x = event->position().x();
+                y = event->position().y();
             }
 
             addPoint(x, y);
@@ -68,24 +68,24 @@ void Canvas::mousePressEvent(QMouseEvent *event)
             double y = prev_y_cutter;
             if (event->modifiers() == Qt::ALT && !firstPointCutterCheck())
             {
-                x = event->x();
-                if ((event->x() > prev_x_cutter && event->y() < prev_y_cutter) || (event->x() < prev_x_cutter && event->y() > prev_y_cutter))
+                x = event->position().x();
+                if ((event->position().x() > prev_x_cutter && event->position().y() < prev_y_cutter) || (event->position().x() < prev_x_cutter && event->position().y() > prev_y_cutter))
                     y = y - (x - prev_x_cutter);
                 else
                     y = y + (x - prev_x_cutter);
             }
             else if (event->modifiers() == Qt::CTRL && !firstPointCutterCheck())
             {
-                x = event->x();
+                x = event->position().x();
             }
             else if (event->modifiers() == Qt::SHIFT && !firstPointCutterCheck())
             {
-                y = event->y();
+                y = event->position().y();
             }
             else
             {
-                x = event->x();
-                y = event->y();
+                x = event->position().x();
+                y = event->position().y();
             }
             setCutter(x, y);
         }
@@ -94,10 +94,66 @@ void Canvas::mousePressEvent(QMouseEvent *event)
     {
         if (event->button() == Qt::RightButton && rect().contains(event->pos()))
         {
-            if (edgeFlag)
-                setCutter(event->x(), event->y());
+            /*if (edgeFlag)
+                setCutter(event->position().x(), event->position().y());
             else
-                addPoint(event->x(), event->y());
+                addPoint(event->position().x(), event->position().y());*/
+
+            if (!edgeFlag)
+            {
+                double x = prev_x_line;
+                double y = prev_y_line;
+                if (event->modifiers() == Qt::ALT && !firstPointLineCheck())
+                {
+                    x = event->position().x();
+                    if ((event->position().x() > prev_x_line && event->position().y() < prev_y_line) || (event->position().x() < prev_x_line && event->position().y() > prev_y_line))
+                        y = y - (x - prev_x_line);
+                    else
+                        y = y + (x - prev_x_line);
+                }
+                else if (event->modifiers() == Qt::CTRL && !firstPointLineCheck())
+                {
+                    x = event->position().x();
+                }
+                else if (event->modifiers() == Qt::SHIFT && !firstPointLineCheck())
+                {
+                    y = event->position().y();
+                }
+                else
+                {
+                    x = event->position().x();
+                    y = event->position().y();
+                }
+
+                addPoint(x, y);
+            }
+            else
+            {
+                double x = prev_x_cutter;
+                double y = prev_y_cutter;
+                if (event->modifiers() == Qt::ALT && !firstPointCutterCheck())
+                {
+                    x = event->position().x();
+                    if ((event->position().x() > prev_x_cutter && event->position().y() < prev_y_cutter) || (event->position().x() < prev_x_cutter && event->position().y() > prev_y_cutter))
+                        y = y - (x - prev_x_cutter);
+                    else
+                        y = y + (x - prev_x_cutter);
+                }
+                else if (event->modifiers() == Qt::CTRL && !firstPointCutterCheck())
+                {
+                    x = event->position().x();
+                }
+                else if (event->modifiers() == Qt::SHIFT && !firstPointCutterCheck())
+                {
+                    y = event->position().y();
+                }
+                else
+                {
+                    x = event->position().x();
+                    y = event->position().y();
+                }
+                setCutter(x, y);
+            }
         }
     }
 }
@@ -154,6 +210,7 @@ void Canvas::addPoint(double x, double y)
         plot(int_x, int_y);
         if (isFirstPointLine)
         {
+            //linesP.push_back(Point(int_x, int_y));
             x0_l = int_x;
             y0_l = int_y;
             isFirstPointLine = false;
@@ -161,6 +218,7 @@ void Canvas::addPoint(double x, double y)
         }
         else
         {
+            //linesP.push_back(Point(int_x, int_y));
             Line newLine(prev_x_line, prev_y_line, int_x, int_y);
             if (lines.size() >= 1)
             {
@@ -213,6 +271,7 @@ void Canvas::setCutter(double x, double y)
         plot(int_x, int_y);
         if (isFirstPointCutter)
         {
+            //cutterP.push_back(Point(int_x, int_y));
             x0 = int_x;
             y0 = int_y;
             isFirstPointCutter = false;
@@ -220,6 +279,7 @@ void Canvas::setCutter(double x, double y)
         }
         else
         {
+            //cutterP.push_back(Point(int_x, int_y));
             Line newLine(prev_x_cutter, prev_y_cutter, int_x, int_y);
             if (cutter.size() >= 1)
             {
@@ -413,7 +473,7 @@ void Canvas::cut()
     }
 
     vector<Point> c;
-    for(int i = 0; i < cutter.size(); i++)
+    for(size_t i = 0; i < cutter.size(); i++)
     {
         Point p1(cutter[i].x1,cutter[i].y1);
         c.push_back(p1);
@@ -423,21 +483,21 @@ void Canvas::cut()
     size_t Nc = c.size()-1;
 
     vector<Point> p;
-    for(int i = 0; i < lines.size(); i++)
+    for(size_t i = 0; i < lines.size(); i++)
     {
         Point p1(lines[i].x1,lines[i].y1);
         p.push_back(p1);
     }
-   // point p1(lines[0].x1, lines[0].y1);
+    //point p1(lines[0].x1, lines[0].y1);
     //p.push_back(p1);
     size_t Np = p.size(), Nq;
     Point F,S,I;
     vector<Point> Q;
 
-    for (int i = 0; i < Nc; i++)
+    for (size_t i = 0; i < Nc; i++)
     {
         Nq = 0;
-        for (int j = 0; j < Np; j++)
+        for (size_t j = 0; j < Np; j++)
         {
             if (j == 0)
             {
@@ -491,7 +551,7 @@ void Canvas::cut()
 
 }
 
-void Canvas::paintEvent(QPaintEvent *event)
+void Canvas::paintEvent(QPaintEvent */*event*/)
 {
     QPainter pixmap_painter(this);
 

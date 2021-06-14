@@ -131,6 +131,10 @@ private:
     vector<Line> lines;
     vector<Line> cutter;
 
+    /*vector<Point> linesP;
+    vector<Point> cutterP;*/
+
+
     double linesAngleSum;
     double cutterAngleSum;
 private:

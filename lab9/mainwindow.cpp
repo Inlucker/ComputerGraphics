@@ -165,7 +165,7 @@ void MainWindow::on_fill_Btn_clicked()
 
     if (!canvas->isCutterPolygon())
     {
-        QMessageBox::information(this, "Error", "Рёбра отсекателя не могут пересекаться.");
+        QMessageBox::information(this, "Error", "Невыпуклый отсекатель.");
         return;
     }
 
