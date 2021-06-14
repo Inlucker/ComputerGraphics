@@ -107,6 +107,11 @@ void Canvas::set_scale(double sc)
     scale = sc;
 }
 
+void Canvas::change_scale(double sc)
+{
+    scale *= sc;
+}
+
 bool Canvas::is_visible(double x, double y)
 {
     return 0 <= x && x < field.width() && 0 <= y && y < field.height();
@@ -162,8 +167,8 @@ void Canvas::draw_horizon_part(point_3d p1, point_3d p2, vector<double> &hh, vec
 void Canvas::draw_horizon(double (*func)(double, double), vector<double> &hh, vector<double> &lh, double fr, double to, double step, double z)
 {
     point_3d prev;
-    qDebug() << fr << to << step << z;
-    for (double x = fr; x < to + step; x += step)
+    //qDebug() << fr << to << step << z;
+    for (double x = fr; x < to /*+ step*/; x += step)
     {
         point_3d current({ x, func(x, z), z });
         trans_point(current);
@@ -233,6 +238,6 @@ void Canvas::clear()
                 trans_matrix[i][j] = 1;
             else
                 trans_matrix[i][j] = 0;
-    scale = 50;
+    scale = 35;
     this->update();
 }

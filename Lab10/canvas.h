@@ -39,6 +39,7 @@ public:
     void rotate_y(double angle);
     void rotate_z(double angle);
     void set_scale(double sc);
+    void change_scale(double sc);
     void trans_point(point_3d &point);
     bool is_visible(double x, double y);
     bool draw_point(double x, double y, vector<double> &hh, vector<double> &lh);
@@ -54,7 +55,7 @@ private:
     QColor fg = QColor(0, 0, 0);
     QRect field;
     matrix trans_matrix = { { 1, 0, 0, 0}, { 0, 1, 0, 0}, { 0, 0, 1, 0}, { 0, 0, 0, 1} };
-    double scale = 50;
+    double scale = 35;
 
     QImage image;
     QPainter painter;

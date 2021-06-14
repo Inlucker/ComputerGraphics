@@ -24,6 +24,7 @@ protected:
     virtual void mouseReleaseEvent(QMouseEvent *event);
     virtual void mousePressEvent(QMouseEvent *event);
     virtual void mouseMoveEvent(QMouseEvent *event);
+    virtual void wheelEvent(QWheelEvent *event);
 
 private slots:
     void on_SemiPenColor_comboBox_activated(int index);
@@ -36,7 +37,7 @@ private slots:
 
     void on_pushButton_clicked();
 
-    void on_end_cutter_clicked();
+    //void on_end_cutter_clicked();
 
     void on_rotate_clicked();
 

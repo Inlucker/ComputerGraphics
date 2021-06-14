@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1277</width>
-    <height>981</height>
+    <height>877</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,7 +23,7 @@
       <x>10</x>
       <y>10</y>
       <width>1091</width>
-      <height>931</height>
+      <height>831</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout_2"/>
@@ -388,42 +388,6 @@
       <string>Очистить</string>
      </property>
     </widget>
-   </widget>
-   <widget class="QLineEdit" name="scale">
-    <property name="geometry">
-     <rect>
-      <x>1110</x>
-      <y>850</y>
-      <width>151</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>10</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>50</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="end_cutter">
-    <property name="geometry">
-     <rect>
-      <x>1110</x>
-      <y>900</y>
-      <width>151</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>10</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Изменить масштаб</string>
-    </property>
    </widget>
    <widget class="QGroupBox" name="groupBox_7">
     <property name="geometry">

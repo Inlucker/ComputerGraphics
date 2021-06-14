@@ -85,6 +85,37 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
+#define SCALE_SPEED 10
+
+void MainWindow::wheelEvent(QWheelEvent *event)
+{
+    if (this->canvas->rect().contains(int(event->position().x()), int(event->position().y())))
+    {
+        QPoint numDegrees = event->angleDelta() / 120;
+        //cout <<  numDegrees.x() << endl;
+        //cout <<  numDegrees.y() << endl;
+        //double kx = 1 + double(numDegrees.x()) / SCALE_SPEED;
+        double ky = 1 + double(numDegrees.y()) / SCALE_SPEED;
+        //cout << "ky = " << ky << endl;
+
+        canvas->change_scale(ky);
+        double (*f)(double x, double z);
+        if (ui->comboBox->currentIndex() == 0)
+            f = func3;
+        else if (ui->comboBox->currentIndex() == 1)
+            f = func4;
+        else if (ui->comboBox->currentIndex() == 2)
+            f = func2;
+        else
+            f = func1;
+        canvas->draw(f, ui->x_min->text().toDouble(), ui->x_max->text().toDouble(),
+                        ui->x_step->text().toDouble(), ui->z_min->text().toDouble(),
+                        ui->z_max->text().toDouble(), ui->z_step->text().toDouble());
+
+        canvas->update();
+    }
+}
+
 void MainWindow::on_SemiPenColor_comboBox_activated(int index)
 {
     switch (index)
@@ -163,7 +194,7 @@ void MainWindow::on_clean_Btn_clicked()
     //canvas->clean();
 }
 
-void MainWindow::on_end_cutter_clicked()
+/*void MainWindow::on_end_cutter_clicked()
 {
     canvas->set_scale(ui->scale->text().toDouble());
     double (*f)(double x, double z);
@@ -178,7 +209,7 @@ void MainWindow::on_end_cutter_clicked()
     canvas->draw(f, ui->x_min->text().toDouble(), ui->x_max->text().toDouble(),
                     ui->x_step->text().toDouble(), ui->z_min->text().toDouble(),
                     ui->z_max->text().toDouble(), ui->z_step->text().toDouble());
-}
+}*/
 
 void MainWindow::on_rotate_clicked()
 {
