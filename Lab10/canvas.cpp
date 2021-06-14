@@ -8,22 +8,28 @@
 
 double func1(double x, double z)
 {
-    return sin(x) * z;
+    return pow(M_E, cos(x)) * sin(z);
 }
 
 double func2(double x, double z)
 {
-    return sin(x) * cos(z);
+    return fabs(cos(z)) * sin(fabs(x));
 }
 
 double func3(double x, double z)
 {
-    return pow(M_E, cos(x)) * sin(z);
+    return sin(x) * cos(z);
 }
 
 double func4(double x, double z)
 {
-    return fabs(cos(z)) * sin(fabs(x));
+    return pow(cos(x), 2) - pow(sin(z), 2);
+    //return sin(x) * z/3;
+}
+
+double func5(double x, double z)
+{
+    return fabs(cos(x) - sin(z));
 }
 
 Canvas::Canvas(QWidget *parent) : QWidget(parent)

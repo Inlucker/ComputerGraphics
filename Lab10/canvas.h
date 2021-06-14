@@ -22,6 +22,8 @@ double func3(double x, double z);
 
 double func4(double x, double z);
 
+double func5(double x, double z);
+
 class Canvas : public QWidget
 {
 public:

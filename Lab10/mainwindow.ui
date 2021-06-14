@@ -61,7 +61,7 @@
      </rect>
     </property>
     <property name="title">
-     <string>Цвет результата</string>
+     <string>Цвет фона</string>
     </property>
     <widget class="QComboBox" name="backgroundColor_comboBox">
      <property name="geometry">
@@ -123,7 +123,12 @@
      </item>
      <item>
       <property name="text">
-       <string>sin(x) * z</string>
+       <string>cos^2(x) - sin^2(z)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>|cos(x)-sin(z)|</string>
       </property>
      </item>
     </widget>

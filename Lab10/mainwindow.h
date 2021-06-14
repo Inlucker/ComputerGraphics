@@ -41,9 +41,13 @@ private slots:
 
     void on_rotate_clicked();
 
+    void on_comboBox_activated(int index);
+
 private:
     Ui::MainWindow *ui;
     Canvas *canvas;
+
+    double (*cur_func)(double x, double z);
 
     bool LMB_is_pressed;
     int previous_x, previous_y;

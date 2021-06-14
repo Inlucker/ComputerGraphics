@@ -25,9 +25,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->comboBox->setItemData(1, Qt::AlignCenter, Qt::TextAlignmentRole);
     ui->comboBox->setItemData(2, Qt::AlignCenter, Qt::TextAlignmentRole);
     ui->comboBox->setItemData(3, Qt::AlignCenter, Qt::TextAlignmentRole);
+    ui->comboBox->setItemData(4, Qt::AlignCenter, Qt::TextAlignmentRole);
 
     canvas = new Canvas();
     ui->gridLayout_2->addWidget(canvas);
+
+    cur_func = func1;
 
     LMB_is_pressed = false;
 }
@@ -66,16 +69,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
 
         canvas->rotate_x(dy);
         canvas->rotate_y(dx);
-        double (*f)(double x, double z);
-        if (ui->comboBox->currentIndex() == 0)
-            f = func3;
-        else if (ui->comboBox->currentIndex() == 1)
-            f = func4;
-        else if (ui->comboBox->currentIndex() == 2)
-            f = func2;
-        else
-            f = func1;
-        canvas->draw(f, ui->x_min->text().toDouble(), ui->x_max->text().toDouble(),
+        canvas->draw(cur_func, ui->x_min->text().toDouble(), ui->x_max->text().toDouble(),
                         ui->x_step->text().toDouble(), ui->z_min->text().toDouble(),
                         ui->z_max->text().toDouble(), ui->z_step->text().toDouble());
 
@@ -92,23 +86,10 @@ void MainWindow::wheelEvent(QWheelEvent *event)
     if (this->canvas->rect().contains(int(event->position().x()), int(event->position().y())))
     {
         QPoint numDegrees = event->angleDelta() / 120;
-        //cout <<  numDegrees.x() << endl;
-        //cout <<  numDegrees.y() << endl;
-        //double kx = 1 + double(numDegrees.x()) / SCALE_SPEED;
         double ky = 1 + double(numDegrees.y()) / SCALE_SPEED;
-        //cout << "ky = " << ky << endl;
 
         canvas->change_scale(ky);
-        double (*f)(double x, double z);
-        if (ui->comboBox->currentIndex() == 0)
-            f = func3;
-        else if (ui->comboBox->currentIndex() == 1)
-            f = func4;
-        else if (ui->comboBox->currentIndex() == 2)
-            f = func2;
-        else
-            f = func1;
-        canvas->draw(f, ui->x_min->text().toDouble(), ui->x_max->text().toDouble(),
+        canvas->draw(cur_func, ui->x_min->text().toDouble(), ui->x_max->text().toDouble(),
                         ui->x_step->text().toDouble(), ui->z_min->text().toDouble(),
                         ui->z_max->text().toDouble(), ui->z_step->text().toDouble());
 
@@ -174,16 +155,7 @@ void MainWindow::on_cut_col_btn_clicked()
 
 void MainWindow::on_pushButton_clicked()
 {
-    double (*f)(double x, double z);
-    if (ui->comboBox->currentIndex() == 0)
-        f = func3;
-    else if (ui->comboBox->currentIndex() == 1)
-        f = func4;
-    else if (ui->comboBox->currentIndex() == 2)
-        f = func2;
-    else
-        f = func1;
-    canvas->draw(f, ui->x_min->text().toDouble(), ui->x_max->text().toDouble(),
+    canvas->draw(cur_func, ui->x_min->text().toDouble(), ui->x_max->text().toDouble(),
                     ui->x_step->text().toDouble(), ui->z_min->text().toDouble(),
                     ui->z_max->text().toDouble(), ui->z_step->text().toDouble());
 }
@@ -216,16 +188,34 @@ void MainWindow::on_rotate_clicked()
     canvas->rotate_x(ui->angle_x->text().toDouble());
     canvas->rotate_y(ui->angle_y->text().toDouble());
     canvas->rotate_z(ui->angle_z->text().toDouble());
-    double (*f)(double x, double z);
-    if (ui->comboBox->currentIndex() == 0)
-        f = func3;
-    else if (ui->comboBox->currentIndex() == 1)
-        f = func4;
-    else if (ui->comboBox->currentIndex() == 2)
-        f = func2;
-    else
-        f = func1;
-    canvas->draw(f, ui->x_min->text().toDouble(), ui->x_max->text().toDouble(),
+
+    canvas->draw(cur_func, ui->x_min->text().toDouble(), ui->x_max->text().toDouble(),
                     ui->x_step->text().toDouble(), ui->z_min->text().toDouble(),
                     ui->z_max->text().toDouble(), ui->z_step->text().toDouble());
+}
+
+void MainWindow::on_comboBox_activated(int index)
+{
+    cout << index << endl;
+    switch (index)
+    {
+    case 0:
+        cur_func = func1;
+        break;
+    case 1:
+        cur_func = func2;
+        break;
+    case 2:
+        cur_func = func3;
+        break;
+    case 3:
+        cur_func = func4;
+        break;
+    case 4:
+        cur_func = func5;
+        break;
+    default:
+        //????
+        break;
+    }
 }
