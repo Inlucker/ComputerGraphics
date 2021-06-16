@@ -150,13 +150,13 @@ void Canvas::DrawLineDGA(int X_start, int X_end, int Y_start, int Y_end)
     //QPainter painter(&my_pixmap);
     //painter.setPen(pen);
 
-    painter.drawPoint(int(X), int(Y));
+    painter.drawPoint(round(X), round(Y));
     while (fabs(X - X_end) > 1 || fabs(Y - Y_end) > 1)
     {
         //QPoint p = QPoint(int(X), int(Y));
         //draw_point(p);
         X = X + dX, Y += dY;
-        painter.drawPoint(int(X), int(Y));
+        painter.drawPoint(round(X), round(Y));
     }
 }
 
