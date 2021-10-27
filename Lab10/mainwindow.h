@@ -43,6 +43,8 @@ private slots:
 
     void on_comboBox_activated(int index);
 
+    void on_spinBox_valueChanged(int arg1);
+
 private:
     Ui::MainWindow *ui;
     Canvas *canvas;
@@ -51,5 +53,6 @@ private:
 
     bool LMB_is_pressed;
     int previous_x, previous_y;
+    int threadsN = 1;
 };
 #endif // MAINWINDOW_H

@@ -214,6 +214,90 @@ void Canvas::draw(double (*f)(double x, double z), double x_min, double x_max, d
     this->update();
 }
 
+void Canvas::draw2(double (*f)(double, double), double x_min, double x_max, double x_step, double z_min, double z_max, double z_step, int threadN)
+{
+    double x[threadN+1];
+    double dx = (x_max-x_min)/double(threadN);
+    x[0] = x_min;
+    for (int i = 1; i <= threadN; i++)
+    {
+        x[i] = x[i-1] + dx;
+    }
+
+    std::thread *th = new std::thread[threadN];
+
+    for (int i = 0; i < threadN; i++)
+    {
+        th[i] = std::thread(&Canvas::draw, this, f, x[i], x[i+1], x_step, z_min, z_max, z_step);
+    }
+
+    for (int i = 0; i < threadN; i++)
+    {
+        th[i].join();
+    }
+    delete[] th;
+}
+
+void Canvas::draw_horizons(double (*func)(double, double), vector<double> &hh, vector<double> &lh, double fr, double to, double step, double z_min, double z_max, double z_step)
+{
+    for (double z = z_min; z < z_max + z_step; z += z_step)
+        draw_horizon(func, hh, lh, fr, to, step, z);
+}
+
+void Canvas::draw_horizons2(double (*func)(double, double), vector<double> &hh, vector<double> &lh, double fr, double to, double step, double z_min, double z_max, double z_step)
+{
+    cout << "lol2" << endl;
+}
+
+void Canvas::draw3(double (*f)(double, double), double x_min, double x_max, double x_step, double z_min, double z_max, double z_step, int threadN)
+{
+    field = geometry();
+    painter.setPen(QPen(fg));
+    image.fill(bg);
+    vector<double> high_horizon;
+    for (long i = 0; i < field.width(); i++)
+        high_horizon.push_back(0);
+    vector<double> low_horizon;
+    for (long i = 0; i < field.width(); i++)
+        low_horizon.push_back(field.height());
+
+    //For Threads
+    double z[threadN+1];
+    double dz = (z_max-z_min)/double(threadN);
+    z[0] = z_min;
+    for (int i = 1; i <= threadN; i++)
+    {
+        z[i] = z[i-1] + dz;
+    }
+
+    std::thread *th = new std::thread[threadN];
+
+    for (int i = 0; i < threadN; i++)
+    {
+        th[i] = std::thread(&Canvas::draw_horizons, this, f, ref(high_horizon), ref(low_horizon), x_min, x_max, x_step, z[i], z[i+1], z_step);
+    }
+
+    for (int i = 0; i < threadN; i++)
+    {
+        th[i].join();
+    }
+    delete[] th;
+
+    for (double z = z_min; z < z_max; z += z_step)
+    {
+        point_3d p1({ x_min, f(x_min, z), z }), p2({ x_min, f(x_min, z + z_step), z + z_step });
+        trans_point(p1);
+        trans_point(p2);
+        painter.drawLine(p1[0], p1[1], p2[0], p2[1]);
+
+        point_3d p3({ x_max, f(x_max, z), z }), p4({ x_max, f(x_max, z + z_step), z + z_step });
+        trans_point(p3);
+        trans_point(p4);
+        painter.drawLine(p3[0], p3[1], p4[0], p4[1]);
+    }
+    this->update();
+}
+
 void Canvas::set_bg(const QColor &color)
 {
     bg = color;

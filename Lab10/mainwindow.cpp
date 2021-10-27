@@ -69,9 +69,9 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
 
         canvas->rotate_x(dy);
         canvas->rotate_y(dx);
-        canvas->draw(cur_func, ui->x_min->text().toDouble(), ui->x_max->text().toDouble(),
+        canvas->draw2(cur_func, ui->x_min->text().toDouble(), ui->x_max->text().toDouble(),
                         ui->x_step->text().toDouble(), ui->z_min->text().toDouble(),
-                        ui->z_max->text().toDouble(), ui->z_step->text().toDouble());
+                        ui->z_max->text().toDouble(), ui->z_step->text().toDouble(), threadsN);
 
         //canvas->update();
         previous_x = event->position().x();
@@ -89,9 +89,9 @@ void MainWindow::wheelEvent(QWheelEvent *event)
         double ky = 1 + double(numDegrees.y()) / SCALE_SPEED;
 
         canvas->change_scale(ky);
-        canvas->draw(cur_func, ui->x_min->text().toDouble(), ui->x_max->text().toDouble(),
+        canvas->draw2(cur_func, ui->x_min->text().toDouble(), ui->x_max->text().toDouble(),
                         ui->x_step->text().toDouble(), ui->z_min->text().toDouble(),
-                        ui->z_max->text().toDouble(), ui->z_step->text().toDouble());
+                        ui->z_max->text().toDouble(), ui->z_step->text().toDouble(), threadsN);
 
         canvas->update();
     }
@@ -155,9 +155,9 @@ void MainWindow::on_cut_col_btn_clicked()
 
 void MainWindow::on_pushButton_clicked()
 {
-    canvas->draw(cur_func, ui->x_min->text().toDouble(), ui->x_max->text().toDouble(),
+    canvas->draw2(cur_func, ui->x_min->text().toDouble(), ui->x_max->text().toDouble(),
                     ui->x_step->text().toDouble(), ui->z_min->text().toDouble(),
-                    ui->z_max->text().toDouble(), ui->z_step->text().toDouble());
+                    ui->z_max->text().toDouble(), ui->z_step->text().toDouble(), threadsN);
 }
 
 void MainWindow::on_clean_Btn_clicked()
@@ -189,9 +189,9 @@ void MainWindow::on_rotate_clicked()
     canvas->rotate_y(ui->angle_y->text().toDouble());
     canvas->rotate_z(ui->angle_z->text().toDouble());
 
-    canvas->draw(cur_func, ui->x_min->text().toDouble(), ui->x_max->text().toDouble(),
+    canvas->draw2(cur_func, ui->x_min->text().toDouble(), ui->x_max->text().toDouble(),
                     ui->x_step->text().toDouble(), ui->z_min->text().toDouble(),
-                    ui->z_max->text().toDouble(), ui->z_step->text().toDouble());
+                    ui->z_max->text().toDouble(), ui->z_step->text().toDouble(), threadsN);
 }
 
 void MainWindow::on_comboBox_activated(int index)
@@ -219,3 +219,9 @@ void MainWindow::on_comboBox_activated(int index)
         break;
     }
 }
+
+void MainWindow::on_spinBox_valueChanged(int arg1)
+{
+    threadsN = arg1;
+}
+

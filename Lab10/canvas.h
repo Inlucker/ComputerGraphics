@@ -11,6 +11,7 @@
 #include <stdlib.h>
 
 #include <iostream>
+#include <thread>
 
 using namespace std;
 
@@ -47,7 +48,11 @@ public:
     bool draw_point(double x, double y, vector<double> &hh, vector<double> &lh);
     void draw_horizon_part(point_3d p1, point_3d p2, vector<double> &hh, vector<double> &lh);
     void draw_horizon(double (*func)(double x, double z), vector<double> &hh, vector<double> &lh, double fr, double to, double step, double z);
+    void draw_horizons(double (*func)(double x, double z), vector<double> &hh, vector<double> &lh, double fr, double to, double step, double z_min, double z_max, double z_step);
+    void draw_horizons2(double (*func)(double x, double z), vector<double> &hh, vector<double> &lh, double fr, double to, double step, double z_min, double z_max, double z_step);
     void draw(double (*f)(double x, double z), double x_min, double x_max, double x_step, double z_min, double z_max, double z_step);
+    void draw2(double (*f)(double x, double z), double x_min, double x_max, double x_step, double z_min, double z_max, double z_step, int threadN = 8);
+    void draw3(double (*f)(double x, double z), double x_min, double x_max, double x_step, double z_min, double z_max, double z_step, int threadN = 8);
 
 protected:
     void paintEvent(QPaintEvent *);
